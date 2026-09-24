@@ -65,6 +65,24 @@ class PomodoroApp {
       inputQuickCustomMin: document.getElementById('input-quick-custom-min'),
       timerStateBadge: document.getElementById('timer-state-badge'),
       timerRing: document.getElementById('timer-ring-progress'),
+      
+      // Hi-Fi Turntable & Deck components
+      vinylDisc: document.getElementById('vinyl-disc'),
+      tonearmAssembly: document.getElementById('tonearm-assembly'),
+      spectrumBars: document.getElementById('spectrum-bars'),
+      turntableRpmText: document.getElementById('turntable-rpm-text'),
+      laserTrackProgress: document.getElementById('laser-track-progress'),
+      grooveMarkerMid: document.getElementById('groove-marker-mid'),
+      grooveMarkerEnd: document.getElementById('groove-marker-end'),
+      zenBreakSanctuary: document.getElementById('zen-break-sanctuary'),
+      giantClockInner: document.getElementById('giant-clock-inner'),
+      giantClockStage: document.getElementById('giant-clock-stage'),
+      btnViewTurntable: document.getElementById('btn-view-turntable'),
+      btnViewVideo: document.getElementById('btn-view-video'),
+      turntableDeckView: document.getElementById('turntable-deck-view'),
+      biliPlayerWrapper: document.getElementById('bili-player-wrapper'),
+      studioLampDot: document.getElementById('studio-lamp-dot'),
+
       btnStartPause: document.getElementById('btn-start-pause'),
       startPauseIcon: document.getElementById('start-pause-icon'),
       startPauseText: document.getElementById('start-pause-text'),
@@ -319,6 +337,23 @@ class PomodoroApp {
 
       this.dom.timerTimeInput.addEventListener('blur', () => {
         finishTimeEdit(true);
+      });
+    }
+
+    // Turntable vs Video Deck View Switcher
+    if (this.dom.btnViewTurntable && this.dom.btnViewVideo) {
+      this.dom.btnViewTurntable.addEventListener('click', () => {
+        this.dom.btnViewTurntable.classList.add('active');
+        this.dom.btnViewVideo.classList.remove('active');
+        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'flex';
+        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'none';
+      });
+
+      this.dom.btnViewVideo.addEventListener('click', () => {
+        this.dom.btnViewVideo.classList.add('active');
+        this.dom.btnViewTurntable.classList.remove('active');
+        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'none';
+        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'block';
       });
     }
 
@@ -586,21 +621,42 @@ class PomodoroApp {
       }
     });
 
-    // Update state badge
+    // Update state badge & Zen break sanctuary
     if (this.mode === 'focus') {
-      this.dom.timerStateBadge.innerHTML = '🍅 专注中 (Focus)';
+      this.dom.timerStateBadge.innerHTML = '<span class="studio-rec-dot"></span><span class="badge-text-val">REC / 专注中 FOCUSING [27519423]</span>';
       this.dom.timerStateBadge.className = 'timer-badge focus-badge';
+      if (this.dom.zenBreakSanctuary) this.dom.zenBreakSanctuary.style.display = 'none';
+      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'flex';
+      document.body.classList.remove('mode-break-active');
     } else if (this.mode === 'short-break') {
       this.dom.timerStateBadge.innerHTML = '☕ 浅憩短休 (Short Break)';
       this.dom.timerStateBadge.className = 'timer-badge break-badge';
+      if (this.dom.zenBreakSanctuary) {
+        this.dom.zenBreakSanctuary.style.display = 'flex';
+        const txt = document.getElementById('zen-breathing-text');
+        if (txt) txt.textContent = '浅憩短休 · 4-7-8 深呼吸';
+      }
+      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'none';
+      document.body.classList.add('mode-break-active');
     } else {
       this.dom.timerStateBadge.innerHTML = '🌴 惬意长休 (Long Break)';
       this.dom.timerStateBadge.className = 'timer-badge long-break-badge';
+      if (this.dom.zenBreakSanctuary) {
+        this.dom.zenBreakSanctuary.style.display = 'flex';
+        const txt = document.getElementById('zen-breathing-text');
+        if (txt) txt.textContent = '惬意长休 · 彻底放松大脑';
+      }
+      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'none';
+      document.body.classList.add('mode-break-active');
     }
 
     if (this.mode !== 'focus') {
       window.audioEngine?.setBreakMute(true);
       window.bilibiliController?.stop(true);
+      this.dom.vinylDisc?.classList.remove('is-spinning');
+      this.dom.tonearmAssembly?.classList.remove('arm-on-record');
+      this.dom.spectrumBars?.classList.remove('is-active');
+      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'STANDBY 0 RPM';
     } else {
       window.audioEngine?.setBreakMute(false);
       window.bilibiliController?.updateStatusUI(false);
@@ -624,6 +680,15 @@ class PomodoroApp {
     this.endTime = Date.now() + this.timeLeft * 1000;
 
     this.updateControlsUI();
+
+    // Turntable & Spectrum sync
+    this.dom.giantClockStage?.classList.add('is-running');
+    if (this.mode === 'focus') {
+      this.dom.vinylDisc?.classList.add('is-spinning');
+      this.dom.tonearmAssembly?.classList.add('arm-on-record');
+      this.dom.spectrumBars?.classList.add('is-active');
+      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'PLAYING 33⅓ RPM';
+    }
 
     // Start background or tick interval
     this.intervalId = setInterval(() => {
@@ -663,6 +728,12 @@ class PomodoroApp {
 
     this.updateControlsUI();
 
+    this.dom.giantClockStage?.classList.remove('is-running');
+    this.dom.vinylDisc?.classList.remove('is-spinning');
+    this.dom.tonearmAssembly?.classList.remove('arm-on-record');
+    this.dom.spectrumBars?.classList.remove('is-active');
+    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'PAUSED 0 RPM';
+
     // Stop audio while paused
     window.bilibiliController?.pause();
     window.audioEngine?.stopWhiteNoise();
@@ -675,6 +746,11 @@ class PomodoroApp {
       this.intervalId = null;
     }
     this.updateControlsUI();
+    this.dom.giantClockStage?.classList.remove('is-running');
+    this.dom.vinylDisc?.classList.remove('is-spinning');
+    this.dom.tonearmAssembly?.classList.remove('arm-on-record');
+    this.dom.spectrumBars?.classList.remove('is-active');
+    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'STANDBY 33⅓ RPM';
     window.bilibiliController?.stop();
     window.audioEngine?.stopWhiteNoise();
   }
@@ -772,12 +848,27 @@ class PomodoroApp {
       this.dom.timerDisplay.textContent = timeStr;
     }
 
-    // Update Circular Ring Progress
+    const progressRatio = Math.max(0, Math.min(1, (this.totalDuration - this.timeLeft) / this.totalDuration));
+
+    // Update Laser Groove Progress Track & Markers
+    if (this.dom.laserTrackProgress) {
+      this.dom.laserTrackProgress.style.width = `${(progressRatio * 100).toFixed(1)}%`;
+    }
+    if (this.dom.grooveMarkerEnd) {
+      const totalMins = Math.floor(this.totalDuration / 60);
+      this.dom.grooveMarkerEnd.textContent = `${totalMins.toString().padStart(2, '0')}:00`;
+      if (this.dom.grooveMarkerMid) {
+        const halfMins = Math.floor(totalMins / 2);
+        const halfSecs = (totalMins % 2) * 30;
+        this.dom.grooveMarkerMid.textContent = `${halfMins.toString().padStart(2, '0')}:${halfSecs.toString().padStart(2, '0')}`;
+      }
+    }
+
+    // Update Circular Ring Progress (Halo backdrop)
     if (this.dom.timerRing) {
-      const radius = 140;
+      const radius = 195;
       const circumference = 2 * Math.PI * radius;
-      const progress = Math.max(0, Math.min(1, (this.totalDuration - this.timeLeft) / this.totalDuration));
-      const offset = circumference - progress * circumference;
+      const offset = circumference - progressRatio * circumference;
       this.dom.timerRing.style.strokeDashoffset = offset;
     }
 

@@ -99,108 +99,147 @@
 
     <!-- Main Full-Width Responsive Stage -->
     <main class="main-stage" id="main-container">
-      <!-- Left / Center: Primary Pomodoro Card -->
-      <section class="hero-timer-card glass-panel">
+      <!-- Left / Center: Primary Pomodoro Card - Retro Cyber-Lofi Audio Station -->
+      <section class="hero-timer-card hifi-deck-card glass-panel" id="hero-clock-card">
         <!-- Target Intention Banner -->
         <div class="intention-box">
-          <input 
-            type="text" 
-            id="current-intention-input" 
-            class="intention-input" 
-            placeholder="🎯 输入当前专注目标，让思绪凝聚..." 
-            maxlength="60"
-          >
-        </div>
-
-        <!-- Mode Tabs -->
-        <div class="mode-tabs-wrapper">
-          <button class="mode-tab-btn active" data-mode="focus">
-            <span>🍅</span> 专注 (25m)
-          </button>
-          <button class="mode-tab-btn" data-mode="short-break">
-            <span>☕</span> 短休 (5m)
-          </button>
-          <button class="mode-tab-btn" data-mode="long-break">
-            <span>🌴</span> 长休 (15m)
-          </button>
-        </div>
-
-        <!-- Current State Badge -->
-        <div id="timer-state-badge" class="timer-badge focus-badge">
-          🍅 专注中 (Focus)
-        </div>
-
-        <!-- Circular Clock Display -->
-        <div class="clock-circle-container">
-          <svg class="clock-svg-ring" viewBox="0 0 320 320">
-            <!-- Background Track -->
-            <circle class="ring-track" cx="160" cy="160" r="140" />
-            <!-- Animated Progress Bar -->
-            <circle 
-              id="timer-ring-progress" 
-              class="ring-progress" 
-              cx="160" 
-              cy="160" 
-              r="140" 
-              stroke-dasharray="879.64" 
-              stroke-dashoffset="0"
-            />
-          </svg>
-          <div class="clock-inner">
-            <div id="timer-time" class="timer-time" title="点击可直接手动修改时间">25:00</div>
-            <input type="number" id="timer-time-input" class="timer-time-input" style="display:none;" min="1" max="180">
-            <span class="timer-time-hint" id="timer-time-hint">✎ 点击大字直接修改时间</span>
+          <div class="intention-inner">
+            <span class="intention-prefix">TARGET //</span>
+            <input 
+              type="text" 
+              id="current-intention-input" 
+              class="intention-input" 
+              placeholder="设定当前深度专注目标..." 
+              maxlength="60"
+            >
           </div>
         </div>
 
-        <!-- Quick Duration Presets & Manual Input -->
-        <div class="quick-presets-row">
-          <span class="text-xs text-white/40 mr-1">快捷方案:</span>
-          <button class="preset-badge" data-focus="25" data-break="5">25 / 5 经典</button>
-          <button class="preset-badge" data-focus="50" data-break="10">50 / 10 深度</button>
-          <button class="preset-badge" data-focus="45" data-break="15">45 / 15 心流</button>
-          <button class="preset-badge" data-focus="90" data-break="20">90 / 20 冲刺</button>
+        <!-- Mode Tape Selectors -->
+        <div class="mode-tabs-wrapper hifi-rack-tabs">
+          <button class="mode-tab-btn active" data-mode="focus">
+            <span class="tab-indicator-led"></span>
+            <span>🍅 专注 (25m)</span>
+          </button>
+          <button class="mode-tab-btn" data-mode="short-break">
+            <span class="tab-indicator-led"></span>
+            <span>☕ 短休 (5m)</span>
+          </button>
+          <button class="mode-tab-btn" data-mode="long-break">
+            <span class="tab-indicator-led"></span>
+            <span>🌴 长休 (15m)</span>
+          </button>
+        </div>
 
-          <!-- Manual Custom Time Pill -->
-          <form id="custom-time-form" class="custom-time-pill flex items-center bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-2.5 py-1 text-xs transition-colors ml-1">
-            <span class="text-white/50 mr-1.5">手动输入:</span>
+        <!-- Studio Broadcast On-Air Badge -->
+        <div class="studio-status-strip">
+          <div id="timer-state-badge" class="timer-badge focus-badge">
+            <span class="studio-rec-dot"></span>
+            <span class="badge-text-val">REC / 专注中 FOCUSING [27519423]</span>
+          </div>
+          <div class="hifi-meta-tag">
+            <span class="tag-accent">HI-FI</span> 33⅓ RPM · STEREO
+          </div>
+        </div>
+
+        <!-- GIANT HERO DIGIT CLOCK STAGE -->
+        <div class="giant-clock-stage" id="giant-clock-stage">
+          <!-- Ambient Halo Aura Glow -->
+          <div class="clock-ambient-halo" id="clock-ambient-halo"></div>
+
+          <!-- Subtle Circular Progress Track Behind (Seamlessly tied) -->
+          <svg class="clock-svg-ring" viewBox="0 0 440 440">
+            <circle class="ring-track" cx="220" cy="220" r="195" />
+            <circle 
+              id="timer-ring-progress" 
+              class="ring-progress" 
+              cx="220" 
+              cy="220" 
+              r="195" 
+              stroke-dasharray="1225.22" 
+              stroke-dashoffset="0"
+            />
+          </svg>
+
+          <!-- Break Zen Meditation Circle (Appears dynamically during Break) -->
+          <div class="zen-break-sanctuary" id="zen-break-sanctuary" style="display: none;">
+            <div class="zen-breathing-ring"></div>
+            <div class="zen-tea-icon">🍵</div>
+            <div class="zen-breathing-text" id="zen-breathing-text">吸气 · 深呼吸放松</div>
+            <div class="zen-subtext">已完全静音 · 闭目养神 · 站起来喝口水</div>
+          </div>
+
+          <!-- Giant Digits Container -->
+          <div class="giant-clock-inner" id="giant-clock-inner">
+            <div id="timer-time" class="timer-time giant-time-display" title="点击直接修改时间">25:00</div>
+            <input type="number" id="timer-time-input" class="timer-time-input giant-time-input" style="display:none;" min="1" max="180">
+            <span class="timer-time-hint" id="timer-time-hint">⚡ 点击大字直接输入分钟</span>
+          </div>
+        </div>
+
+        <!-- Laser Groove Timeline Progress -->
+        <div class="laser-groove-wrapper">
+          <div class="groove-markers">
+            <span class="font-mono text-[10px] text-white/40">00:00</span>
+            <span class="font-mono text-[10px] text-white/40" id="groove-marker-mid">12:30</span>
+            <span class="font-mono text-[10px] text-white/40" id="groove-marker-end">25:00</span>
+          </div>
+          <div class="laser-track-bg">
+            <div class="laser-track-fill" id="laser-track-progress" style="width: 0%;">
+              <div class="laser-head-needle"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Synthesizer Preset Deck & Frequency Input -->
+        <div class="quick-presets-row hifi-preset-deck">
+          <span class="hifi-preset-label">PRESET:</span>
+          <button class="preset-badge hifi-preset-btn" data-focus="25" data-break="5">25 / 5 经典</button>
+          <button class="preset-badge hifi-preset-btn" data-focus="50" data-break="10">50 / 10 深度</button>
+          <button class="preset-badge hifi-preset-btn" data-focus="45" data-break="15">45 / 15 心流</button>
+          <button class="preset-badge hifi-preset-btn" data-focus="90" data-break="20">90 / 20 冲刺</button>
+
+          <!-- Analog Tuner Custom Time Input -->
+          <form id="custom-time-form" class="custom-time-pill hifi-tuner-pill flex items-center">
+            <span class="text-white/60 mr-1.5 font-mono text-[11px]">TUNER:</span>
             <input 
               type="number" 
               id="input-quick-custom-min" 
               min="1" 
               max="180" 
               value="25" 
-              class="w-12 bg-black/40 text-center text-white font-mono font-bold rounded border border-white/10 px-1 py-0.5 outline-none focus:border-red-400"
-              title="输入任意学习分钟数"
+              class="tuner-number-input"
+              title="输入任意专注分钟数"
             >
-            <span class="text-white/50 mx-1">分</span>
-            <button type="submit" class="text-red-400 hover:text-red-300 font-semibold px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors">
-              设定
+            <span class="text-white/50 mx-1 font-mono text-xs">M</span>
+            <button type="submit" class="tuner-set-btn">
+              ENGAGE
             </button>
           </form>
         </div>
 
-        <!-- Primary Controls -->
-        <div class="timer-controls-row">
+        <!-- Primary Tactile Cockpit Controls -->
+        <div class="timer-controls-row hifi-controls-cockpit">
           <!-- Reset -->
-          <button id="btn-reset" class="btn-circle-control" title="重置当前时段 (按 R)">
+          <button id="btn-reset" class="btn-hifi-round" title="重置当前时段 (按 R)">
             <svg class="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
 
-          <!-- Start / Pause -->
-          <button id="btn-start-pause" class="btn-primary-action" title="空格键快捷开始/暂停">
-            <span id="start-pause-icon">
+          <!-- Start / Pause (Hero Tactile Button) -->
+          <button id="btn-start-pause" class="btn-hifi-primary" title="空格键快捷开始/暂停">
+            <span class="btn-glow-pulse"></span>
+            <span id="start-pause-icon" class="mr-2">
               <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
             </span>
-            <span id="start-pause-text">开始专注</span>
+            <span id="start-pause-text" class="btn-text font-bold tracking-wider">开始专注</span>
           </button>
 
           <!-- Skip -->
-          <button id="btn-skip" class="btn-circle-control" title="跳过此阶段 (按 S)">
+          <button id="btn-skip" class="btn-hifi-round" title="跳过此阶段 (按 S)">
             <svg class="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
             </svg>
@@ -208,29 +247,72 @@
         </div>
       </section>
 
-      <!-- Right: Companion Panel (Bilibili Player, White Noise Mixer, Quick Tasks) -->
+      <!-- Right: Retro-Futuristic Hi-Fi Audio & Turntable Station -->
       <aside class="companion-panel" id="companion-panel">
-        <!-- Bilibili Lofi Girl Stream Companion Card -->
-        <div class="bili-companion-card glass-panel">
-          <div class="card-header">
+        <div class="bili-companion-card hifi-deck-card glass-panel">
+          <!-- Station Header with Deck Toggle -->
+          <div class="card-header border-b border-white/10 pb-3">
             <div class="card-title-group">
-              <span class="text-lg">📺</span>
-              <h3 class="card-title">B站 Lofi 伴学白噪音</h3>
+              <span class="studio-on-air-lamp" id="studio-lamp-dot"></span>
+              <h3 class="card-title text-sm tracking-wider uppercase font-mono">LOFI HI-FI BROADCAST</h3>
             </div>
-            <!-- Auto sync toggle -->
-            <label class="toggle-switch" title="专注时自动伴学，休息时自动关闭">
-              <input type="checkbox" id="bili-toggle-enable" checked>
-              <span class="toggle-slider"></span>
-            </label>
+            
+            <!-- View Mode Switch: Turntable vs Video -->
+            <div class="deck-view-switch">
+              <button type="button" id="btn-view-turntable" class="view-switch-btn active" title="黑胶唱片模式">
+                💿 黑胶机
+              </button>
+              <button type="button" id="btn-view-video" class="view-switch-btn" title="直播画面模式">
+                📺 直播画面
+              </button>
+            </div>
           </div>
 
           <!-- Realtime Status Indicator -->
-          <div id="bili-status-indicator" class="text-xs">
+          <div id="bili-status-indicator" class="text-xs px-1">
             <!-- Populated dynamically via bilibili.js -->
           </div>
 
-          <!-- Video Viewport / Iframe Container -->
-          <div class="bili-player-viewport" id="bili-player-wrapper">
+          <!-- THE REALISTIC VINYL TURNTABLE DECK -->
+          <div class="turntable-chassis" id="turntable-deck-view">
+            <div class="turntable-platter">
+              <!-- Radial vinyl record with grooves -->
+              <div class="vinyl-disc" id="vinyl-disc">
+                <!-- Grooves rings reflection -->
+                <div class="vinyl-grooves-overlay"></div>
+                <div class="vinyl-sheen-highlight"></div>
+                <!-- Vinyl center label -->
+                <div class="vinyl-center-label">
+                  <div class="label-ring">
+                    <span class="label-brand">LOFI GIRL</span>
+                    <span class="label-room">ROOM #27519423</span>
+                    <span class="label-speed">33⅓ RPM</span>
+                    <div class="label-spindle-hole"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chrome Mechanical Tonearm with Cartridge Needle -->
+              <div class="tonearm-assembly" id="tonearm-assembly">
+                <div class="tonearm-base"></div>
+                <div class="tonearm-counterweight"></div>
+                <div class="tonearm-pivot"></div>
+                <div class="tonearm-bar"></div>
+                <div class="tonearm-headshell">
+                  <div class="tonearm-cartridge-light"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Turntable Deck Badge -->
+            <div class="turntable-footer-strip">
+              <span class="turntable-brand-logo">DIRECT DRIVE STEREO TURNTABLE</span>
+              <span class="turntable-status-rpm" id="turntable-rpm-text">STANDBY 33⅓ RPM</span>
+            </div>
+          </div>
+
+          <!-- Video Viewport / Iframe Container (Can toggle view) -->
+          <div class="bili-player-viewport" id="bili-player-wrapper" style="display: none;">
             <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
               <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-3">
                 <svg class="w-7 h-7 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -243,9 +325,43 @@
             </div>
           </div>
 
+          <!-- DYNAMIC 24-BAND HI-FI AUDIO SPECTRUM EQUALIZER -->
+          <div class="hifi-spectrum-container">
+            <div class="spectrum-label-row">
+              <span class="spectrum-tag">FREQUENCY EQUALIZER</span>
+              <span class="spectrum-tag">STEREO L-R</span>
+            </div>
+            <div class="spectrum-bars-row" id="spectrum-bars">
+              <span class="spectrum-bar" style="--h: 65%; --d: 0.1s;"></span>
+              <span class="spectrum-bar" style="--h: 40%; --d: 0.25s;"></span>
+              <span class="spectrum-bar" style="--h: 85%; --d: 0.15s;"></span>
+              <span class="spectrum-bar" style="--h: 55%; --d: 0.3s;"></span>
+              <span class="spectrum-bar" style="--h: 90%; --d: 0.05s;"></span>
+              <span class="spectrum-bar" style="--h: 70%; --d: 0.2s;"></span>
+              <span class="spectrum-bar" style="--h: 45%; --d: 0.35s;"></span>
+              <span class="spectrum-bar" style="--h: 80%; --d: 0.12s;"></span>
+              <span class="spectrum-bar" style="--h: 95%; --d: 0.18s;"></span>
+              <span class="spectrum-bar" style="--h: 60%; --d: 0.28s;"></span>
+              <span class="spectrum-bar" style="--h: 75%; --d: 0.22s;"></span>
+              <span class="spectrum-bar" style="--h: 50%; --d: 0.4s;"></span>
+              <span class="spectrum-bar" style="--h: 85%; --d: 0.14s;"></span>
+              <span class="spectrum-bar" style="--h: 65%; --d: 0.32s;"></span>
+              <span class="spectrum-bar" style="--h: 92%; --d: 0.08s;"></span>
+              <span class="spectrum-bar" style="--h: 40%; --d: 0.26s;"></span>
+              <span class="spectrum-bar" style="--h: 78%; --d: 0.19s;"></span>
+              <span class="spectrum-bar" style="--h: 88%; --d: 0.11s;"></span>
+              <span class="spectrum-bar" style="--h: 58%; --d: 0.37s;"></span>
+              <span class="spectrum-bar" style="--h: 72%; --d: 0.23s;"></span>
+              <span class="spectrum-bar" style="--h: 84%; --d: 0.16s;"></span>
+              <span class="spectrum-bar" style="--h: 48%; --d: 0.33s;"></span>
+              <span class="spectrum-bar" style="--h: 68%; --d: 0.21s;"></span>
+              <span class="spectrum-bar" style="--h: 35%; --d: 0.29s;"></span>
+            </div>
+          </div>
+
           <!-- Direct Open Button & Channels -->
-          <div class="flex flex-col gap-2.5">
-            <button id="btn-open-lofigirl-direct" class="btn-direct-open" title="直接打开 B站 Lofi Girl 直播间">
+          <div class="flex flex-col gap-2.5 pt-1">
+            <button id="btn-open-lofigirl-direct" class="btn-direct-open hifi-open-btn" title="直接打开 B站 Lofi Girl 直播间">
               <span id="direct-open-btn-text">🚀 直接打开 B站 Lofi Girl 直播间 (27519423)</span>
               <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -255,17 +371,17 @@
             <div class="flex items-center justify-between text-xs text-white/50 px-0.5">
               <span>频道切换:</span>
               <div class="bili-channel-pills" id="bili-channel-pills-container">
-                <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">📺 B站 Lofi (27519423)</button>
-                <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">🔴 YouTube 原版</button>
+                <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">📺 B站 (27519423)</button>
+                <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">🔴 YouTube 官方</button>
                 <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">📻 B站精选</button>
               </div>
             </div>
           </div>
 
           <!-- Quick Bilibili Controls -->
-          <div class="flex items-center justify-between gap-2 pt-1 text-xs">
+          <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
             <button id="btn-bili-manual-toggle" class="nav-btn text-xs py-1.5 px-3">
-              <span>⏯️ 手动开关伴学</span>
+              <span>⏯️ 开关伴学</span>
             </button>
             <div class="flex items-center gap-2 text-white/50">
               <span>模式:</span>
