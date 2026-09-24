@@ -35,6 +35,11 @@ class PomodoroApp {
 
     // Tasks list
     this.tasks = [];
+    this.isTasksMinimized = false;
+
+    // Deck view mode ('turntable' | 'video')
+    this.deckView = 'turntable';
+    this.isVideoFocusActive = false;
 
     // DOM Elements Cache
     this.dom = {};
@@ -45,9 +50,11 @@ class PomodoroApp {
     this.loadSavedData();
     this.bindEvents();
     this.initControllers();
+    this.switchDeckView(this.deckView);
     this.switchMode(this.mode, false);
     this.updateStatsUI();
     this.renderTasks();
+    this.updateTasksWidgetVisibility();
 
     // Ask for notification permission if needed
     if ('Notification' in window && Notification.permission === 'default') {
@@ -142,7 +149,25 @@ class PomodoroApp {
       currentTaskInput: document.getElementById('current-intention-input'),
       taskForm: document.getElementById('task-add-form'),
       taskInput: document.getElementById('task-new-input'),
-      taskList: document.getElementById('task-items-list')
+      taskList: document.getElementById('task-items-list'),
+
+      // Focus Tasks Widget & Controls
+      focusTasksWidget: document.getElementById('focus-tasks-widget'),
+      focusTasksMinPill: document.getElementById('focus-tasks-min-pill'),
+      btnMinimizeTasks: document.getElementById('btn-minimize-tasks'),
+      btnToggleTasks: document.getElementById('btn-toggle-tasks'),
+      navTasksBadge: document.getElementById('nav-tasks-badge'),
+      focusTaskCountBadge: document.getElementById('focus-task-count-badge'),
+      focusTasksPillCount: document.getElementById('focus-tasks-pill-count'),
+      focusTaskForm: document.getElementById('focus-task-add-form'),
+      focusTaskInput: document.getElementById('focus-task-new-input'),
+      focusTaskList: document.getElementById('focus-task-items-list'),
+      btnExpandFullPanel: document.getElementById('btn-expand-full-panel'),
+
+      // Deck utility & tasks elements
+      deckUtilityControls: document.getElementById('deck-utility-controls'),
+      deckTasksSection: document.getElementById('deck-tasks-section'),
+      btnToggleDeckControls: document.getElementById('btn-toggle-deck-controls')
     };
   }
 
@@ -179,6 +204,10 @@ class PomodoroApp {
     if (savedIntention && this.dom.currentTaskInput) {
       this.dom.currentTaskInput.value = savedIntention;
     }
+
+    // Deck View Mode
+    const savedDeckView = localStorage.getItem('pomodoro_deck_view');
+    this.deckView = savedDeckView === 'video' ? 'video' : 'turntable';
   }
 
   saveData() {
@@ -381,19 +410,15 @@ class PomodoroApp {
     }
 
     // Turntable vs Video Deck View Switcher
-    if (this.dom.btnViewTurntable && this.dom.btnViewVideo) {
-      this.dom.btnViewTurntable.addEventListener('click', () => {
-        this.dom.btnViewTurntable.classList.add('active');
-        this.dom.btnViewVideo.classList.remove('active');
-        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'flex';
-        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'none';
-      });
-
-      this.dom.btnViewVideo.addEventListener('click', () => {
-        this.dom.btnViewVideo.classList.add('active');
-        this.dom.btnViewTurntable.classList.remove('active');
-        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'none';
-        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'block';
+    if (this.dom.btnViewTurntable) {
+      this.dom.btnViewTurntable.addEventListener('click', () => this.switchDeckView('turntable'));
+    }
+    if (this.dom.btnViewVideo) {
+      this.dom.btnViewVideo.addEventListener('click', () => this.switchDeckView('video'));
+    }
+    if (this.dom.btnToggleDeckControls) {
+      this.dom.btnToggleDeckControls.addEventListener('click', () => {
+        this.dom.sidePanel?.classList.toggle('controls-revealed');
       });
     }
 
@@ -503,22 +528,7 @@ class PomodoroApp {
       });
     }
 
-    // Turntable vs Video Deck View Switcher
-    if (this.dom.btnViewTurntable && this.dom.btnViewVideo) {
-      this.dom.btnViewTurntable.addEventListener('click', () => {
-        this.dom.btnViewTurntable.classList.add('active');
-        this.dom.btnViewVideo.classList.remove('active');
-        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'flex';
-        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'none';
-      });
 
-      this.dom.btnViewVideo.addEventListener('click', () => {
-        this.dom.btnViewVideo.classList.add('active');
-        this.dom.btnViewTurntable.classList.remove('active');
-        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'none';
-        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'block';
-      });
-    }
 
     // Zen Mode & Fullscreen
     if (this.dom.btnZen) {
@@ -532,10 +542,37 @@ class PomodoroApp {
     // Toggle Companion Panel
     if (this.dom.btnTogglePanel) {
       this.dom.btnTogglePanel.addEventListener('click', () => {
-        const isHidden = this.dom.sidePanel.classList.toggle('hidden-panel');
-        if (this.dom.containerMain) {
-          this.dom.containerMain.classList.toggle('panel-collapsed', isHidden);
-        }
+        this.toggleCompanionPanel();
+      });
+    }
+
+    // Toggle Tasks Widget (Navbar button)
+    if (this.dom.btnToggleTasks) {
+      this.dom.btnToggleTasks.addEventListener('click', () => {
+        this.toggleTasksWidget();
+      });
+    }
+
+    // Minimize Tasks Widget
+    if (this.dom.btnMinimizeTasks) {
+      this.dom.btnMinimizeTasks.addEventListener('click', () => {
+        this.isTasksMinimized = true;
+        this.updateTasksWidgetVisibility();
+      });
+    }
+
+    // Expand to Full Companion Panel
+    if (this.dom.btnExpandFullPanel) {
+      this.dom.btnExpandFullPanel.addEventListener('click', () => {
+        this.setPanelCollapsed(false);
+      });
+    }
+
+    // Restore Tasks Widget from Pill
+    if (this.dom.focusTasksMinPill) {
+      this.dom.focusTasksMinPill.addEventListener('click', () => {
+        this.isTasksMinimized = false;
+        this.updateTasksWidgetVisibility();
       });
     }
 
@@ -567,20 +604,25 @@ class PomodoroApp {
       });
     }
 
-    // Todo List Form
+    // Todo List Forms (Companion panel & Focus tasks widget)
     if (this.dom.taskForm) {
       this.dom.taskForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const text = this.dom.taskInput.value.trim();
+        const text = this.dom.taskInput?.value;
         if (text) {
-          this.tasks.push({
-            id: Date.now(),
-            text,
-            done: false
-          });
+          this.addNewTask(text);
           this.dom.taskInput.value = '';
-          this.saveData();
-          this.renderTasks();
+        }
+      });
+    }
+
+    if (this.dom.focusTaskForm) {
+      this.dom.focusTaskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = this.dom.focusTaskInput?.value;
+        if (text) {
+          this.addNewTask(text);
+          this.dom.focusTaskInput.value = '';
         }
       });
     }
@@ -603,6 +645,8 @@ class PomodoroApp {
         this.toggleFullscreen();
       } else if (e.code === 'KeyZ' && !e.ctrlKey) {
         this.toggleZenMode();
+      } else if (e.code === 'KeyT' && !e.ctrlKey) {
+        this.toggleTasksWidget();
       } else if (e.code === 'KeyM' && !e.ctrlKey) {
         const isMuted = !window.audioEngine?.isMuted;
         window.audioEngine?.setMute(isMuted);
@@ -672,19 +716,22 @@ class PomodoroApp {
       } else {
         tab.classList.remove('active');
       }
+      const led = '<span class="tab-indicator-led"></span>';
       if (tab.dataset.mode === 'focus') {
-        tab.innerHTML = `<span>🍅</span> Focus (${this.config.focusTime}m)`;
+        tab.innerHTML = `${led}<span>🍅 Focus (${this.config.focusTime}m)</span>`;
       } else if (tab.dataset.mode === 'short-break') {
-        tab.innerHTML = `<span>☕</span> Break (${this.config.shortBreakTime}m)`;
+        tab.innerHTML = `${led}<span>☕ Break (${this.config.shortBreakTime}m)</span>`;
       } else if (tab.dataset.mode === 'long-break') {
-        tab.innerHTML = `<span>🌴</span> Long Break (${this.config.longBreakTime}m)`;
+        tab.innerHTML = `${led}<span>🌴 Long Break (${this.config.longBreakTime}m)</span>`;
       }
     });
 
     // Update state badge & Zen break sanctuary
     if (this.mode === 'focus') {
-      this.dom.timerStateBadge.innerHTML = '<span class="studio-rec-dot"></span><span class="badge-text-val">FOCUSING [27519423]</span>';
-      this.dom.timerStateBadge.className = 'timer-badge focus-badge';
+      if (this.dom.timerStateBadge) {
+        this.dom.timerStateBadge.innerHTML = '<span class="studio-rec-dot"></span><span class="badge-text-val">FOCUSING</span>';
+        this.dom.timerStateBadge.className = 'timer-badge focus-badge';
+      }
       if (this.dom.zenBreakSanctuary) this.dom.zenBreakSanctuary.style.display = 'none';
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
       if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.status === 'running' ? 'FLOW RUNNING' : 'STANDBY';
@@ -693,12 +740,16 @@ class PomodoroApp {
       }
       document.body.classList.remove('mode-break-active');
     } else if (this.mode === 'short-break') {
-      this.dom.timerStateBadge.innerHTML = '☕ Short Break';
-      this.dom.timerStateBadge.className = 'timer-badge break-badge';
+      if (this.dom.timerStateBadge) {
+        this.dom.timerStateBadge.innerHTML = '☕ Short Break';
+        this.dom.timerStateBadge.className = 'timer-badge break-badge';
+      }
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
         if (txt) txt.textContent = 'Short break · 4-7-8 deep breathing';
+        const sub = document.getElementById('zen-break-subtext');
+        if (sub) sub.textContent = 'Companion stream muted · close your eyes · grab some water';
       }
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
       if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'SHORT BREAK';
@@ -707,12 +758,16 @@ class PomodoroApp {
       }
       document.body.classList.add('mode-break-active');
     } else {
-      this.dom.timerStateBadge.innerHTML = '🌴 Long Break';
-      this.dom.timerStateBadge.className = 'timer-badge long-break-badge';
+      if (this.dom.timerStateBadge) {
+        this.dom.timerStateBadge.innerHTML = '🌴 Long Break';
+        this.dom.timerStateBadge.className = 'timer-badge long-break-badge';
+      }
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
         if (txt) txt.textContent = 'Long break · fully unwind your mind';
+        const sub = document.getElementById('zen-break-subtext');
+        if (sub) sub.textContent = 'Stand up, stretch your body and refresh your energy';
       }
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
       if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'LONG BREAK';
@@ -723,6 +778,9 @@ class PomodoroApp {
     }
 
     if (this.mode !== 'focus') {
+      // Auto-expand companion panel during break and reveal controls
+      this.setPanelCollapsed(false);
+      this.setVideoFocusMode(false);
       window.audioEngine?.setBreakMute(true);
       window.bilibiliController?.stop(true);
       this.dom.vinylDisc?.classList.remove('is-spinning');
@@ -750,6 +808,21 @@ class PomodoroApp {
   startTimer() {
     this.status = 'running';
     this.endTime = Date.now() + this.timeLeft * 1000;
+
+    // Live Video view: keep companion panel open, hide utility buttons, show only tasks
+    // Turntable view: auto-close companion panel to eliminate distraction
+    if (this.mode === 'focus') {
+      if (this.deckView === 'video') {
+        this.setPanelCollapsed(false);
+        this.setVideoFocusMode(true);
+      } else {
+        this.setPanelCollapsed(true);
+        this.setVideoFocusMode(false);
+      }
+    } else {
+      this.setPanelCollapsed(false);
+      this.setVideoFocusMode(false);
+    }
 
     this.updateControlsUI();
 
@@ -799,6 +872,10 @@ class PomodoroApp {
       this.intervalId = null;
     }
 
+    // Auto-expand companion panel on pause and reveal controls
+    this.setPanelCollapsed(false);
+    this.setVideoFocusMode(false);
+
     this.updateControlsUI();
 
     this.dom.giantClockStage?.classList.remove('is-running');
@@ -834,6 +911,8 @@ class PomodoroApp {
     window.audioEngine?.playNotification('click');
     this.stopTimer();
     this.timeLeft = this.totalDuration;
+    this.setPanelCollapsed(false);
+    this.setVideoFocusMode(false);
     this.updateDisplay();
   }
 
@@ -1095,28 +1174,166 @@ class PomodoroApp {
     }
   }
 
-  renderTasks() {
-    if (!this.dom.taskList) return;
+  toggleCompanionPanel() {
+    if (!this.dom.sidePanel) return;
+    const isHidden = this.dom.sidePanel.classList.toggle('hidden-panel');
+    if (this.dom.containerMain) {
+      this.dom.containerMain.classList.toggle('panel-collapsed', isHidden);
+    }
+    if (this.dom.btnTogglePanel) {
+      this.dom.btnTogglePanel.classList.toggle('opacity-50', isHidden);
+    }
+    this.updateTasksWidgetVisibility();
+  }
+
+  setPanelCollapsed(collapsed) {
+    if (!this.dom.sidePanel) return;
+    this.dom.sidePanel.classList.toggle('hidden-panel', collapsed);
+    if (this.dom.containerMain) {
+      this.dom.containerMain.classList.toggle('panel-collapsed', collapsed);
+    }
+    if (this.dom.btnTogglePanel) {
+      this.dom.btnTogglePanel.classList.toggle('opacity-50', collapsed);
+    }
+    if (collapsed) {
+      this.setVideoFocusMode(false);
+    }
+    this.updateTasksWidgetVisibility();
+  }
+
+  switchDeckView(view) {
+    this.deckView = view;
+    localStorage.setItem('pomodoro_deck_view', view);
+
+    if (view === 'video') {
+      this.dom.btnViewVideo?.classList.add('active');
+      this.dom.btnViewTurntable?.classList.remove('active');
+      if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'none';
+      if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'block';
+
+      if (window.bilibiliController) {
+        window.bilibiliController.mode = 'embedded';
+        const select = document.getElementById('bili-mode-select');
+        if (select) select.value = 'embedded';
+        window.bilibiliController.saveSettings();
+
+        // If focus timer is currently running, activate video focus mode
+        if (this.status === 'running' && this.mode === 'focus') {
+          window.bilibiliController.play();
+          this.setPanelCollapsed(false);
+          this.setVideoFocusMode(true);
+        }
+      }
+    } else {
+      this.dom.btnViewTurntable?.classList.add('active');
+      this.dom.btnViewVideo?.classList.remove('active');
+      if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'flex';
+      if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'none';
+
+      this.setVideoFocusMode(false);
+      // If focus timer is running, auto-collapse panel for turntable
+      if (this.status === 'running' && this.mode === 'focus') {
+        this.setPanelCollapsed(true);
+      }
+    }
+  }
+
+  setVideoFocusMode(active) {
+    this.isVideoFocusActive = active;
+    if (this.dom.sidePanel) {
+      this.dom.sidePanel.classList.toggle('video-focus-active', active);
+      if (!active) {
+        this.dom.sidePanel.classList.remove('controls-revealed');
+      }
+    }
+  }
+
+  toggleTasksWidget() {
+    const isPanelHidden = this.dom.sidePanel ? this.dom.sidePanel.classList.contains('hidden-panel') : true;
+
+    if (!isPanelHidden) {
+      // If companion panel is open, collapse it and show the focus tasks widget
+      this.setPanelCollapsed(true);
+      this.isTasksMinimized = false;
+      this.updateTasksWidgetVisibility();
+    } else {
+      // Toggle minimized state
+      this.isTasksMinimized = !this.isTasksMinimized;
+      this.updateTasksWidgetVisibility();
+    }
+  }
+
+  updateTasksWidgetVisibility() {
+    const isPanelHidden = this.dom.sidePanel ? this.dom.sidePanel.classList.contains('hidden-panel') : true;
+
+    if (isPanelHidden) {
+      // Panel is closed: show floating tasks widget (or pill if minimized)
+      const showWidget = !this.isTasksMinimized;
+      if (this.dom.focusTasksWidget) {
+        this.dom.focusTasksWidget.classList.toggle('hidden-widget', !showWidget);
+      }
+      if (this.dom.focusTasksMinPill) {
+        this.dom.focusTasksMinPill.classList.toggle('hidden-pill', showWidget);
+      }
+      if (this.dom.containerMain) {
+        this.dom.containerMain.classList.toggle('tasks-open', showWidget);
+      }
+    } else {
+      // Panel is open: tasks are visible inside companion panel, so hide floating widget & pill
+      if (this.dom.focusTasksWidget) {
+        this.dom.focusTasksWidget.classList.add('hidden-widget');
+      }
+      if (this.dom.focusTasksMinPill) {
+        this.dom.focusTasksMinPill.classList.add('hidden-pill');
+      }
+      if (this.dom.containerMain) {
+        this.dom.containerMain.classList.remove('tasks-open');
+      }
+    }
+  }
+
+  addNewTask(text) {
+    const trimmed = text ? text.trim() : '';
+    if (!trimmed) return;
+    this.tasks.push({
+      id: Date.now(),
+      text: trimmed,
+      done: false
+    });
+    this.saveData();
+    this.renderTasks();
+  }
+
+  updateTaskCounters() {
+    const uncompletedCount = this.tasks.filter((t) => !t.done).length;
+    const totalCount = this.tasks.length;
+    const badgeText = totalCount === 0 ? '0' : `${uncompletedCount}/${totalCount}`;
+
+    if (this.dom.navTasksBadge) this.dom.navTasksBadge.textContent = uncompletedCount;
+    if (this.dom.focusTaskCountBadge) this.dom.focusTaskCountBadge.textContent = badgeText;
+    if (this.dom.focusTasksPillCount) this.dom.focusTasksPillCount.textContent = uncompletedCount;
+  }
+
+  renderTaskItemsHTML() {
     if (this.tasks.length === 0) {
-      this.dom.taskList.innerHTML = `
+      return `
         <div class="text-center py-6 text-white/30 text-xs">
           No tasks yet — jot down a small goal ✍️
         </div>
       `;
-      return;
     }
 
-    this.dom.taskList.innerHTML = this.tasks
+    return this.tasks
       .map(
         (task) => `
         <div class="task-item flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 ${
           task.done ? 'opacity-40 line-through' : ''
         }" data-id="${task.id}">
-          <label class="flex items-center gap-3 cursor-pointer flex-1 select-none">
+          <label class="flex items-center gap-3 cursor-pointer flex-1 select-none min-w-0">
             <input type="checkbox" class="task-checkbox rounded border-white/20 bg-black/30 text-red-500 focus:ring-0" ${
               task.done ? 'checked' : ''
             }>
-            <span class="text-sm font-medium text-white/90">${escapeHtml(task.text)}</span>
+            <span class="text-sm font-medium text-white/90 truncate">${escapeHtml(task.text)}</span>
           </label>
           <button class="task-delete-btn text-white/30 hover:text-red-400 p-1 rounded transition-colors ml-2" title="Delete task">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1127,28 +1344,49 @@ class PomodoroApp {
       `
       )
       .join('');
+  }
 
-    // Bind task checkboxes & delete buttons
-    this.dom.taskList.querySelectorAll('.task-item').forEach((item) => {
+  bindTaskListEvents(container) {
+    if (!container) return;
+    container.querySelectorAll('.task-item').forEach((item) => {
       const id = parseInt(item.dataset.id, 10);
       const checkbox = item.querySelector('.task-checkbox');
       const deleteBtn = item.querySelector('.task-delete-btn');
 
-      checkbox.addEventListener('change', (e) => {
-        const task = this.tasks.find((t) => t.id === id);
-        if (task) {
-          task.done = e.target.checked;
+      if (checkbox) {
+        checkbox.addEventListener('change', (e) => {
+          const task = this.tasks.find((t) => t.id === id);
+          if (task) {
+            task.done = e.target.checked;
+            this.saveData();
+            this.renderTasks();
+          }
+        });
+      }
+
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+          this.tasks = this.tasks.filter((t) => t.id !== id);
           this.saveData();
           this.renderTasks();
-        }
-      });
-
-      deleteBtn.addEventListener('click', () => {
-        this.tasks = this.tasks.filter((t) => t.id !== id);
-        this.saveData();
-        this.renderTasks();
-      });
+        });
+      }
     });
+  }
+
+  renderTasks() {
+    this.updateTaskCounters();
+    const html = this.renderTaskItemsHTML();
+
+    if (this.dom.taskList) {
+      this.dom.taskList.innerHTML = html;
+      this.bindTaskListEvents(this.dom.taskList);
+    }
+
+    if (this.dom.focusTaskList) {
+      this.dom.focusTaskList.innerHTML = html;
+      this.bindTaskListEvents(this.dom.focusTaskList);
+    }
   }
 }
 

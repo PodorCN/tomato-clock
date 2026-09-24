@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🍅 Lofi Pomodoro | Immersive Study Room</title>
+  <title>Tomato Clock | podor.org</title>
   <meta name="description" content="A bold full-bleed pomodoro clock with the Bilibili Lofi Girl live stream — auto-plays while you focus, auto-mutes on breaks.">
 
   <!-- Bold Display Fonts (Archivo Black / Space Grotesk) -->
@@ -30,15 +30,9 @@
     <!-- Top Navigation Bar - Full Width -->
     <header class="top-nav">
       <div class="brand-badge">
-        <img src="assets/favicon.svg" alt="Tomato Logo" class="brand-icon">
-        <div>
-          <h1 class="brand-title">Lofi Pomodoro</h1>
-          <p class="text-xs text-white/40 hidden sm:block">Immersive study pomodoro</p>
-        </div>
-        <a href="https://live.bilibili.com/27519423" target="_blank" rel="noopener noreferrer" class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/25 text-red-300 text-xs hover:bg-red-500/20 transition-all ml-2" title="Open the Bilibili Lofi Girl live room (27519423)">
-          <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-          <span>Bilibili 27519423 Live</span>
-          <svg class="w-3 h-3 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <a href="https://podor.org" target="_blank" rel="noopener noreferrer" class="podor-home-brand" title="Visit podor.org">
+          <span>podor.org</span>
+          <svg class="w-3.5 h-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002 2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
         </a>
@@ -81,6 +75,15 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
           </svg>
           <span class="hidden md:inline">Panel</span>
+        </button>
+
+        <!-- Toggle Tasks Button -->
+        <button id="btn-toggle-tasks" class="nav-btn" title="Toggle tasks (T)">
+          <svg class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          <span class="hidden md:inline">Tasks</span>
+          <span id="nav-tasks-badge" class="px-1.5 py-0.5 rounded-full bg-white/10 text-[10px] font-mono font-bold text-amber-300 leading-none">0</span>
         </button>
 
         <!-- Zen Mode Button -->
@@ -131,17 +134,6 @@
           </div>
         </div>
 
-        <!-- Studio Status Bar -->
-        <div class="studio-status-strip">
-          <div id="timer-state-badge" class="timer-badge focus-badge">
-            <span class="studio-rec-dot"></span>
-            <span class="badge-text-val">FOCUSING [27519423]</span>
-          </div>
-          <div class="hifi-meta-tag">
-            <span class="tag-accent">TC-2.0</span> FULL-BLEED FOCUS POSTER · TYPE-FIRST REDESIGN
-          </div>
-        </div>
-
         <!-- THE FLAT POSTER TIME CONSOLE (COLOSSAL FLOATING DIGITS) -->
         <div class="vintage-master-console" id="giant-clock-stage">
           <!-- Poster edition: flat full-bleed console, no wood cheeks -->
@@ -152,7 +144,7 @@
 
             <!-- Console Header Branding Row with Progress Mode Switcher -->
             <div class="console-brand-row">
-              <span class="console-brand-title">TOMATO CLOCK · POSTER EDITION — MODEL TC-2.0</span>
+              <span class="console-brand-title">TOMATO CLOCK · POSTER EDITION</span>
 
               <!-- Progress Display Mode Switcher (Countdown / Percent % / Elapsed) -->
               <div class="progress-display-selector">
@@ -226,9 +218,9 @@
             <div class="zen-break-sanctuary" id="zen-break-sanctuary" style="display: none;">
               <div class="zen-studio-lamp">
                 <span class="zen-lamp-bulb"></span>
-                <span id="zen-breathing-text">🍵 Short break · 4-7-8 deep breathing</span>
+                <span id="zen-breathing-text">Short break · 4-7-8 deep breathing</span>
               </div>
-              <div class="zen-subtext">Companion stream muted · close your eyes · grab some water</div>
+              <p class="zen-subtext" id="zen-break-subtext">Companion stream muted · close your eyes · grab some water</p>
             </div>
 
             <!-- SEGMENTED TRACK PROGRESS (VINYL MICROGROOVE MATRIX) -->
@@ -317,6 +309,42 @@
         </div>
       </section>
 
+      <!-- Focus Tasks Dock (Visible when companion panel is collapsed) -->
+      <aside id="focus-tasks-widget" class="focus-tasks-widget hidden-widget">
+        <div class="focus-tasks-header">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <h3 class="focus-tasks-title">Focus Tasks</h3>
+            <span id="focus-task-count-badge" class="focus-tasks-badge">0</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-minimize-tasks" class="focus-tasks-btn-icon" title="Minimize tasks (T)">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <button type="button" id="btn-expand-full-panel" class="focus-tasks-btn-icon" title="Open full companion panel">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="focus-tasks-body">
+          <div class="focus-tasks-tip text-[11px] text-white/40 pb-1">
+            Focus on one goal at a time · Press <kbd class="px-1 py-0.5 rounded bg-white/10 text-white/80 font-mono text-[10px]">T</kbd> to toggle
+          </div>
+          <form id="focus-task-add-form" class="task-form mb-2">
+            <input type="text" id="focus-task-new-input" class="task-input-text text-xs py-2 px-3" placeholder="Jot down a focus goal..." maxlength="40">
+            <button type="submit" class="nav-btn py-1.5 px-3 text-xs">Add</button>
+          </form>
+          <div class="task-items-scroll flex-1 overflow-y-auto" id="focus-task-items-list">
+            <!-- Tasks rendered here -->
+          </div>
+        </div>
+      </aside>
+
       <!-- Right: Live Stream Companion Deck -->
       <aside class="companion-stage-pane" id="companion-panel">
         <!-- Deck Header with View Mode Switch -->
@@ -396,60 +424,73 @@
         </div>
 
         <!-- Studio Utility Shelf: Channel Pills, Direct Open, Audio Mixer & Tasks -->
-        <div class="studio-utility-shelf">
-          <!-- Row 1: Direct Open & Channels -->
-          <div class="flex flex-col gap-2">
-            <button id="btn-open-lofigirl-direct" class="btn-direct-open hifi-open-btn" title="Open the Bilibili Lofi Girl live room">
-              <span id="direct-open-btn-text">🚀 Open Bilibili Lofi Girl Live (27519423)</span>
-              <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002 2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </button>
+        <!-- Studio Utility Shelf: Channel Pills, Direct Open, Audio Mixer & Tasks -->
+        <div class="studio-utility-shelf" id="companion-utility-shelf">
+          <!-- Rows 1-3: Utility Controls (Direct Open, Channels, Ambient, Volume) - Hides in Video Focus mode -->
+          <div class="deck-utility-controls flex flex-col gap-2.5" id="deck-utility-controls">
+            <!-- Row 1: Direct Open & Channels -->
+            <div class="flex flex-col gap-2">
+              <button id="btn-open-lofigirl-direct" class="btn-direct-open" title="Open Bilibili Lofi Girl live room (27519423)">
+                <span id="direct-open-btn-text">📺 Open Bilibili Live (27519423)</span>
+                <svg class="w-3.5 h-3.5 opacity-60 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002 2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </button>
 
-            <div class="flex items-center justify-between text-xs text-white/50 px-0.5">
-              <span class="shelf-label">Channels:</span>
-              <div class="bili-channel-pills" id="bili-channel-pills-container">
-                <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">📺 Bilibili (27519423)</button>
-                <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">🔴 YouTube Official</button>
-                <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">📻 Bilibili Mix</button>
+              <div class="flex items-center justify-between text-xs text-white/50 px-0.5">
+                <span class="shelf-label">Channels:</span>
+                <div class="bili-channel-pills" id="bili-channel-pills-container">
+                  <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">📺 Bilibili (27519423)</button>
+                  <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">🔴 YouTube Official</button>
+                  <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">📻 Bilibili Mix</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Ambient Sound & Volume & Mode Settings -->
+            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-white/5 text-xs">
+              <div>
+                <label class="shelf-label text-white/50 block mb-1">Ambient Sound</label>
+                <select id="ambient-sound-select" class="custom-select py-1 px-2 text-xs">
+                  <option value="none">None (stream only)</option>
+                  <option value="rain">🌧️ Rain on Window</option>
+                  <option value="fire">🪵 Cozy Fireplace</option>
+                  <option value="cafe">☕ Cafe Ambience</option>
+                  <option value="waves">🌊 Slow Ocean Waves</option>
+                </select>
+              </div>
+              <div>
+                <label class="shelf-label text-white/50 block mb-1">Play Mode</label>
+                <select id="bili-mode-select" class="custom-select py-1 px-2 text-xs">
+                  <option value="embedded">Inline (100% muted on break)</option>
+                  <option value="popup">Popup window (auto-close on break)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 3: Manual Switch & Volume -->
+            <div class="flex items-center justify-between gap-3 pt-1 text-xs">
+              <button id="btn-bili-manual-toggle" class="nav-btn text-xs py-1.5 px-3">
+                <span>⏯️ Toggle Stream</span>
+              </button>
+              <div class="flex items-center gap-2 flex-1 max-w-[180px]">
+                <span class="shelf-label text-white/40">Volume:</span>
+                <input type="range" id="volume-slider" min="0" max="100" value="50">
               </div>
             </div>
           </div>
 
-          <!-- Row 2: Ambient Sound & Volume & Mode Settings -->
-          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-white/5 text-xs">
-            <div>
-              <label class="shelf-label text-white/50 block mb-1">Ambient Sound</label>
-              <select id="ambient-sound-select" class="custom-select py-1 px-2 text-xs">
-                <option value="none">None (stream only)</option>
-                <option value="rain">🌧️ Rain on Window</option>
-                <option value="fire">🪵 Cozy Fireplace</option>
-                <option value="cafe">☕ Cafe Ambience</option>
-                <option value="waves">🌊 Slow Ocean Waves</option>
-              </select>
+          <!-- Row 4: Quick Todo Section (Remains visible during Video Focus) -->
+          <div class="deck-tasks-section pt-2 border-t border-white/5" id="deck-tasks-section">
+            <div class="flex items-center justify-between mb-1.5 px-0.5">
+              <span class="shelf-label text-white/50 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                <span>Tasks</span>
+              </span>
+              <button type="button" id="btn-toggle-deck-controls" class="deck-controls-toggle-btn text-[11px] text-white/40 hover:text-white/80 transition-colors" title="Toggle audio and stream controls">
+                <span>⚙️ Controls</span>
+              </button>
             </div>
-            <div>
-              <label class="shelf-label text-white/50 block mb-1">Play Mode</label>
-              <select id="bili-mode-select" class="custom-select py-1 px-2 text-xs">
-                <option value="embedded">Inline (100% muted on break)</option>
-                <option value="popup">Popup window (auto-close on break)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Row 3: Manual Switch & Volume -->
-          <div class="flex items-center justify-between gap-3 pt-1 text-xs">
-            <button id="btn-bili-manual-toggle" class="nav-btn text-xs py-1.5 px-3">
-              <span>⏯️ Toggle Stream</span>
-            </button>
-            <div class="flex items-center gap-2 flex-1 max-w-[180px]">
-              <span class="shelf-label text-white/40">Volume:</span>
-              <input type="range" id="volume-slider" min="0" max="100" value="50">
-            </div>
-          </div>
-
-          <!-- Row 4: Quick Todo Collapsible Bar -->
-          <div class="pt-2 border-t border-white/5">
             <form id="task-add-form" class="task-form mb-2">
               <input type="text" id="task-new-input" class="task-input-text" placeholder="Jot down a small goal for this round..." maxlength="40">
               <button type="submit" class="nav-btn py-1.5 px-3 text-xs">Add</button>
@@ -461,6 +502,15 @@
         </div>
       </aside>
     </main>
+
+    <!-- Minimized Floating Tasks Pill -->
+    <button type="button" id="focus-tasks-min-pill" class="focus-tasks-min-pill hidden-pill" title="Expand tasks (T)">
+      <svg class="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+      </svg>
+      <span>Tasks</span>
+      <span id="focus-tasks-pill-count" class="focus-tasks-badge">0</span>
+    </button>
   </div>
 
   <!-- Settings Modal Dialog -->
@@ -549,6 +599,7 @@
           <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">Z</kbd> Zen mode</div>
           <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">F</kbd> Fullscreen</div>
           <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">M</kbd> Mute / Unmute</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">T</kbd> Toggle Tasks</div>
         </div>
       </div>
 
