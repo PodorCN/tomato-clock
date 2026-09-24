@@ -1,0 +1,6 @@
+@echo off
+title Tomato Clock Local Server
+echo Starting Tomato Clock on http://localhost:8080 ...
+start "" "http://localhost:8080"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$listener = New-Object System.Net.HttpListener; $listener.Prefixes.Add('http://localhost:8080/'); $listener.Start(); Write-Host 'Server running at http://localhost:8080. Press Ctrl+C to stop.'; while ($listener.IsListening) { $context = $listener.GetContext(); $request = $context.Request; $response = $context.Response; $path = $request.Url.LocalPath.TrimStart('/'); if ([string]::IsNullOrEmpty($path)) { $path = 'index.html' }; $fullPath = Join-Path (Get-Location) $path; if (Test-Path $fullPath -PathType Leaf) { $ext = [System.IO.Path]::GetExtension($fullPath); switch ($ext) { '.html' { $response.ContentType = 'text/html; charset=utf-8' } '.css' { $response.ContentType = 'text/css; charset=utf-8' } '.js' { $response.ContentType = 'application/javascript; charset=utf-8' } '.svg' { $response.ContentType = 'image/svg+xml' } default { $response.ContentType = 'application/octet-stream' } }; $bytes = [System.IO.File]::ReadAllBytes($fullPath); $response.ContentLength64 = $bytes.Length; $response.OutputStream.Write($bytes, 0, $bytes.Length) } else { $response.StatusCode = 404 }; $response.OutputStream.Close() }"
+pause
