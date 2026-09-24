@@ -1,79 +1,108 @@
 /* ==========================================================================
-   Lofi Pomodoro Clock - Full-Width Aesthetic Stylesheet
-   Modern Glassmorphism, Dynamic Atmospheric Themes, and Responsive Layout
+   Lofi Pomodoro Clock - Deep Aurora Fluid Cinema Stylesheet
+   Apple / Linear Grade Obsidian Void, Dynamic Fluid Aurora & Tabular Monolith
    ========================================================================== */
 
 :root {
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-display: "Archivo Black", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+  --font-grotesk: "Space Grotesk", "Inter", "Segoe UI", sans-serif;
 
-  /* Theme Defaults (Lofi Room) */
-  --bg-gradient: radial-gradient(circle at 20% 20%, #2c1a1d 0%, #151016 50%, #0d0b0e 100%);
-  --accent-color: #ff6b6b;
-  --accent-glow: rgba(255, 107, 107, 0.4);
-  --accent-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5253 100%);
-  --card-bg: rgba(26, 20, 28, 0.65);
-  --card-border: rgba(255, 255, 255, 0.1);
+  /* Theme Defaults (Poster Red — signature tomato accent) */
+  --bg-gradient: radial-gradient(ellipse at 15% 20%, rgba(99, 102, 241, 0.16) 0%, transparent 45%),
+                 radial-gradient(ellipse at 85% 75%, rgba(6, 182, 212, 0.14) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+                 #050609;
+  --accent-color: #ff3b30;
+  --accent-glow: rgba(255, 59, 48, 0.5);
+  --accent-secondary: #ff8a00;
+  --accent-gradient: linear-gradient(135deg, #ff3b30 0%, #ff7a00 100%);
+  --card-bg: rgba(12, 13, 18, 0.65);
+  --card-border: rgba(255, 255, 255, 0.08);
   --text-main: #f8fafc;
-  --text-muted: rgba(248, 250, 252, 0.6);
+  --text-muted: rgba(248, 250, 252, 0.65);
   --text-dim: rgba(248, 250, 252, 0.35);
 
-  --ring-bg: rgba(255, 255, 255, 0.08);
-  --ring-color: #ff6b6b;
+  --ring-bg: rgba(255, 255, 255, 0.06);
+  --ring-color: #06b6d4;
 }
 
 /* Theme Variations */
 body.theme-lofi-room {
-  --bg-gradient: radial-gradient(circle at 15% 15%, #382329 0%, #1c141d 45%, #0e0a10 100%);
-  --accent-color: #f39c12;
-  --accent-glow: rgba(243, 156, 18, 0.4);
-  --accent-gradient: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
-  --card-bg: rgba(28, 20, 25, 0.65);
-  --ring-color: #f39c12;
+  --bg-gradient: radial-gradient(ellipse at 20% 25%, rgba(245, 158, 11, 0.15) 0%, transparent 45%),
+                 radial-gradient(ellipse at 80% 70%, rgba(239, 68, 68, 0.12) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                 #060608;
+  --accent-color: #ff3b30;
+  --accent-glow: rgba(255, 59, 48, 0.5);
+  --accent-secondary: #ff8a00;
+  --accent-gradient: linear-gradient(135deg, #ff3b30 0%, #ff7a00 100%);
+  --card-bg: rgba(15, 13, 16, 0.65);
+  --ring-color: #ff3b30;
 }
 
 body.theme-rainy-cafe {
-  --bg-gradient: radial-gradient(circle at 75% 20%, #162436 0%, #0d1624 50%, #080d14 100%);
+  --bg-gradient: radial-gradient(ellipse at 15% 20%, rgba(56, 189, 248, 0.16) 0%, transparent 45%),
+                 radial-gradient(ellipse at 85% 75%, rgba(37, 99, 235, 0.14) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                 #04070e;
   --accent-color: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.35);
-  --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  --card-bg: rgba(15, 23, 42, 0.65);
+  --accent-glow: rgba(56, 189, 248, 0.45);
+  --accent-secondary: #2563eb;
+  --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #2563eb 100%);
+  --card-bg: rgba(10, 16, 26, 0.65);
   --ring-color: #38bdf8;
 }
 
 body.theme-tokyo-dusk {
-  --bg-gradient: radial-gradient(circle at 50% 10%, #2f173b 0%, #150b22 55%, #080311 100%);
+  --bg-gradient: radial-gradient(ellipse at 25% 20%, rgba(192, 132, 252, 0.16) 0%, transparent 45%),
+                 radial-gradient(ellipse at 75% 75%, rgba(236, 72, 153, 0.14) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                 #08040d;
   --accent-color: #c084fc;
-  --accent-glow: rgba(192, 132, 252, 0.4);
-  --accent-gradient: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
-  --card-bg: rgba(25, 12, 38, 0.65);
+  --accent-glow: rgba(192, 132, 252, 0.45);
+  --accent-secondary: #ec4899;
+  --accent-gradient: linear-gradient(135deg, #c084fc 0%, #a855f7 50%, #ec4899 100%);
+  --card-bg: rgba(18, 11, 26, 0.65);
   --ring-color: #c084fc;
 }
 
 body.theme-zen-garden {
-  --bg-gradient: radial-gradient(circle at 25% 25%, #132a22 0%, #0c1a15 50%, #07100d 100%);
+  --bg-gradient: radial-gradient(ellipse at 20% 25%, rgba(52, 211, 153, 0.16) 0%, transparent 45%),
+                 radial-gradient(ellipse at 80% 70%, rgba(6, 182, 212, 0.12) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 85%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                 #030906;
   --accent-color: #34d399;
-  --accent-glow: rgba(52, 211, 153, 0.35);
-  --accent-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
-  --card-bg: rgba(13, 26, 21, 0.65);
+  --accent-glow: rgba(52, 211, 153, 0.4);
+  --accent-secondary: #059669;
+  --accent-gradient: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  --card-bg: rgba(8, 18, 14, 0.65);
   --ring-color: #34d399;
 }
 
 body.theme-deep-space {
-  --bg-gradient: radial-gradient(circle at 50% 50%, #0c1527 0%, #060913 60%, #020408 100%);
+  --bg-gradient: radial-gradient(ellipse at 15% 15%, rgba(34, 211, 238, 0.15) 0%, transparent 45%),
+                 radial-gradient(ellipse at 85% 85%, rgba(129, 140, 248, 0.14) 0%, transparent 45%),
+                 radial-gradient(ellipse at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                 #030509;
   --accent-color: #22d3ee;
-  --accent-glow: rgba(34, 211, 238, 0.35);
-  --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #0891b2 100%);
-  --card-bg: rgba(8, 14, 28, 0.7);
+  --accent-glow: rgba(34, 211, 238, 0.4);
+  --accent-secondary: #818cf8;
+  --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #06b6d4 50%, #818cf8 100%);
+  --card-bg: rgba(7, 12, 22, 0.65);
   --ring-color: #22d3ee;
 }
 
 body.theme-minimal-slate {
-  --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 60%, #020617 100%);
+  --bg-gradient: radial-gradient(ellipse at 50% 20%, rgba(244, 63, 94, 0.12) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 80%, rgba(148, 163, 184, 0.08) 0%, transparent 45%),
+                 #04060b;
   --accent-color: #f43f5e;
   --accent-glow: rgba(244, 63, 94, 0.35);
+  --accent-secondary: #e11d48;
   --accent-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-  --card-bg: rgba(15, 23, 42, 0.75);
+  --card-bg: rgba(11, 14, 22, 0.7);
   --ring-color: #f43f5e;
 }
 
@@ -85,15 +114,17 @@ body.theme-minimal-slate {
 }
 
 html, body {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   font-family: var(--font-sans);
   color: var(--text-main);
   background: var(--bg-gradient);
   background-attachment: fixed;
-  overflow-x: hidden;
   transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Full Width Atmospheric Background Canvas */
@@ -111,236 +142,259 @@ html, body {
 /* Glassmorphism Surface Base */
 .glass-panel {
   background: var(--card-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
   border: 1px solid var(--card-border);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   transform: translateZ(0);
 }
 
-/* Layout Container */
+/* Layout Container - 100vw x 100vh Full-Width Full-Height Architecture */
 .app-wrapper {
   position: relative;
   z-index: 10;
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* Top Navigation Bar - Full Width Edge-to-Edge */
+/* Top Navigation Bar - Flat Poster Strip */
 .top-nav {
-  width: 100%;
-  padding: 1rem 2.5rem;
+  width: 100vw;
+  max-width: 100vw;
+  height: 58px;
+  padding: 0 2.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  background: rgba(8, 8, 10, 0.92);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.14);
   z-index: 30;
+  flex-shrink: 0;
 }
 
 .brand-badge {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.8rem;
   text-decoration: none;
   color: inherit;
+  user-select: none;
 }
 
 .brand-icon {
-  width: 2.25rem;
-  height: 2.25rem;
-  filter: drop-shadow(0 2px 8px var(--accent-glow));
-  transition: transform 0.3s ease;
+  width: 2.35rem;
+  height: 2.35rem;
+  background: var(--accent-color);
+  border-radius: 8px;
+  padding: 3px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease;
 }
 
 .brand-badge:hover .brand-icon {
-  transform: rotate(10deg) scale(1.08);
+  transform: rotate(-6deg) scale(1.06);
 }
 
 .brand-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.75) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
+  font-size: 1.32rem;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-transform: uppercase;
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .nav-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.15);
   color: var(--text-main);
-  padding: 0.5rem 0.85rem;
-  border-radius: 12px;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 .nav-btn:active {
-  transform: translateY(0);
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
-/* Main Content Area - Full-Width Immersive Widescreen Grid */
+/* ==========================================================================
+   Full-Width Edge-to-Edge Split Stage (Zero Dead Margins)
+   ========================================================================== */
 .main-stage {
   flex: 1;
-  width: 100%;
-  max-width: 1540px;
-  margin: 0 auto;
-  padding: 2rem 2.5rem;
+  width: 100vw;
+  max-width: 100vw;
+  margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(360px, 0.95fr);
-  gap: 2.25rem;
+  gap: 0;
   align-items: stretch;
-  transition: all 0.4s ease;
-}
-
-/* Single column when companion panel is collapsed */
-.companion-panel.hidden-panel {
-  display: none !important;
-}
-
-.main-stage:has(.companion-panel.hidden-panel) {
-  grid-template-columns: minmax(0, 1fr);
-  max-width: 900px;
-}
-
-/* Hero Timer Stage (Left/Center) */
-.hero-timer-card {
-  padding: 2.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  height: calc(100vh - 58px);
+  max-height: calc(100vh - 58px);
+  transition: grid-template-columns 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
-/* Subtle Glowing Background Blob */
-.hero-timer-card::before {
+/* Single-Screen 100vw when companion panel is collapsed */
+.companion-stage-pane.hidden-panel,
+#companion-panel.hidden-panel {
+  display: none !important;
+}
+
+.main-stage.panel-collapsed,
+.main-stage:has(.companion-stage-pane.hidden-panel),
+.main-stage:has(#companion-panel.hidden-panel) {
+  grid-template-columns: 100vw;
+}
+
+/* ==========================================================================
+   Left: The Monumental Master Time Stage (Border-Right, Cinematic Bleed)
+   ========================================================================== */
+.hero-stage-pane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: 0.9rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-right: 2px solid rgba(255, 255, 255, 0.09);
+  background: transparent;
+  overflow: hidden;
+  transition: padding 0.3s ease, background 0.8s ease;
+}
+
+/* The Colossal Tomato Disc - hero motif, recolors on break, breathes while running */
+.hero-stage-pane::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 76vmin;
+  height: 76vmin;
   transform: translate(-50%, -50%);
-  width: 320px;
-  height: 320px;
-  background: var(--accent-glow);
-  filter: blur(100px);
+  background: radial-gradient(circle, rgba(255, 59, 48, 0.28) 0%, rgba(255, 59, 48, 0.1) 42%, transparent 68%);
   border-radius: 50%;
   pointer-events: none;
-  opacity: 0.25;
+  z-index: 0;
   transition: background 0.8s ease;
 }
 
-/* Intention / Working Goal Input */
+body.mode-break-active .hero-stage-pane::before {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.26) 0%, rgba(16, 185, 129, 0.09) 42%, transparent 68%);
+}
+
+body:has(#btn-start-pause.running) .hero-stage-pane::before {
+  animation: discBreathe 3.6s ease-in-out infinite;
+}
+
+@keyframes discBreathe {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.85; }
+  50% { transform: translate(-50%, -50%) scale(1.07); opacity: 1; }
+}
+
+/* Monumental Full-Bleed Watermark Typography (FOCUS / BREAK) */
+.hero-stage-pane::after {
+  content: "FOCUS";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -53%);
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 23vw, 27rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.11);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  transition: -webkit-text-stroke-color 0.6s ease;
+}
+
+body.mode-break-active .hero-stage-pane::after {
+  content: "BREAK";
+  -webkit-text-stroke-color: rgba(52, 211, 153, 0.17);
+}
+
+.main-stage.panel-collapsed .hero-stage-pane,
+.main-stage:has(#companion-panel.hidden-panel) .hero-stage-pane {
+  border-right: none;
+  padding: 2.5rem 8vw;
+}
+
+/* Top Command Strip - mode tabs only, right aligned */
+.hero-top-command-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  z-index: 10;
+}
+
 .intention-box {
-  width: 100%;
-  max-width: 480px;
-  margin-bottom: 2rem;
-  position: relative;
-  z-index: 5;
-}
-
-.intention-input {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  border-radius: 14px;
-  padding: 0.65rem 1.2rem;
-  color: var(--text-main);
-  font-size: 0.95rem;
-  text-align: center;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.intention-input:focus {
-  border-color: var(--accent-color);
-  background: rgba(0, 0, 0, 0.35);
-  box-shadow: 0 0 16px var(--accent-glow);
-}
-
-.intention-input::placeholder {
-  color: var(--text-dim);
-}
-
-/* Mode Switcher Tabs */
-.mode-tabs-wrapper {
-  display: inline-flex;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 0.35rem;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 2.25rem;
-  position: relative;
-  z-index: 5;
-}
-
-/* ==========================================================================
-   Hero Hi-Fi Workstation & Giant Typographic Clock
-   ========================================================================== */
-.hifi-deck-card {
-  position: relative;
-  background: linear-gradient(160deg, rgba(24, 25, 32, 0.88) 0%, rgba(13, 14, 18, 0.94) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border-radius: 28px;
-  overflow: hidden;
-}
-
-/* Intention Input Bar */
-.intention-box {
-  width: 100%;
-  max-width: 520px;
-  margin-bottom: 1.5rem;
-  z-index: 5;
+  flex: 1;
+  max-width: 580px;
 }
 
 .intention-inner {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 0.4rem 0.85rem;
-  transition: all 0.25s ease;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 0.55rem 1.15rem;
+  transition: all 0.2s ease;
 }
 
 .intention-inner:focus-within {
   border-color: var(--accent-color);
-  box-shadow: 0 0 20px var(--accent-glow);
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 4px 4px 0 var(--accent-glow);
 }
 
 .intention-prefix {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--accent-color);
   user-select: none;
+  white-space: nowrap;
 }
 
 .intention-input {
@@ -349,100 +403,92 @@ html, body {
   border: none;
   outline: none;
   color: #fff;
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .intention-input::placeholder {
   color: rgba(255, 255, 255, 0.35);
 }
 
-/* Mode Tabs - Tape Deck Push Buttons */
+/* Mode Tabs - Chunky Segmented Control */
 .hifi-rack-tabs {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.35rem;
-  border-radius: 16px;
-  margin-bottom: 1.25rem;
-  z-index: 5;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  padding: 0.3rem;
+  border-radius: 10px;
 }
 
 .mode-tab-btn {
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.5rem 1.15rem;
-  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 0.55rem 1.15rem;
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  position: relative;
+  gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .tab-indicator-led {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   transition: all 0.3s ease;
 }
 
 .mode-tab-btn:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .mode-tab-btn.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--accent-color);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
 .mode-tab-btn.active .tab-indicator-led {
-  background: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-glow);
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
 }
 
-/* Studio Broadcast On-Air Status Strip */
+/* Studio Broadcast Status Strip */
 .studio-status-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 520px;
-  margin-bottom: 1.2rem;
-  padding: 0 0.5rem;
-  z-index: 5;
+  padding: 0.3rem 0.5rem;
+  margin-top: 0.6rem;
+  z-index: 10;
 }
 
 .studio-rec-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 10px #ef4444;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
   display: inline-block;
-  margin-right: 0.4rem;
-  animation: studioBlink 1.4s ease-in-out infinite alternate;
-}
-
-@keyframes studioBlink {
-  0% { opacity: 0.4; transform: scale(0.9); }
-  100% { opacity: 1; transform: scale(1.15); }
+  margin-right: 0.5rem;
 }
 
 .hifi-meta-tag {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.45);
-  letter-spacing: 0.08em;
+  font-family: var(--font-grotesk);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
 }
 
 .tag-accent {
@@ -453,210 +499,437 @@ html, body {
 
 /* Timer State Badge */
 .timer-badge {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: 0.35rem 1rem;
-  border-radius: 9999px;
-  position: relative;
-  z-index: 5;
+  padding: 0.5rem 1.3rem;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
 }
 
 .focus-badge {
-  background: rgba(239, 68, 68, 0.18);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: #ff3b30;
+  color: #ffffff;
 }
 
 .break-badge {
-  background: rgba(16, 185, 129, 0.18);
-  color: #6ee7b7;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: #10b981;
+  color: #ffffff;
 }
 
 .long-break-badge {
-  background: rgba(59, 130, 246, 0.18);
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background: #2563eb;
+  color: #ffffff;
 }
 
 /* ==========================================================================
-   GIANT HERO DIGIT CLOCK STAGE
+   THE VINTAGE HI-FI MASTER TAPE CONSOLE (DUAL VU METERS & SPLIT-FLAP CLOCK)
+   1970s Hi-Fi Golden Era Studio Aesthetic: Walnut Woodgrain, Brushed Aluminum,
+   Warm Incandescent Backlit VU Meters, and Electro-Mechanical Split-Flap Cards
    ========================================================================== */
-.giant-clock-stage {
+.vintage-master-console {
   position: relative;
   width: 100%;
+  max-width: none;
+  margin: 0.75rem auto;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 270px;
-  margin: 0.5rem 0 1.5rem;
-  z-index: 5;
-}
-
-.clock-ambient-halo {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(280px, 45vw, 480px);
-  height: clamp(280px, 45vw, 480px);
-  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 68%);
-  opacity: 0.35;
-  filter: blur(50px);
-  pointer-events: none;
-  transition: all 0.8s ease;
-}
-
-.giant-clock-stage.is-running .clock-ambient-halo {
-  animation: haloBreathe 3s ease-in-out infinite alternate;
-}
-
-@keyframes haloBreathe {
-  0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.25; }
-  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.45; }
-}
-
-.giant-clock-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 10;
+  align-items: stretch;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
   user-select: none;
 }
 
-.giant-time-display {
+/* Poster edition: wood cheeks & screws removed from the DOM; hide any strays */
+.console-wood-cheek,
+.console-screw {
+  display: none !important;
+}
+
+.console-wood-cheek::before {
+  content: none;
+}
+
+/* Main Faceplate - flat, transparent, edge-to-edge */
+.console-faceplate {
+  flex: 1;
+  background: transparent;
+  padding: 0.5rem 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  border-top: none;
+  border-bottom: none;
+}
+
+/* Studio Hex/Milled Corner Screws */
+.console-screw {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e2e8f0 0%, #94a3b8 60%, #475569 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+.console-screw::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  right: 20%;
+  height: 1.5px;
+  background: #1e293b;
+  transform: translateY(-50%) rotate(42deg);
+}
+
+.screw-tl { top: 10px; left: 10px; }
+.screw-tr { top: 10px; right: 10px; }
+.screw-bl { bottom: 10px; left: 10px; }
+.screw-br { bottom: 10px; right: 10px; }
+
+/* Console Header Branding Row */
+.console-brand-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  padding: 0 0.25rem 0.55rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.console-brand-title {
+  font-family: var(--font-grotesk);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+}
+
+.console-flow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+}
+
+/* Progress Display Mode Selector (倒计时 / 百分比 % / 已刻录时长) */
+.progress-display-selector {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  padding: 0.2rem;
+  border-radius: 8px;
+  gap: 0.25rem;
+}
+
+.prog-mode-btn {
   font-family: var(--font-mono);
-  font-size: clamp(5.5rem, 14vw, 10.5rem);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 0.95;
-  color: #ffffff;
-  text-shadow: 0 0 50px var(--accent-glow), 0 8px 30px rgba(0, 0, 0, 0.7);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s ease;
-  padding: 0.2rem 1rem;
-  border-radius: 24px;
+  transition: all 0.15s ease;
 }
 
-.giant-time-display:hover {
-  transform: scale(1.03);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.giant-time-input {
-  font-family: var(--font-mono);
-  font-size: clamp(4.5rem, 11vw, 8.5rem);
-  font-weight: 800;
-  width: clamp(220px, 40vw, 380px);
-  background: rgba(0, 0, 0, 0.85);
-  border: 2px solid var(--accent-color);
-  border-radius: 24px;
-  color: #fff;
-  text-align: center;
-  outline: none;
-  box-shadow: 0 0 40px var(--accent-glow);
-}
-
-.timer-time-hint {
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  margin-top: 0.75rem;
-  letter-spacing: 0.05em;
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-  pointer-events: none;
-}
-
-.giant-clock-inner:hover .timer-time-hint {
-  opacity: 1;
+.prog-mode-btn:hover {
   color: #ffffff;
 }
 
-/* Circular ring track behind */
-.giant-clock-stage .clock-svg-ring {
+.prog-mode-btn.active {
+  background: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* ==========================================================================
+   THE COLOSSAL MECHANICAL MASTER DISPLAY (Massive Monumental Numbers)
+   ========================================================================== */
+.vintage-split-flap-board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.2rem, 0.7vw, 0.6rem);
+  padding: 0.25rem 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+  margin: 0;
+  width: 100%;
+}
+
+.vintage-split-flap-board:hover .flap-num {
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55), 0 0 90px var(--accent-glow);
+}
+
+/* Individual Digit Slot - transparent, the number IS the card */
+.flap-card {
+  position: relative;
+  width: clamp(100px, 19vh, 240px);
+  height: clamp(170px, 35vh, 400px);
+  background: transparent;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: none;
+  user-select: none;
+}
+
+.flap-leaf {
+  width: 100%;
+  height: 50%;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.flap-leaf.flap-top {
+  align-items: flex-end;
+  border-bottom: none;
+}
+
+.flap-leaf.flap-bottom {
+  align-items: flex-start;
+  border-top: none;
+}
+
+/* The Colossal Poster Number - monumental floating digits */
+.flap-num {
   position: absolute;
-  width: clamp(320px, 48vw, 420px);
-  height: clamp(320px, 48vw, 420px);
-  transform: rotate(-90deg);
-  opacity: 0.35;
-  pointer-events: none;
-  z-index: 2;
+  font-family: var(--font-display);
+  font-size: clamp(11rem, 30vh, 24rem);
+  font-weight: 400;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55), 0 0 60px var(--accent-glow);
 }
 
-.ring-track {
-  fill: none;
-  stroke: var(--ring-bg);
-  stroke-width: 8;
+.flap-top .flap-num {
+  bottom: -0.48em;
 }
 
-.ring-progress {
-  fill: none;
-  stroke: var(--ring-color);
-  stroke-width: 8;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.5s ease, stroke 0.6s ease;
-  filter: drop-shadow(0 0 10px var(--accent-glow));
+.flap-bottom .flap-num {
+  top: -0.52em;
 }
 
-/* Zen Break Meditation Sanctuary */
-.zen-break-sanctuary {
-  position: absolute;
-  inset: 0;
+/* Split-flap mechanics retired in poster edition */
+.flap-seam,
+.flap-hinge-pin {
+  display: none;
+}
+
+/* Flap Colon Divider */
+.flap-colon {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 20;
-  background: radial-gradient(circle, rgba(6, 78, 59, 0.9) 0%, rgba(2, 44, 34, 0.98) 100%);
-  border-radius: 24px;
-  padding: 2rem;
+  gap: clamp(1.6rem, 4vh, 3rem);
+  padding: 0 clamp(0.2rem, 0.5vw, 0.45rem);
+}
+
+.colon-peg {
+  width: clamp(12px, 2vh, 18px);
+  height: clamp(12px, 2vh, 18px);
+  border-radius: 3px;
+  background: var(--accent-color);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+/* Flap Unit Symbol (%) */
+.flap-unit-symbol {
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vh, 11rem);
+  color: var(--accent-color);
+  margin-left: 0.25rem;
+  line-height: 1;
+  text-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* Direct Input Form Overlay */
+.vintage-flap-input {
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 9vw, 6rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  width: 300px;
+  background: #0a0a0c;
+  border: 3px solid var(--accent-color);
+  border-radius: 8px;
+  color: #fff;
   text-align: center;
-  animation: fadeInSanctuary 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  margin: 0.5rem 0;
 }
 
-@keyframes fadeInSanctuary {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+/* ==========================================================================
+   PHYSICAL VINYL MICROGROOVE TRACK MATRIX & PROGRESS
+   ========================================================================== */
+.vinyl-microgroove-chassis {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem 1.05rem;
+  margin-top: 0.5rem;
 }
 
-.zen-breathing-ring {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  border: 3px solid rgba(52, 211, 153, 0.7);
-  box-shadow: 0 0 35px rgba(52, 211, 153, 0.5), inset 0 0 25px rgba(52, 211, 153, 0.3);
-  animation: zenBreatheLoop 8s ease-in-out infinite;
-  margin-bottom: 1.25rem;
-}
-
-@keyframes zenBreatheLoop {
-  0%, 100% { transform: scale(0.85); border-color: rgba(52, 211, 153, 0.4); }
-  50% { transform: scale(1.2); border-color: rgba(110, 231, 183, 0.9); box-shadow: 0 0 50px rgba(52, 211, 153, 0.7); }
-}
-
-.zen-tea-icon {
-  font-size: 2.2rem;
-  position: absolute;
-  top: 42px;
-}
-
-.zen-breathing-text {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #a7f3d0;
-  letter-spacing: 0.05em;
+.groove-telemetry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 0.5rem;
 }
 
-.zen-subtext {
-  font-size: 0.82rem;
-  color: rgba(167, 243, 208, 0.75);
+.telemetry-label {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.microgroove-blocks-track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.groove-block {
+  flex: 1;
+  height: 16px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  position: relative;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.groove-block.is-etched {
+  background: var(--accent-color);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.groove-block.is-current {
+  background: #ffffff;
+  box-shadow: 0 0 14px #ffffff;
+}
+
+/* Break Zen Studio Status Lamp */
+.zen-studio-lamp {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(16, 185, 129, 0.18);
+  border: 2px solid rgba(52, 211, 153, 0.55);
+  padding: 0.45rem 1.2rem;
+  border-radius: 8px;
+  color: #a7f3d0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  margin-top: 0.4rem;
+}
+
+.zen-lamp-bulb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+}
+
+/* Console Metrics HUD Row */
+.console-metrics-row {
+  margin-top: 0.75rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 1.1rem;
+  font-family: var(--font-grotesk);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ==========================================================================
+   LINEAR VINTAGE ANALOG RADIO TUNER / TAPE TIMELINE
+   ========================================================================== */
+.vintage-tuner-timeline {
+  max-width: 660px;
+  margin: 0.85rem auto 1.25rem;
+}
+
+.vintage-scale-bg {
+  height: 10px;
+  background: #090a0d;
+  border: 1px solid #232732;
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.vintage-scale-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0px,
+    rgba(255, 255, 255, 0.2) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.vintage-tuner-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b45309 0%, #f59e0b 60%, #fbbf24 100%);
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+  transition: width 0.4s ease;
+}
+
+.vintage-tuner-needle {
+  position: absolute;
+  right: -3px;
+  top: -6px;
+  width: 6px;
+  height: 22px;
+  border-radius: 2px;
+  background: #ff4500;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 10px #ff4500, 0 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 /* ==========================================================================
@@ -664,15 +937,15 @@ html, body {
    ========================================================================== */
 .laser-groove-wrapper {
   width: 100%;
-  max-width: 540px;
-  margin-bottom: 1.75rem;
+  max-width: 720px;
+  margin: 1.25rem 0 1.75rem;
   z-index: 5;
 }
 
 .groove-markers {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
   padding: 0 0.25rem;
 }
 
@@ -680,8 +953,8 @@ html, body {
   width: 100%;
   height: 8px;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
   position: relative;
   overflow: visible;
 }
@@ -689,90 +962,102 @@ html, body {
 .laser-track-fill {
   height: 100%;
   background: var(--accent-gradient);
-  border-radius: 9999px;
+  border-radius: 2px;
   position: relative;
-  box-shadow: 0 0 12px var(--accent-glow);
+  box-shadow: 0 0 14px var(--accent-glow);
   transition: width 0.4s ease;
 }
 
 .laser-head-needle {
   position: absolute;
-  right: -4px;
-  top: -4px;
+  right: -5px;
+  top: -5px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #ffffff;
   border: 3px solid var(--accent-color);
-  box-shadow: 0 0 14px #ffffff, 0 0 25px var(--accent-glow);
+  box-shadow: 0 0 16px #ffffff, 0 0 25px var(--accent-glow);
 }
 
-/* Synthesizer Preset Deck & Frequency Input */
+/* ==========================================================================
+   Bottom Command Bar: Synthesizer Presets, Frequency Tuner & Cockpit
+   ========================================================================== */
+.hero-bottom-command-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 10;
+}
+
 .hifi-preset-deck {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  margin-bottom: 1.75rem;
-  z-index: 5;
 }
 
 .hifi-preset-label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-family: var(--font-grotesk);
+  font-size: 0.78rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.08em;
-  margin-right: 0.25rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.12em;
+  margin-right: 0.3rem;
 }
 
 .hifi-preset-btn {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.4rem 0.85rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-grotesk);
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.5rem 1.1rem;
+  border-radius: 6px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.88);
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hifi-preset-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.5);
 }
 
 .hifi-tuner-pill {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 0.25rem 0.65rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  padding: 0.3rem 0.65rem;
 }
 
 .tuner-number-input {
-  width: 44px;
+  width: 52px;
   background: rgba(0, 0, 0, 0.6);
   color: var(--accent-color);
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.92rem;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.16);
   border-radius: 6px;
   outline: none;
 }
 
 .tuner-set-btn {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--accent-color);
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.55rem;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -787,146 +1072,175 @@ html, body {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  z-index: 5;
 }
 
 .btn-hifi-primary {
   position: relative;
   background: var(--accent-gradient);
-  border: none;
+  border: 2px solid #ffffff;
   color: #ffffff;
-  padding: 1rem 2.8rem;
-  border-radius: 9999px;
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
+  padding: 1.05rem 3.6rem;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 30px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  min-width: 180px;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.55);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 230px;
 }
 
 .btn-hifi-primary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 14px 38px var(--accent-glow);
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.55);
 }
 
 .btn-hifi-primary:active {
-  transform: translateY(1px) scale(0.98);
-  box-shadow: 0 4px 12px var(--accent-glow);
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+}
+
+/* Expanding Pulse Halo around the Primary Button */
+.btn-glow-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 var(--accent-glow);
+  animation: btnPulseHalo 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes btnPulseHalo {
+  0% { box-shadow: 0 0 0 0 var(--accent-glow); opacity: 0.9; }
+  70% { box-shadow: 0 0 0 22px transparent; opacity: 0; }
+  100% { box-shadow: 0 0 0 0 transparent; opacity: 0; }
 }
 
 .btn-hifi-round {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 18px rgba(0, 0, 0, 0.4);
+  width: 3.8rem;
+  height: 3.8rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
   color: var(--text-main);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-hifi-round:hover {
-  background: rgba(255, 255, 255, 0.18);
-  transform: scale(1.06);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--accent-color);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.45);
 }
 
 .btn-hifi-round:active {
-  transform: scale(0.96);
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
 }
 
 /* ==========================================================================
-   Right Companion Panel (Bilibili Player, White Noise Mixer, Quick Tasks)
+   Right: The Ethereal Floating Companion Deck
    ========================================================================== */
-.companion-panel {
+.companion-stage-pane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: 1rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #0a0a0d;
+  border-left: 2px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all 0.3s ease;
 }
 
-/* Bilibili Card */
-.bili-companion-card {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.card-header {
+.deck-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
 }
 
-.card-title-group {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
+.deck-header h3 {
+  font-family: var(--font-grotesk) !important;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
 }
 
-.card-title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.studio-on-air-lamp {
-  width: 9px;
-  height: 9px;
+.aurora-pulse-dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #ef4444;
-  box-shadow: 0 0 10px #ef4444;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-glow);
   display: inline-block;
-  animation: studioBlink 1.4s ease-in-out infinite alternate;
+  animation: dotBlink 2s ease-in-out infinite;
 }
 
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* View Mode Switcher: Turntable vs Live Video */
 .deck-view-switch {
   display: flex;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  align-items: center;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.14);
   padding: 0.2rem;
-  border-radius: 12px;
-  gap: 0.2rem;
+  border-radius: 8px;
+  gap: 0.25rem;
 }
 
 .view-switch-btn {
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 0.3rem 0.65rem;
-  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .view-switch-btn:hover {
-  color: #fff;
+  color: #ffffff;
 }
 
 .view-switch-btn.active {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45);
 }
 
-/* Turntable Chassis */
+/* ==========================================================================
+   THE REALISTIC VINYL TURNTABLE DECK
+   ========================================================================== */
 .turntable-chassis {
-  background: linear-gradient(155deg, #1d1e24 0%, #101115 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.08), 0 14px 30px rgba(0, 0, 0, 0.5);
-  border-radius: 20px;
-  padding: 1.15rem;
+  background: #101014;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -936,21 +1250,21 @@ html, body {
 
 .turntable-platter {
   position: relative;
-  width: 230px;
-  height: 230px;
+  width: clamp(200px, 25vh, 260px);
+  height: clamp(200px, 25vh, 260px);
   border-radius: 50%;
   background: #0d0e12;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 0 14px rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.55rem;
 }
 
 /* Vinyl Disc */
 .vinyl-disc {
-  width: 216px;
-  height: 216px;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
   border-radius: 50%;
   background: repeating-radial-gradient(circle, #0b0b0d 0px, #18191d 1.5px, #0b0b0d 3px);
   position: relative;
@@ -970,6 +1284,14 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
+.vinyl-grooves-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 38%, rgba(255, 255, 255, 0.03) 40%, transparent 42%, rgba(255, 255, 255, 0.03) 70%, transparent 72%);
+  pointer-events: none;
+}
+
 .vinyl-sheen-highlight {
   position: absolute;
   inset: 0;
@@ -977,10 +1299,10 @@ html, body {
   background: conic-gradient(
     from 45deg,
     transparent 0deg,
-    rgba(255, 255, 255, 0.1) 35deg,
+    rgba(255, 255, 255, 0.12) 35deg,
     transparent 70deg,
     transparent 180deg,
-    rgba(255, 255, 255, 0.1) 215deg,
+    rgba(255, 255, 255, 0.12) 215deg,
     transparent 250deg
   );
   pointer-events: none;
@@ -988,12 +1310,12 @@ html, body {
 
 /* Vinyl Center Label */
 .vinyl-center-label {
-  width: 80px;
-  height: 80px;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
-  background: radial-gradient(circle, #d97736 0%, #b45309 85%, #78350f 100%);
-  border: 3px solid #1a1a1f;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  background: var(--accent-color);
+  border: 4px solid #0a0a0c;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1015,33 +1337,31 @@ html, body {
   font-size: 8px;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: #ffffff;
+  color: #fff;
+  line-height: 1;
 }
 
 .label-room {
   font-family: var(--font-mono);
-  font-size: 6.5px;
-  font-weight: 700;
-  color: #fde68a;
-  margin-top: 1px;
+  font-size: 6px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 2px 0;
 }
 
 .label-speed {
+  font-family: var(--font-mono);
   font-size: 6px;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 1px;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .label-spindle-hole {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #09090b;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  background: #111;
+  border: 1px solid #444;
+  margin-top: 3px;
 }
 
 /* Chrome Mechanical Tonearm Assembly */
@@ -1084,6 +1404,17 @@ html, body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
+.tonearm-pivot {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #334155;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 .tonearm-bar {
   position: absolute;
   top: 20px;
@@ -1121,220 +1452,133 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-grotesk);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
   padding: 0 0.25rem;
 }
 
-/* 24-Band LED Equalizer Audio Spectrum Meter */
-.hifi-spectrum-container {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 0.65rem 0.85rem;
-  margin-top: 0.2rem;
+/* Live status indicator (populated by bilibili.js) */
+#bili-status-indicator {
+  font-family: var(--font-grotesk);
+  min-height: 1.25rem;
 }
 
-.spectrum-label-row {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: rgba(255, 255, 255, 0.4);
-  letter-spacing: 0.05em;
-  margin-bottom: 0.4rem;
-}
-
-.spectrum-bars-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 38px;
-}
-
-.spectrum-bar {
-  flex: 1;
-  background: linear-gradient(to top, #10b981 0%, #f59e0b 65%, #ef4444 100%);
-  border-radius: 2px;
-  height: 8%;
-  opacity: 0.35;
-  transition: height 0.15s ease, opacity 0.2s ease;
-}
-
-.spectrum-bars-row.is-active .spectrum-bar {
-  opacity: 0.95;
-  animation: spectrumBounce 0.8s ease-in-out infinite alternate;
-  animation-delay: var(--d);
-}
-
-@keyframes spectrumBounce {
-  0% { height: 12%; }
-  50% { height: var(--h); }
-  100% { height: 25%; }
+/* Uppercase micro-labels across the utility shelf */
+.shelf-label {
+  font-family: var(--font-grotesk);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
 }
 
 .bili-player-viewport {
   width: 100%;
-  height: 240px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 16px;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.12);
   position: relative;
+  box-shadow: none;
+}
+
+/* Studio Utility Shelf */
+.studio-utility-shelf {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 0.8rem 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
 }
 
 .bili-channel-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .bili-channel-pill {
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.35rem 0.65rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.8rem;
+  border-radius: 6px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.13);
   color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
 }
 
 .bili-channel-pill:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  transform: translateY(-1px);
+  transform: translate(-1px, -1px);
 }
 
 .bili-channel-pill.active {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.45);
-  color: #fca5a5;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.45);
 }
 
 .btn-direct-open {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.45) 100%);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fee2e2;
-  font-weight: 600;
-  font-size: 0.85rem;
-  padding: 0.6rem 1rem;
-  border-radius: 14px;
+  background: var(--accent-color);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: var(--font-grotesk);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
 .btn-direct-open:hover {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.5) 0%, rgba(220, 38, 38, 0.65) 100%);
+  background: var(--accent-color);
   color: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 rgba(0, 0, 0, 0.5);
 }
 
 .btn-direct-open:active {
-  transform: translateY(0);
-}
-
-.bili-settings-quick {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-/* Modern Switch Input */
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.2);
-  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 24px;
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 50%;
-}
-
-input:checked + .toggle-slider {
-  background-color: #10b981;
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(20px);
-}
-
-/* Audio & White Noise Mixer Card */
-.audio-mixer-card {
-  padding: 1.5rem 1.75rem;
-}
-
-.mixer-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  align-items: center;
-  margin-top: 1rem;
+  transform: translate(4px, 4px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .custom-select {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.14);
   color: var(--text-main);
-  padding: 0.5rem 0.85rem;
-  border-radius: 12px;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
   outline: none;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
   width: 100%;
 }
 
 .custom-select option {
-  background: #1e1e24;
+  background: #0d0d10;
   color: #ffffff;
-}
-
-.volume-slider-group {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
 }
 
 input[type="range"] {
@@ -1342,7 +1586,7 @@ input[type="range"] {
   appearance: none;
   width: 100%;
   height: 6px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 3px;
   outline: none;
 }
@@ -1352,10 +1596,11 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 16px;
   height: 16px;
-  border-radius: 50%;
-  background: #ffffff;
+  border-radius: 4px;
+  background: var(--accent-color);
+  border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
   transition: transform 0.15s ease;
 }
 
@@ -1363,26 +1608,21 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.2);
 }
 
-/* Tasks Checklist Card */
-.tasks-card {
-  padding: 1.5rem 1.75rem;
-  flex: 1;
-}
-
+/* Quick Todo */
 .task-form {
   display: flex;
   gap: 0.5rem;
-  margin: 1rem 0;
 }
 
 .task-input-text {
   flex: 1;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
-  padding: 0.5rem 0.85rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
   color: var(--text-main);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   outline: none;
 }
 
@@ -1394,36 +1634,54 @@ input[type="range"]::-webkit-slider-thumb:hover {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-height: 200px;
-  overflow-y: auto;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.task-item.completed {
+  opacity: 0.5;
+  text-decoration: line-through;
 }
 
 /* ==========================================================================
    Zen Mode & Fullscreen Distraction-Free
    ========================================================================== */
 body.zen-mode .top-nav,
-body.zen-mode .companion-panel,
-body.zen-mode .intention-box,
-body.zen-mode .mode-tabs-wrapper,
-body.zen-mode .quick-presets-row,
-body.zen-mode .stats-banner {
+body.zen-mode .companion-stage-pane,
+body.zen-mode #companion-panel,
+body.zen-mode .hero-top-command-bar,
+body.zen-mode .studio-status-strip,
+body.zen-mode .laser-groove-wrapper,
+body.zen-mode .hero-bottom-command-bar {
   display: none !important;
 }
 
 body.zen-mode .main-stage {
-  max-width: 800px;
-  grid-template-columns: 1fr;
-  align-items: center;
-  justify-content: center;
+  grid-template-columns: 100vw;
   height: 100vh;
   padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
-body.zen-mode .hero-timer-card {
+body.zen-mode .hero-stage-pane {
   background: transparent;
   border: none;
   box-shadow: none;
-  backdrop-filter: none;
+  height: 100vh;
+  padding: 1.5rem 3rem;
+  justify-content: center;
 }
 
 /* Floating Zen Exit Button */
@@ -1433,20 +1691,21 @@ body.zen-mode .hero-timer-card {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(16px);
-  padding: 0.5rem 1.25rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.7);
+  padding: 0.55rem 1.4rem;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
   z-index: 50;
   transition: all 0.2s ease;
 }
 
 .zen-exit-pill:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   color: #fff;
   border-color: rgba(255, 255, 255, 0.3);
 }
@@ -1464,8 +1723,8 @@ body.zen-mode .zen-exit-pill {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -1484,10 +1743,10 @@ body.zen-mode .zen-exit-pill {
   max-height: 85vh;
   overflow-y: auto;
   padding: 2.25rem;
-  border-radius: 28px;
-  background: #17151e;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+  background: #0c0c0f;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {
@@ -1511,9 +1770,9 @@ body.zen-mode .zen-exit-pill {
 
 .form-control-input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
   padding: 0.65rem 0.9rem;
   color: #fff;
   font-size: 0.9rem;
@@ -1524,27 +1783,94 @@ body.zen-mode .zen-exit-pill {
   border-color: var(--accent-color);
 }
 
+/* Settings modal primary action (previously unstyled browser default) */
+.btn-primary-action {
+  background: var(--accent-color);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-family: var(--font-grotesk);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 0.6rem 1.6rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary-action:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.btn-primary-action:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
 /* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
 @media (max-width: 1024px) {
   .main-stage {
-    grid-template-columns: 1fr;
-    padding: 1.5rem;
-    gap: 1.5rem;
+    grid-template-columns: 100vw;
+    height: auto;
+    min-height: calc(100vh - 58px);
+    overflow-y: auto;
   }
-  .top-nav {
-    padding: 1rem 1.5rem;
+  .hero-stage-pane {
+    border-right: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem 1.5rem;
+    min-height: auto;
+  }
+  .hero-stage-pane::after {
+    font-size: clamp(7rem, 28vw, 15rem);
+  }
+  .flap-card {
+    width: clamp(70px, 15vh, 150px);
+    height: clamp(130px, 26vh, 230px);
+  }
+  .flap-num {
+    font-size: clamp(7.5rem, 22vh, 13rem);
+  }
+  .companion-stage-pane {
+    padding: 1.75rem 1.5rem;
+    min-height: auto;
+  }
+  .hero-top-command-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .intention-box {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 640px) {
-  .giant-time-display {
-    font-size: clamp(3.8rem, 18vw, 5.2rem);
+  .top-nav {
+    padding: 0.5rem 1rem;
+    height: auto;
+    min-height: 58px;
+    flex-wrap: wrap;
   }
-  .giant-time-input {
-    font-size: clamp(3.2rem, 16vw, 4.5rem);
-    width: 220px;
+  .hero-stage-pane {
+    padding: 1.5rem 1rem;
+  }
+  .hero-stage-pane::after {
+    font-size: clamp(4.5rem, 24vw, 7rem);
+  }
+  .flap-card {
+    width: clamp(48px, 13vh, 80px);
+    height: clamp(90px, 19vh, 120px);
+  }
+  .flap-num {
+    font-size: clamp(3.4rem, 16.5vh, 6rem);
+  }
+  .flap-colon {
+    gap: clamp(0.9rem, 2.2vh, 1.4rem);
   }
   .turntable-platter {
     width: 190px;
@@ -1561,23 +1887,13 @@ body.zen-mode .zen-exit-pill {
   .tonearm-bar {
     height: 105px;
   }
-  .top-nav {
-    flex-direction: row;
-    padding: 0.75rem 1rem;
-  }
-  .nav-actions {
-    gap: 0.35rem;
-  }
-  .hifi-controls-cockpit {
-    gap: 0.85rem;
-  }
   .btn-hifi-primary {
-    padding: 0.85rem 1.8rem;
-    font-size: 1rem;
-    min-width: 140px;
+    padding: 0.95rem 2.2rem;
+    font-size: 1.1rem;
+    min-width: 170px;
   }
   .btn-hifi-round {
-    width: 3rem;
-    height: 3rem;
+    width: 3.4rem;
+    height: 3.4rem;
   }
 }

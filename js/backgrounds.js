@@ -17,44 +17,95 @@ class BackgroundEngine {
 
     this.themes = {
       'lofi-room': {
-        name: '温暖自习室 (Lofi Room)',
+        name: 'Lofi Room',
         type: 'motes',
         bgClass: 'theme-lofi-room',
         accent: '#f39c12'
       },
       'rainy-cafe': {
-        name: '雨夜咖啡馆 (Rainy Cafe)',
+        name: 'Rainy Cafe',
         type: 'rain',
         bgClass: 'theme-rainy-cafe',
         accent: '#3498db'
       },
       'tokyo-dusk': {
-        name: '霓虹晚霞 (Cyber Dusk)',
+        name: 'Cyber Dusk',
         type: 'neon-motes',
         bgClass: 'theme-tokyo-dusk',
         accent: '#9b59b6'
       },
       'zen-garden': {
-        name: '竹林清风 (Zen Garden)',
+        name: 'Zen Garden',
         type: 'leaves',
         bgClass: 'theme-zen-garden',
         accent: '#2ecc71'
       },
       'deep-space': {
-        name: '静谧星河 (Deep Space)',
+        name: 'Deep Space',
         type: 'stars',
         bgClass: 'theme-deep-space',
         accent: '#00d2d3'
       },
       'minimal-slate': {
-        name: '极简暗色 (Minimal Slate)',
+        name: 'Minimal Slate',
         type: 'none',
         bgClass: 'theme-minimal-slate',
         accent: '#e74c3c'
       }
     };
 
+    this.auroraBlobs = [];
+    this.initAuroraBlobs();
     this.loadSavedTheme();
+  }
+
+  initAuroraBlobs() {
+    this.auroraBlobs = [
+      {
+        x: this.width * 0.22,
+        y: this.height * 0.28,
+        baseRadius: Math.min(this.width, this.height) * 0.48,
+        radius: Math.min(this.width, this.height) * 0.48,
+        color: 'rgba(99, 102, 241, 0.20)', // Electric Indigo
+        vx: 0.22,
+        vy: 0.15,
+        phase: 0,
+        speed: 0.012
+      },
+      {
+        x: this.width * 0.78,
+        y: this.height * 0.65,
+        baseRadius: Math.min(this.width, this.height) * 0.42,
+        radius: Math.min(this.width, this.height) * 0.42,
+        color: 'rgba(6, 182, 212, 0.18)', // Cyan Aurora
+        vx: -0.18,
+        vy: -0.12,
+        phase: 2.1,
+        speed: 0.009
+      },
+      {
+        x: this.width * 0.5,
+        y: this.height * 0.82,
+        baseRadius: Math.min(this.width, this.height) * 0.44,
+        radius: Math.min(this.width, this.height) * 0.44,
+        color: 'rgba(236, 72, 153, 0.14)', // Sunset Magenta
+        vx: 0.14,
+        vy: -0.18,
+        phase: 4.2,
+        speed: 0.008
+      },
+      {
+        x: this.width * 0.38,
+        y: this.height * 0.18,
+        baseRadius: Math.min(this.width, this.height) * 0.38,
+        radius: Math.min(this.width, this.height) * 0.38,
+        color: 'rgba(16, 185, 129, 0.12)', // Emerald Glow
+        vx: -0.14,
+        vy: 0.16,
+        phase: 1.4,
+        speed: 0.011
+      }
+    ];
   }
 
   loadSavedTheme() {
@@ -94,6 +145,7 @@ class BackgroundEngine {
     this.height = window.innerHeight;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
+    this.initAuroraBlobs();
     this.initParticles();
   }
 
@@ -102,21 +154,17 @@ class BackgroundEngine {
     this.currentTheme = themeKey;
     localStorage.setItem('pomodoro_theme', themeKey);
 
-    // Update body theme classes
     Object.keys(this.themes).forEach((t) => {
       document.body.classList.remove(this.themes[t].bgClass);
     });
     document.body.classList.add(this.themes[themeKey].bgClass);
 
-    // Sync theme dropdown if present
     const dropdown = document.getElementById('theme-dropdown-select');
     if (dropdown && dropdown.value !== themeKey) {
       dropdown.value = themeKey;
     }
 
     this.initParticles();
-
-    // Trigger visual updates in other UI elements if needed
     window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeKey, info: this.themes[themeKey] } }));
   }
 
@@ -196,8 +244,6 @@ class BackgroundEngine {
 
   startAnimation() {
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-    if (!this.particlesEnabled) return;
-
     const render = () => {
       this.draw();
       this.animationFrameId = requestAnimationFrame(render);
@@ -212,9 +258,43 @@ class BackgroundEngine {
     }
   }
 
+  drawAuroraBlobs() {
+    if (!this.ctx || !this.auroraBlobs || this.auroraBlobs.length === 0) return;
+    this.ctx.save();
+    this.ctx.globalCompositeOperation = 'screen';
+    
+    for (let blob of this.auroraBlobs) {
+      blob.phase += blob.speed;
+      blob.radius = blob.baseRadius * (1 + 0.14 * Math.sin(blob.phase));
+      blob.x += blob.vx;
+      blob.y += blob.vy;
+
+      if (blob.x < -blob.baseRadius * 0.2) blob.vx = Math.abs(blob.vx);
+      if (blob.x > this.width + blob.baseRadius * 0.2) blob.vx = -Math.abs(blob.vx);
+      if (blob.y < -blob.baseRadius * 0.2) blob.vy = Math.abs(blob.vy);
+      if (blob.y > this.height + blob.baseRadius * 0.2) blob.vy = -Math.abs(blob.vy);
+
+      const grad = this.ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.radius);
+      grad.addColorStop(0, blob.color);
+      grad.addColorStop(0.55, blob.color.replace(/[\d\.]+\)$/, '0.06)'));
+      grad.addColorStop(1, 'transparent');
+
+      this.ctx.fillStyle = grad;
+      this.ctx.beginPath();
+      this.ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+      this.ctx.fill();
+    }
+    this.ctx.restore();
+  }
+
   draw() {
-    if (!this.ctx || !this.particlesEnabled) return;
+    if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // Draw hypnotic dynamic Aurora fluid mesh
+    this.drawAuroraBlobs();
+
+    if (!this.particlesEnabled) return;
 
     const themeType = this.themes[this.currentTheme]?.type || 'motes';
 

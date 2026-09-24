@@ -20,39 +20,39 @@ class BilibiliController {
     // Default presets
     this.presets = {
       bili_lofigirl_live: {
-        name: 'B站 Lofi Girl 伴学直播间 (27519423)',
+        name: 'Bilibili Lofi Girl Live (27519423)',
         type: 'live',
         cid: '27519423',
-        title: 'B站 Lofi Girl 直播间 (27519423)',
+        title: 'Bilibili Lofi Girl Live (27519423)',
         url: 'https://live.bilibili.com/27519423'
       },
       youtube_lofi: {
-        name: 'Lofi Girl 官方 24/7 直播 (YouTube)',
+        name: 'Lofi Girl Official 24/7 (YouTube)',
         type: 'youtube',
         channelId: 'UC5qLj-aXg6F9yM9B8p5Wv6A',
-        title: 'Lofi Girl 官方 24/7 直播 (YouTube)',
+        title: 'Lofi Girl Official 24/7 (YouTube)',
         url: 'https://www.youtube.com/@LofiGirl/live',
         embedUrl: 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC5qLj-aXg6F9yM9B8p5Wv6A&autoplay=1'
       },
       bili_live: {
-        name: 'B站 24h 伴学自习室 (21452505)',
+        name: 'Bilibili 24/7 Study Room (21452505)',
         type: 'live',
         cid: '21452505',
-        title: 'B站 24小时自习室',
+        title: 'Bilibili 24/7 Study Room',
         url: 'https://live.bilibili.com/21452505'
       },
       bili_lofi_girl: {
-        name: 'B站 Lofi Girl 伴学生物钟 (经典视频)',
+        name: 'Bilibili Lofi Girl Classic Mix (video)',
         type: 'video',
         bvid: 'BV184411C75d',
-        title: 'B站 Lofi Girl 学习音乐',
+        title: 'Bilibili Lofi Girl Study Music',
         url: 'https://www.bilibili.com/video/BV184411C75d'
       },
       bili_cafe: {
-        name: 'B站 窗边雨声与爵士咖啡馆 (视频)',
+        name: 'Bilibili Rainy Window Jazz Cafe (video)',
         type: 'video',
         bvid: 'BV1vQ4y1Z7mU',
-        title: 'B站 窗边雨声咖啡厅',
+        title: 'Bilibili Rainy Window Cafe',
         url: 'https://www.bilibili.com/video/BV1vQ4y1Z7mU'
       }
     };
@@ -106,7 +106,7 @@ class BilibiliController {
       // Check if it's a pure number -> Bilibili Live room ID
       if (/^\d+$/.test(input)) {
         return {
-          title: `B站直播间 #${input}`,
+          title: `Bilibili live #${input}`,
           embedUrl: `https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=${input}&quality=0&logo=0&danmaku=0`,
           externalUrl: `https://live.bilibili.com/${input}`
         };
@@ -114,7 +114,7 @@ class BilibiliController {
       // Check if it's a BV number
       if (/^BV[a-zA-Z0-9]+$/i.test(input)) {
         return {
-          title: `B站视频 ${input}`,
+          title: `Bilibili video ${input}`,
           embedUrl: `https://player.bilibili.com/player.html?bvid=${input}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
           externalUrl: `https://www.bilibili.com/video/${input}`
         };
@@ -123,7 +123,7 @@ class BilibiliController {
       const liveMatch = input.match(/live\.bilibili\.com\/(\d+)/);
       if (liveMatch) {
         return {
-          title: `B站直播间 #${liveMatch[1]}`,
+          title: `Bilibili live #${liveMatch[1]}`,
           embedUrl: `https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=${liveMatch[1]}&quality=0&logo=0&danmaku=0`,
           externalUrl: input
         };
@@ -132,14 +132,14 @@ class BilibiliController {
       const bvMatch = input.match(/(BV[a-zA-Z0-9]+)/i);
       if (bvMatch) {
         return {
-          title: `B站视频 ${bvMatch[1]}`,
+          title: `Bilibili video ${bvMatch[1]}`,
           embedUrl: `https://player.bilibili.com/player.html?bvid=${bvMatch[1]}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
           externalUrl: input
         };
       }
       // Direct iframe fallback
       return {
-        title: '自定义网络流媒体',
+        title: 'Custom stream URL',
         embedUrl: input,
         externalUrl: input
       };
@@ -274,10 +274,10 @@ class BilibiliController {
         } catch (e) {}
       });
 
-      const badgeText = isBreak ? '☕ 休息时间：已自动完全静音' : '白噪音待命中';
+      const badgeText = isBreak ? '☕ Break: stream fully muted' : 'Ambience standby';
       const badgeDesc = isBreak
-        ? '伴学音乐与白噪音已停止，专注计时启动时将自动恢复播放'
-        : '专注计时启动时将自动播放，休息时自动关闭';
+        ? 'Stream & ambience stopped — auto-resumes when focus starts'
+        : 'Auto-plays when focus starts, auto-closes on breaks';
 
       this.iframeContainer.innerHTML = `
         <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
@@ -322,7 +322,7 @@ class BilibiliController {
       this.statusEl.innerHTML = `
         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
           <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          ☕ 休息中：已自动静音
+          ☕ On break: auto-muted
         </span>
       `;
       return;
@@ -332,21 +332,21 @@ class BilibiliController {
       this.statusEl.innerHTML = `
         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
           <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          伴学播放中: ${target.title}
+          Now playing: ${target.title}
         </span>
       `;
     } else if (this.enabled) {
       this.statusEl.innerHTML = `
         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/70 border border-white/10">
           <span class="w-2 h-2 rounded-full bg-white/40"></span>
-          伴学已就绪 (专注时自动播放)
+          Ready (auto-plays on focus)
         </span>
       `;
     } else {
       this.statusEl.innerHTML = `
         <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-white/40 border border-white/5">
           <span class="w-2 h-2 rounded-full bg-white/20"></span>
-          伴学白噪音已静音
+          Ambience muted
         </span>
       `;
     }

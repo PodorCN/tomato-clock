@@ -13,6 +13,7 @@ class PomodoroApp {
     this.totalDuration = 25 * 60;
     this.intervalId = null;
     this.endTime = null;
+    this.displayMode = 'countdown'; // 'countdown' | 'percent' | 'elapsed'
 
     // Cycle & Stats
     this.completedPomodoros = 0;
@@ -61,6 +62,17 @@ class PomodoroApp {
       timerDisplay: document.getElementById('timer-time'),
       timerTimeInput: document.getElementById('timer-time-input'),
       timerTimeHint: document.getElementById('timer-time-hint'),
+      vintageSplitFlapBoard: document.getElementById('vintage-split-flap-board'),
+      flapM1: document.getElementById('flap-m1'),
+      flapM2: document.getElementById('flap-m2'),
+      flapS1: document.getElementById('flap-s1'),
+      flapS2: document.getElementById('flap-s2'),
+      flapColon: document.getElementById('flap-colon'),
+      flapUnitSymbol: document.getElementById('flap-unit-symbol'),
+      progModeBtns: document.querySelectorAll('.prog-mode-btn'),
+      groovePercentVal: document.getElementById('groove-percent-val'),
+      grooveTimeStats: document.getElementById('groove-time-stats'),
+      grooveBlocks: document.querySelectorAll('.groove-block'),
       customTimeForm: document.getElementById('custom-time-form'),
       inputQuickCustomMin: document.getElementById('input-quick-custom-min'),
       timerStateBadge: document.getElementById('timer-state-badge'),
@@ -82,6 +94,8 @@ class PomodoroApp {
       turntableDeckView: document.getElementById('turntable-deck-view'),
       biliPlayerWrapper: document.getElementById('bili-player-wrapper'),
       studioLampDot: document.getElementById('studio-lamp-dot'),
+      hudStatusText: document.getElementById('hud-status-text'),
+      chronoTelemetryBadge: document.getElementById('chrono-telemetry-badge'),
 
       btnStartPause: document.getElementById('btn-start-pause'),
       startPauseIcon: document.getElementById('start-pause-icon'),
@@ -211,11 +225,11 @@ class PomodoroApp {
       this.dom.modeTabs.forEach((tab) => {
         const mode = tab.dataset.mode;
         if (mode === 'focus') {
-          tab.innerHTML = `<span>🍅</span> 专注 (${this.config.focusTime}m)`;
+          tab.innerHTML = `<span>🍅</span> Focus (${this.config.focusTime}m)`;
         } else if (mode === 'short-break') {
-          tab.innerHTML = `<span>☕</span> 短休 (${this.config.shortBreakTime}m)`;
+          tab.innerHTML = `<span>☕</span> Break (${this.config.shortBreakTime}m)`;
         } else if (mode === 'long-break') {
-          tab.innerHTML = `<span>🌴</span> 长休 (${this.config.longBreakTime}m)`;
+          tab.innerHTML = `<span>🌴</span> Long Break (${this.config.longBreakTime}m)`;
         }
       });
     }
@@ -242,7 +256,7 @@ class PomodoroApp {
 
       const target = window.bilibiliController.getTargetInfo();
       if (this.dom.directOpenText && target) {
-        this.dom.directOpenText.textContent = `🚀 直接打开 ${target.title}`;
+        this.dom.directOpenText.textContent = `🚀 Open ${target.title}`;
       }
     }
   }
@@ -297,21 +311,31 @@ class PomodoroApp {
       });
     }
 
-    // Direct click-to-edit on main clock display
-    if (this.dom.timerDisplay && this.dom.timerTimeInput) {
-      this.dom.timerDisplay.addEventListener('click', () => {
-        if (this.status === 'running') {
-          this.pauseTimer();
-        }
-        const currentMins = Math.max(1, Math.round(this.timeLeft / 60));
+    // Direct click-to-edit on main clock display & split flap cards
+    const triggerFlapEdit = () => {
+      if (this.status === 'running') {
+        this.pauseTimer();
+      }
+      const currentMins = Math.max(1, Math.round(this.timeLeft / 60));
+      if (this.dom.timerTimeInput) {
         this.dom.timerTimeInput.value = currentMins;
-        this.dom.timerDisplay.style.display = 'none';
+        if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'none';
+        if (this.dom.timerDisplay) this.dom.timerDisplay.style.display = 'none';
         if (this.dom.timerTimeHint) this.dom.timerTimeHint.style.display = 'none';
         this.dom.timerTimeInput.style.display = 'block';
         this.dom.timerTimeInput.focus();
         this.dom.timerTimeInput.select();
-      });
+      }
+    };
 
+    if (this.dom.vintageSplitFlapBoard) {
+      this.dom.vintageSplitFlapBoard.addEventListener('click', triggerFlapEdit);
+    }
+    if (this.dom.timerDisplay) {
+      this.dom.timerDisplay.addEventListener('click', triggerFlapEdit);
+    }
+
+    if (this.dom.timerTimeInput) {
       const finishTimeEdit = (commit = true) => {
         if (this.dom.timerTimeInput.style.display === 'none') return;
         if (commit) {
@@ -321,7 +345,8 @@ class PomodoroApp {
           }
         }
         this.dom.timerTimeInput.style.display = 'none';
-        this.dom.timerDisplay.style.display = '';
+        if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
+        if (this.dom.timerDisplay) this.dom.timerDisplay.style.display = '';
         if (this.dom.timerTimeHint) this.dom.timerTimeHint.style.display = '';
       };
 
@@ -337,6 +362,21 @@ class PomodoroApp {
 
       this.dom.timerTimeInput.addEventListener('blur', () => {
         finishTimeEdit(true);
+      });
+    }
+
+    // Progress Display Mode Switcher (countdown / percent / elapsed)
+    if (this.dom.progModeBtns) {
+      this.dom.progModeBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const mode = e.currentTarget.dataset.displayMode;
+          if (mode) {
+            this.displayMode = mode;
+            this.dom.progModeBtns.forEach((b) => b.classList.toggle('active', b === e.currentTarget));
+            this.updateDisplay();
+            window.audioEngine?.playNotification('click');
+          }
+        });
       });
     }
 
@@ -448,7 +488,7 @@ class PomodoroApp {
 
             const target = window.bilibiliController.getTargetInfo();
             if (this.dom.directOpenText) {
-              this.dom.directOpenText.textContent = `🚀 直接打开 ${target.title}`;
+              this.dom.directOpenText.textContent = `🚀 Open ${target.title}`;
             }
 
             if (this.dom.biliPresetSelect) {
@@ -460,6 +500,23 @@ class PomodoroApp {
             }
           }
         });
+      });
+    }
+
+    // Turntable vs Video Deck View Switcher
+    if (this.dom.btnViewTurntable && this.dom.btnViewVideo) {
+      this.dom.btnViewTurntable.addEventListener('click', () => {
+        this.dom.btnViewTurntable.classList.add('active');
+        this.dom.btnViewVideo.classList.remove('active');
+        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'flex';
+        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'none';
+      });
+
+      this.dom.btnViewVideo.addEventListener('click', () => {
+        this.dom.btnViewVideo.classList.add('active');
+        this.dom.btnViewTurntable.classList.remove('active');
+        if (this.dom.turntableDeckView) this.dom.turntableDeckView.style.display = 'none';
+        if (this.dom.biliPlayerWrapper) this.dom.biliPlayerWrapper.style.display = 'block';
       });
     }
 
@@ -475,7 +532,10 @@ class PomodoroApp {
     // Toggle Companion Panel
     if (this.dom.btnTogglePanel) {
       this.dom.btnTogglePanel.addEventListener('click', () => {
-        this.dom.sidePanel.classList.toggle('hidden-panel');
+        const isHidden = this.dom.sidePanel.classList.toggle('hidden-panel');
+        if (this.dom.containerMain) {
+          this.dom.containerMain.classList.toggle('panel-collapsed', isHidden);
+        }
       });
     }
 
@@ -613,40 +673,52 @@ class PomodoroApp {
         tab.classList.remove('active');
       }
       if (tab.dataset.mode === 'focus') {
-        tab.innerHTML = `<span>🍅</span> 专注 (${this.config.focusTime}m)`;
+        tab.innerHTML = `<span>🍅</span> Focus (${this.config.focusTime}m)`;
       } else if (tab.dataset.mode === 'short-break') {
-        tab.innerHTML = `<span>☕</span> 短休 (${this.config.shortBreakTime}m)`;
+        tab.innerHTML = `<span>☕</span> Break (${this.config.shortBreakTime}m)`;
       } else if (tab.dataset.mode === 'long-break') {
-        tab.innerHTML = `<span>🌴</span> 长休 (${this.config.longBreakTime}m)`;
+        tab.innerHTML = `<span>🌴</span> Long Break (${this.config.longBreakTime}m)`;
       }
     });
 
     // Update state badge & Zen break sanctuary
     if (this.mode === 'focus') {
-      this.dom.timerStateBadge.innerHTML = '<span class="studio-rec-dot"></span><span class="badge-text-val">REC / 专注中 FOCUSING [27519423]</span>';
+      this.dom.timerStateBadge.innerHTML = '<span class="studio-rec-dot"></span><span class="badge-text-val">FOCUSING [27519423]</span>';
       this.dom.timerStateBadge.className = 'timer-badge focus-badge';
       if (this.dom.zenBreakSanctuary) this.dom.zenBreakSanctuary.style.display = 'none';
-      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'flex';
+      if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.status === 'running' ? 'FLOW RUNNING' : 'STANDBY';
+      if (this.dom.chronoTelemetryBadge) {
+        this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot"></span><span class="telemetry-text">MASTER CADENCE 100%</span>';
+      }
       document.body.classList.remove('mode-break-active');
     } else if (this.mode === 'short-break') {
-      this.dom.timerStateBadge.innerHTML = '☕ 浅憩短休 (Short Break)';
+      this.dom.timerStateBadge.innerHTML = '☕ Short Break';
       this.dom.timerStateBadge.className = 'timer-badge break-badge';
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
-        if (txt) txt.textContent = '浅憩短休 · 4-7-8 深呼吸';
+        if (txt) txt.textContent = 'Short break · 4-7-8 deep breathing';
       }
-      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'none';
+      if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'SHORT BREAK';
+      if (this.dom.chronoTelemetryBadge) {
+        this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot break"></span><span class="telemetry-text">RESTORATIVE FLOW · 4-7-8 ZEN</span>';
+      }
       document.body.classList.add('mode-break-active');
     } else {
-      this.dom.timerStateBadge.innerHTML = '🌴 惬意长休 (Long Break)';
+      this.dom.timerStateBadge.innerHTML = '🌴 Long Break';
       this.dom.timerStateBadge.className = 'timer-badge long-break-badge';
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
-        if (txt) txt.textContent = '惬意长休 · 彻底放松大脑';
+        if (txt) txt.textContent = 'Long break · fully unwind your mind';
       }
-      if (this.dom.giantClockInner) this.dom.giantClockInner.style.display = 'none';
+      if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'LONG BREAK';
+      if (this.dom.chronoTelemetryBadge) {
+        this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot break"></span><span class="telemetry-text">DEEP REST · 4-7-8 ZEN</span>';
+      }
       document.body.classList.add('mode-break-active');
     }
 
@@ -681,8 +753,9 @@ class PomodoroApp {
 
     this.updateControlsUI();
 
-    // Turntable & Spectrum sync
+    // Turntable & Console sync
     this.dom.giantClockStage?.classList.add('is-running');
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.mode === 'focus' ? 'FLOW RUNNING' : 'RESTING';
     if (this.mode === 'focus') {
       this.dom.vinylDisc?.classList.add('is-spinning');
       this.dom.tonearmAssembly?.classList.add('arm-on-record');
@@ -733,6 +806,7 @@ class PomodoroApp {
     this.dom.tonearmAssembly?.classList.remove('arm-on-record');
     this.dom.spectrumBars?.classList.remove('is-active');
     if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'PAUSED 0 RPM';
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'PAUSED';
 
     // Stop audio while paused
     window.bilibiliController?.pause();
@@ -751,6 +825,7 @@ class PomodoroApp {
     this.dom.tonearmAssembly?.classList.remove('arm-on-record');
     this.dom.spectrumBars?.classList.remove('is-active');
     if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'STANDBY 33⅓ RPM';
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'STANDBY';
     window.bilibiliController?.stop();
     window.audioEngine?.stopWhiteNoise();
   }
@@ -780,8 +855,8 @@ class PomodoroApp {
       this.updateStatsUI();
 
       this.sendNotification(
-        '🎉 番茄钟专注完成！',
-        `恭喜完成 ${this.config.focusTime} 分钟专注！休息时间到了，B站伴学音乐已自动关闭，站起来喝杯水吧～`
+        '🎉 Focus session complete!',
+        `Great job — ${this.config.focusTime} minutes of focus done! Break time: the Bilibili stream is auto-closed. Stand up and grab a glass of water!`
       );
 
       // Stop Bilibili & white noise immediately
@@ -802,8 +877,8 @@ class PomodoroApp {
       // Break complete
       window.audioEngine?.playNotification('break-done');
       this.sendNotification(
-        '☕ 休息结束！',
-        '休息时间结束啦，准备好迎接下一个充满成效的专注番茄钟了吗？'
+        '☕ Break over!',
+        'Break time is over — ready for another productive focus session?'
       );
 
       this.switchMode('focus', true);
@@ -839,48 +914,113 @@ class PomodoroApp {
     }
   }
 
+  updateFlap(cardEl, newDigit) {
+    if (!cardEl) return;
+    const currentVal = cardEl.getAttribute('data-val');
+    const strVal = String(newDigit);
+    if (currentVal === strVal) return;
+
+    cardEl.setAttribute('data-val', strVal);
+    const nums = cardEl.querySelectorAll('.flap-num');
+    nums.forEach((num) => {
+      num.textContent = strVal;
+    });
+  }
+
   updateDisplay() {
+    const progressRatio = Math.max(0, Math.min(1, (this.totalDuration - this.timeLeft) / this.totalDuration));
     const mins = Math.floor(this.timeLeft / 60);
     const secs = this.timeLeft % 60;
     const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const pct = Math.round(progressRatio * 100);
+    const elapsedSec = Math.max(0, this.totalDuration - this.timeLeft);
+    const eMins = Math.floor(elapsedSec / 60);
+    const eSecs = elapsedSec % 60;
 
     if (this.dom.timerDisplay) {
       this.dom.timerDisplay.textContent = timeStr;
     }
 
-    const progressRatio = Math.max(0, Math.min(1, (this.totalDuration - this.timeLeft) / this.totalDuration));
+    // Colossal Display Modes: 'countdown' | 'percent' | 'elapsed'
+    if (this.displayMode === 'percent') {
+      if (this.dom.flapColon) this.dom.flapColon.style.display = 'none';
+      if (this.dom.flapUnitSymbol) this.dom.flapUnitSymbol.style.display = 'block';
+      if (this.dom.flapS1) this.dom.flapS1.style.display = 'none';
+      if (this.dom.flapS2) this.dom.flapS2.style.display = 'none';
 
-    // Update Laser Groove Progress Track & Markers
+      const pctStr = pct.toString().padStart(2, '0');
+      this.updateFlap(this.dom.flapM1, pctStr[pctStr.length - 2] || '0');
+      this.updateFlap(this.dom.flapM2, pctStr[pctStr.length - 1] || '0');
+    } else if (this.displayMode === 'elapsed') {
+      if (this.dom.flapColon) this.dom.flapColon.style.display = 'flex';
+      if (this.dom.flapUnitSymbol) this.dom.flapUnitSymbol.style.display = 'none';
+      if (this.dom.flapS1) this.dom.flapS1.style.display = 'flex';
+      if (this.dom.flapS2) this.dom.flapS2.style.display = 'flex';
+
+      const emStr = eMins.toString().padStart(2, '0');
+      const esStr = eSecs.toString().padStart(2, '0');
+      this.updateFlap(this.dom.flapM1, emStr[0]);
+      this.updateFlap(this.dom.flapM2, emStr[1]);
+      this.updateFlap(this.dom.flapS1, esStr[0]);
+      this.updateFlap(this.dom.flapS2, esStr[1]);
+    } else {
+      // Default: Countdown (MM:SS)
+      if (this.dom.flapColon) this.dom.flapColon.style.display = 'flex';
+      if (this.dom.flapUnitSymbol) this.dom.flapUnitSymbol.style.display = 'none';
+      if (this.dom.flapS1) this.dom.flapS1.style.display = 'flex';
+      if (this.dom.flapS2) this.dom.flapS2.style.display = 'flex';
+
+      const mStr = mins.toString().padStart(2, '0');
+      const sStr = secs.toString().padStart(2, '0');
+      this.updateFlap(this.dom.flapM1, mStr[0]);
+      this.updateFlap(this.dom.flapM2, mStr[1]);
+      this.updateFlap(this.dom.flapS1, sStr[0]);
+      this.updateFlap(this.dom.flapS2, sStr[1]);
+    }
+
+    // Physical Vinyl Microgroove Track Matrix update
+    if (this.dom.groovePercentVal) {
+      this.dom.groovePercentVal.textContent = `${pct}%`;
+    }
+    if (this.dom.grooveTimeStats) {
+      const totalMin = Math.floor(this.totalDuration / 60);
+      const remainMin = Math.ceil(this.timeLeft / 60);
+      const doneMin = Math.floor(elapsedSec / 60);
+      this.dom.grooveTimeStats.textContent = `${doneMin}m / ${totalMin}m · ${remainMin}m left`;
+    }
+    if (this.dom.grooveBlocks && this.dom.grooveBlocks.length > 0) {
+      const etchedCount = Math.floor(progressRatio * this.dom.grooveBlocks.length);
+      this.dom.grooveBlocks.forEach((block, idx) => {
+        block.classList.toggle('is-etched', idx < etchedCount);
+        block.classList.toggle('is-current', idx === etchedCount && this.status === 'running');
+      });
+    }
+
+    // Update Smooth Laser Fill Track
     if (this.dom.laserTrackProgress) {
       this.dom.laserTrackProgress.style.width = `${(progressRatio * 100).toFixed(1)}%`;
     }
-    if (this.dom.grooveMarkerEnd) {
-      const totalMins = Math.floor(this.totalDuration / 60);
-      this.dom.grooveMarkerEnd.textContent = `${totalMins.toString().padStart(2, '0')}:00`;
-      if (this.dom.grooveMarkerMid) {
-        const halfMins = Math.floor(totalMins / 2);
-        const halfSecs = (totalMins % 2) * 30;
-        this.dom.grooveMarkerMid.textContent = `${halfMins.toString().padStart(2, '0')}:${halfSecs.toString().padStart(2, '0')}`;
+
+    // Tonearm Dynamic Groove Tracking across vinyl disc
+    if (this.dom.tonearmAssembly) {
+      if (this.mode === 'focus' && this.status === 'running') {
+        const armAngle = 18 + progressRatio * 13; // 18deg at outer rim -> 31deg at inner track
+        this.dom.tonearmAssembly.style.transform = `rotate(${armAngle}deg)`;
+      } else if (this.status === 'idle') {
+        this.dom.tonearmAssembly.style.transform = 'rotate(0deg)';
       }
     }
 
-    // Update Circular Ring Progress (Halo backdrop)
-    if (this.dom.timerRing) {
-      const radius = 195;
-      const circumference = 2 * Math.PI * radius;
-      const offset = circumference - progressRatio * circumference;
-      this.dom.timerRing.style.strokeDashoffset = offset;
-    }
-
     // Update Page Title
-    const modeName = this.mode === 'focus' ? '🍅 专注中' : '☕ 休息中';
-    document.title = `${timeStr} - ${modeName} | Lofi 番茄钟`;
+    const modeName = this.mode === 'focus' ? '🍅 Focusing' : '☕ On Break';
+    const titleVal = this.displayMode === 'percent' ? `${pct}%` : timeStr;
+    document.title = `${titleVal} - ${modeName} | Lofi Pomodoro`;
   }
 
   updateControlsUI() {
     if (this.status === 'running') {
       this.dom.btnStartPause.classList.add('running');
-      this.dom.startPauseText.textContent = '暂停';
+      this.dom.startPauseText.textContent = 'Pause';
       this.dom.startPauseIcon.innerHTML = `
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
           <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
@@ -888,7 +1028,7 @@ class PomodoroApp {
       `;
     } else {
       this.dom.btnStartPause.classList.remove('running');
-      this.dom.startPauseText.textContent = this.status === 'paused' ? '继续' : '开始';
+      this.dom.startPauseText.textContent = this.status === 'paused' ? 'Resume' : 'Start';
       this.dom.startPauseIcon.innerHTML = `
         <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z"/>
@@ -902,16 +1042,16 @@ class PomodoroApp {
       this.dom.statPomoCount.textContent = this.completedPomodoros;
     }
     if (this.dom.statMinutes) {
-      this.dom.statMinutes.textContent = `${this.focusMinutesToday} 分钟`;
+      this.dom.statMinutes.textContent = `${this.focusMinutesToday} min`;
     }
     if (this.dom.tomatoTally) {
       const count = Math.min(this.completedPomodoros, 16);
       let tallyHtml = '';
       for (let i = 0; i < count; i++) {
-        tallyHtml += `<span class="inline-block transform hover:scale-125 transition-transform" title="已完成第 ${i + 1} 个番茄钟">🍅</span>`;
+        tallyHtml += `<span class="inline-block transform hover:scale-125 transition-transform" title="Pomodoro #${i + 1} completed">🍅</span>`;
       }
       if (this.completedPomodoros === 0) {
-        tallyHtml = '<span class="text-white/30 text-xs">今日还未开始，加油迈出第一步！</span>';
+        tallyHtml = '<span class="text-white/30 text-xs">No pomodoros yet — take the first step!</span>';
       } else if (this.completedPomodoros > 16) {
         tallyHtml += `<span class="text-white/60 text-xs ml-1">+${this.completedPomodoros - 16}</span>`;
       }
@@ -960,7 +1100,7 @@ class PomodoroApp {
     if (this.tasks.length === 0) {
       this.dom.taskList.innerHTML = `
         <div class="text-center py-6 text-white/30 text-xs">
-          暂无任务，随手记下当下一个小小目标吧 ✍️
+          No tasks yet — jot down a small goal ✍️
         </div>
       `;
       return;
@@ -978,7 +1118,7 @@ class PomodoroApp {
             }>
             <span class="text-sm font-medium text-white/90">${escapeHtml(task.text)}</span>
           </label>
-          <button class="task-delete-btn text-white/30 hover:text-red-400 p-1 rounded transition-colors ml-2" title="删除任务">
+          <button class="task-delete-btn text-white/30 hover:text-red-400 p-1 rounded transition-colors ml-2" title="Delete task">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
