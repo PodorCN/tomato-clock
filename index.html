@@ -147,17 +147,37 @@
             />
           </svg>
           <div class="clock-inner">
-            <div id="timer-time" class="timer-time">25:00</div>
+            <div id="timer-time" class="timer-time" title="点击可直接手动修改时间">25:00</div>
+            <input type="number" id="timer-time-input" class="timer-time-input" style="display:none;" min="1" max="180">
+            <span class="timer-time-hint" id="timer-time-hint">✎ 点击大字直接修改时间</span>
           </div>
         </div>
 
-        <!-- Quick Duration Presets -->
+        <!-- Quick Duration Presets & Manual Input -->
         <div class="quick-presets-row">
           <span class="text-xs text-white/40 mr-1">快捷方案:</span>
           <button class="preset-badge" data-focus="25" data-break="5">25 / 5 经典</button>
           <button class="preset-badge" data-focus="50" data-break="10">50 / 10 深度</button>
           <button class="preset-badge" data-focus="45" data-break="15">45 / 15 心流</button>
           <button class="preset-badge" data-focus="90" data-break="20">90 / 20 冲刺</button>
+
+          <!-- Manual Custom Time Pill -->
+          <form id="custom-time-form" class="custom-time-pill flex items-center bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl px-2.5 py-1 text-xs transition-colors ml-1">
+            <span class="text-white/50 mr-1.5">手动输入:</span>
+            <input 
+              type="number" 
+              id="input-quick-custom-min" 
+              min="1" 
+              max="180" 
+              value="25" 
+              class="w-12 bg-black/40 text-center text-white font-mono font-bold rounded border border-white/10 px-1 py-0.5 outline-none focus:border-red-400"
+              title="输入任意学习分钟数"
+            >
+            <span class="text-white/50 mx-1">分</span>
+            <button type="submit" class="text-red-400 hover:text-red-300 font-semibold px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors">
+              设定
+            </button>
+          </form>
         </div>
 
         <!-- Primary Controls -->

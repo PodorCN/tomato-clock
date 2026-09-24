@@ -59,6 +59,10 @@ class PomodoroApp {
   cacheDom() {
     this.dom = {
       timerDisplay: document.getElementById('timer-time'),
+      timerTimeInput: document.getElementById('timer-time-input'),
+      timerTimeHint: document.getElementById('timer-time-hint'),
+      customTimeForm: document.getElementById('custom-time-form'),
+      inputQuickCustomMin: document.getElementById('input-quick-custom-min'),
       timerStateBadge: document.getElementById('timer-state-badge'),
       timerRing: document.getElementById('timer-ring-progress'),
       btnStartPause: document.getElementById('btn-start-pause'),
@@ -181,7 +185,22 @@ class PomodoroApp {
     if (getEl('input-long-break')) getEl('input-long-break').value = this.config.longBreakTime;
     if (getEl('check-auto-break')) getEl('check-auto-break').checked = this.config.autoStartBreak;
     if (getEl('check-auto-focus')) getEl('check-auto-focus').checked = this.config.autoStartFocus;
-    if (getEl('check-notifications')) getEl('check-notifications').checked = this.config.desktopNotification;
+    if (this.dom.inputQuickCustomMin) {
+      this.dom.inputQuickCustomMin.value = this.config.focusTime;
+    }
+
+    if (this.dom.modeTabs) {
+      this.dom.modeTabs.forEach((tab) => {
+        const mode = tab.dataset.mode;
+        if (mode === 'focus') {
+          tab.innerHTML = `<span>🍅</span> 专注 (${this.config.focusTime}m)`;
+        } else if (mode === 'short-break') {
+          tab.innerHTML = `<span>☕</span> 短休 (${this.config.shortBreakTime}m)`;
+        } else if (mode === 'long-break') {
+          tab.innerHTML = `<span>🌴</span> 长休 (${this.config.longBreakTime}m)`;
+        }
+      });
+    }
 
     if (this.dom.volumeSlider) this.dom.volumeSlider.value = this.config.soundVolume * 100;
     if (this.dom.ambientSelect) this.dom.ambientSelect.value = this.config.ambientNoise;
@@ -208,6 +227,15 @@ class PomodoroApp {
         this.dom.directOpenText.textContent = `🚀 直接打开 ${target.title}`;
       }
     }
+  }
+
+  setCustomFocusDuration(rawMin) {
+    const mins = Math.max(1, Math.min(180, parseInt(rawMin, 10) || 25));
+    this.config.focusTime = mins;
+    this.saveData();
+    this.syncSettingsUI();
+    this.switchMode('focus', true);
+    window.audioEngine?.playNotification('click');
   }
 
   bindEvents() {
@@ -239,6 +267,60 @@ class PomodoroApp {
         window.audioEngine?.playNotification('click');
       });
     });
+
+    // Custom time form submission
+    if (this.dom.customTimeForm) {
+      this.dom.customTimeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const mins = parseInt(this.dom.inputQuickCustomMin?.value, 10);
+        if (!isNaN(mins) && mins > 0) {
+          this.setCustomFocusDuration(mins);
+        }
+      });
+    }
+
+    // Direct click-to-edit on main clock display
+    if (this.dom.timerDisplay && this.dom.timerTimeInput) {
+      this.dom.timerDisplay.addEventListener('click', () => {
+        if (this.status === 'running') {
+          this.pauseTimer();
+        }
+        const currentMins = Math.max(1, Math.round(this.timeLeft / 60));
+        this.dom.timerTimeInput.value = currentMins;
+        this.dom.timerDisplay.style.display = 'none';
+        if (this.dom.timerTimeHint) this.dom.timerTimeHint.style.display = 'none';
+        this.dom.timerTimeInput.style.display = 'block';
+        this.dom.timerTimeInput.focus();
+        this.dom.timerTimeInput.select();
+      });
+
+      const finishTimeEdit = (commit = true) => {
+        if (this.dom.timerTimeInput.style.display === 'none') return;
+        if (commit) {
+          const val = parseInt(this.dom.timerTimeInput.value, 10);
+          if (!isNaN(val) && val > 0) {
+            this.setCustomFocusDuration(val);
+          }
+        }
+        this.dom.timerTimeInput.style.display = 'none';
+        this.dom.timerDisplay.style.display = '';
+        if (this.dom.timerTimeHint) this.dom.timerTimeHint.style.display = '';
+      };
+
+      this.dom.timerTimeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          finishTimeEdit(true);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          finishTimeEdit(false);
+        }
+      });
+
+      this.dom.timerTimeInput.addEventListener('blur', () => {
+        finishTimeEdit(true);
+      });
+    }
 
     // Volume & Ambient
     if (this.dom.volumeSlider) {
@@ -478,12 +560,29 @@ class PomodoroApp {
       this.timeLeft = this.totalDuration;
     }
 
-    // Update active tab buttons
+    if (this.dom.timerTimeInput) {
+      this.dom.timerTimeInput.style.display = 'none';
+    }
+    if (this.dom.timerDisplay) {
+      this.dom.timerDisplay.style.display = '';
+    }
+    if (this.dom.timerTimeHint) {
+      this.dom.timerTimeHint.style.display = '';
+    }
+
+    // Update active tab buttons and labels
     this.dom.modeTabs.forEach((tab) => {
       if (tab.dataset.mode === this.mode) {
         tab.classList.add('active');
       } else {
         tab.classList.remove('active');
+      }
+      if (tab.dataset.mode === 'focus') {
+        tab.innerHTML = `<span>🍅</span> 专注 (${this.config.focusTime}m)`;
+      } else if (tab.dataset.mode === 'short-break') {
+        tab.innerHTML = `<span>☕</span> 短休 (${this.config.shortBreakTime}m)`;
+      } else if (tab.dataset.mode === 'long-break') {
+        tab.innerHTML = `<span>🌴</span> 长休 (${this.config.longBreakTime}m)`;
       }
     });
 

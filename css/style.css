@@ -405,6 +405,48 @@ html, body {
   font-variant-numeric: tabular-nums;
   line-height: 1;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, background 0.2s ease;
+  border-radius: 16px;
+  padding: 0.15rem 0.5rem;
+}
+
+.timer-time:hover:not(.running) {
+  color: #fff;
+  transform: scale(1.04);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.timer-time-hint {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 0.45rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.clock-inner:hover .timer-time-hint {
+  opacity: 1;
+}
+
+.timer-time-input {
+  font-family: var(--font-mono);
+  font-size: 4rem;
+  font-weight: 700;
+  width: 170px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--accent-color);
+  border-radius: 20px;
+  color: #fff;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+
+.custom-time-pill {
+  display: inline-flex;
+  align-items: center;
 }
 
 /* Quick Duration Presets */
