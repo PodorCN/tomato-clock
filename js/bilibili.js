@@ -16,6 +16,9 @@ class BilibiliController {
     this.isPlaying = false;
     this.iframeContainer = null;
     this.statusEl = null;
+    this.phoneMediaQuery = window.matchMedia(
+      '(max-width: 640px), (hover: none) and (pointer: coarse) and (max-width: 900px)'
+    );
 
     // Default presets
     this.presets = {
@@ -168,10 +171,10 @@ class BilibiliController {
   }
 
   /**
-   * Detect mobile phone device (strictly max-width <= 640px)
+   * Detect phone layout, including landscape phones with a wide CSS viewport.
    */
   isPhoneDevice() {
-    return window.innerWidth <= 640;
+    return this.phoneMediaQuery?.matches ?? (window.innerWidth <= 640);
   }
 
   isMobileDevice() {
@@ -210,6 +213,11 @@ class BilibiliController {
    * @param {boolean} asTab 
    */
   openDirectly(presetKey = null, asTab = false) {
+    if (this.isPhoneDevice()) {
+      this.stop();
+      return false;
+    }
+
     if (presetKey && this.presets[presetKey]) {
       this.currentPreset = presetKey;
       this.saveSettings();
@@ -235,12 +243,18 @@ class BilibiliController {
     }
     this.isPlaying = true;
     this.updateStatusUI();
+    return true;
   }
 
   /**
    * Play stream
    */
   play() {
+    if (this.isPhoneDevice()) {
+      this.stop();
+      return false;
+    }
+
     const target = this.getTargetInfo();
     this.isPlaying = true;
 
@@ -267,6 +281,7 @@ class BilibiliController {
     }
 
     this.updateStatusUI();
+    return true;
   }
 
   stopOnBreak() {

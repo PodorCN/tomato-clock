@@ -41,6 +41,12 @@ class PomodoroApp {
     this.deckView = 'turntable';
     this.isVideoFocusActive = false;
 
+    // Phones use a deliberately reduced UI. The pointer check also catches
+    // landscape phones whose CSS viewport is wider than 640px.
+    this.phoneMediaQuery = window.matchMedia(
+      '(max-width: 640px), (hover: none) and (pointer: coarse) and (max-width: 900px)'
+    );
+
     // DOM Elements Cache
     this.dom = {};
   }
@@ -48,17 +54,17 @@ class PomodoroApp {
   init() {
     this.cacheDom();
     this.loadSavedData();
+    this.checkDeviceLayout();
     this.bindEvents();
     this.initControllers();
     this.switchDeckView(this.deckView);
     this.switchMode(this.mode, false);
     this.updateStatsUI();
-    this.checkDeviceLayout();
     this.renderTasks();
     this.updateTasksWidgetVisibility();
 
-    // Ask for notification permission if needed
-    if ('Notification' in window && Notification.permission === 'default') {
+    // Desktop-only feature; avoid interrupting the simplified phone experience.
+    if (!this.isPhone() && 'Notification' in window && Notification.permission === 'default') {
       setTimeout(() => {
         Notification.requestPermission();
       }, 3000);
@@ -170,22 +176,17 @@ class PomodoroApp {
       deckTasksSection: document.getElementById('deck-tasks-section'),
       btnToggleDeckControls: document.getElementById('btn-toggle-deck-controls'),
 
-      // Mobile & Tablet Companion Hub elements
+      // Mobile phone hub (timer audio only)
       mobileCompanionHub: document.getElementById('mobile-companion-hub'),
       mobileAmbientSelect: document.getElementById('mobile-ambient-select'),
       mobileVolumeSlider: document.getElementById('mobile-volume-slider'),
       btnMobileAmbientToggle: document.getElementById('btn-mobile-ambient-toggle'),
-      mobileSoundStateText: document.getElementById('mobile-sound-state-text'),
-      mobileTaskCountBadge: document.getElementById('mobile-task-count-badge'),
-      mobileTaskForm: document.getElementById('mobile-task-add-form'),
-      mobileTaskInput: document.getElementById('mobile-task-new-input'),
-      mobileTaskList: document.getElementById('mobile-task-items-list')
+      mobileSoundStateText: document.getElementById('mobile-sound-state-text')
     };
   }
 
   isPhone() {
-    // Strictly mobile phone (<= 640px)
-    return window.innerWidth <= 640;
+    return this.phoneMediaQuery?.matches ?? (window.innerWidth <= 640);
   }
 
   isMobile() {
@@ -194,7 +195,36 @@ class PomodoroApp {
 
   checkDeviceLayout() {
     const isPhone = this.isPhone();
+    const wasPhone = document.body.classList.contains('is-phone-device');
     document.body.classList.toggle('is-phone-device', isPhone);
+    return { changed: isPhone !== wasPhone, isPhone };
+  }
+
+  handleDeviceLayoutChange() {
+    const { changed, isPhone } = this.checkDeviceLayout();
+    if (!changed) return;
+
+    if (isPhone) {
+      // Companion media must never continue after crossing into phone layout.
+      window.bilibiliController?.stop();
+      this.dom.modalSettings?.classList.add('hidden');
+
+      if (this.config.zenMode) {
+        this.config.zenMode = false;
+        document.body.classList.remove('zen-mode');
+        this.dom.btnZen?.classList.remove('active');
+      }
+
+      if (this.displayMode !== 'countdown') {
+        this.displayMode = 'countdown';
+        this.dom.progModeBtns?.forEach((button) => {
+          button.classList.toggle('active', button.dataset.displayMode === 'countdown');
+        });
+        this.updateDisplay();
+      }
+    } else {
+      window.bilibiliController?.updateStatusUI();
+    }
   }
 
   loadSavedData() {
@@ -529,19 +559,12 @@ class PomodoroApp {
       });
     }
 
-    if (this.dom.mobileTaskForm && this.dom.mobileTaskInput) {
-      this.dom.mobileTaskForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const text = this.dom.mobileTaskInput.value.trim();
-        if (!text) return;
-        this.addTask(text);
-        this.dom.mobileTaskInput.value = '';
-      });
+    const onDeviceLayoutChange = () => this.handleDeviceLayoutChange();
+    if (this.phoneMediaQuery?.addEventListener) {
+      this.phoneMediaQuery.addEventListener('change', onDeviceLayoutChange);
+    } else {
+      this.phoneMediaQuery?.addListener(onDeviceLayoutChange);
     }
-
-    window.addEventListener('resize', () => {
-      this.checkDeviceLayout();
-    });
 
     window.addEventListener('themeChanged', (e) => {
       if (e.detail?.theme === 'cozy-fireplace') {
@@ -663,15 +686,7 @@ class PomodoroApp {
     // Toggle Tasks Widget (Navbar button)
     if (this.dom.btnToggleTasks) {
       this.dom.btnToggleTasks.addEventListener('click', () => {
-        if (this.isPhone()) {
-          const mobileCard = document.getElementById('mobile-tasks-card');
-          if (mobileCard) {
-            mobileCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            this.dom.mobileTaskInput?.focus();
-          }
-        } else {
-          this.toggleTasksWidget();
-        }
+        if (!this.isPhone()) this.toggleTasksWidget();
       });
     }
 
@@ -1281,9 +1296,10 @@ class PomodoroApp {
   }
 
   toggleZenMode() {
+    if (this.isPhone()) return;
     this.config.zenMode = !this.config.zenMode;
     document.body.classList.toggle('zen-mode', this.config.zenMode);
-    this.dom.btnZen.classList.toggle('active', this.config.zenMode);
+    this.dom.btnZen?.classList.toggle('active', this.config.zenMode);
   }
 
   toggleFullscreen() {
@@ -1373,6 +1389,7 @@ class PomodoroApp {
   }
 
   toggleTasksWidget() {
+    if (this.isPhone()) return;
     const isPanelHidden = this.dom.sidePanel ? this.dom.sidePanel.classList.contains('hidden-panel') : true;
 
     if (!isPanelHidden) {
@@ -1436,7 +1453,6 @@ class PomodoroApp {
     if (this.dom.navTasksBadge) this.dom.navTasksBadge.textContent = uncompletedCount;
     if (this.dom.focusTaskCountBadge) this.dom.focusTaskCountBadge.textContent = badgeText;
     if (this.dom.focusTasksPillCount) this.dom.focusTasksPillCount.textContent = uncompletedCount;
-    if (this.dom.mobileTaskCountBadge) this.dom.mobileTaskCountBadge.textContent = badgeText;
   }
 
   renderTaskItemsHTML() {
@@ -1511,11 +1527,6 @@ class PomodoroApp {
     if (this.dom.focusTaskList) {
       this.dom.focusTaskList.innerHTML = html;
       this.bindTaskListEvents(this.dom.focusTaskList);
-    }
-
-    if (this.dom.mobileTaskList) {
-      this.dom.mobileTaskList.innerHTML = html;
-      this.bindTaskListEvents(this.dom.mobileTaskList);
     }
   }
 }
