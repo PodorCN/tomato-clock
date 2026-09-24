@@ -308,53 +308,54 @@
             </button>
           </div>
         </div>
+      </section>
 
-        <!-- Mobile & Tablet Streamlined Hub: Ambient Sounds & Focus Tasks -->
-        <div class="mobile-companion-hub" id="mobile-companion-hub">
-          <!-- Mobile Ambient Sound Card -->
-          <div class="mobile-ambient-card">
-            <div class="flex items-center justify-between mb-2">
-              <span class="shelf-label flex items-center gap-1.5 text-white/80 font-bold">
-                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                <span>Ambient Sound</span>
-              </span>
-              <button type="button" id="btn-mobile-ambient-toggle" class="mobile-ambient-toggle-btn text-[11px] text-white/60 hover:text-white transition-colors" title="Toggle sound playback">
-                <span id="mobile-sound-state-text">🔊 Sound On</span>
-              </button>
-            </div>
-            <div class="flex items-center gap-2">
-              <select id="mobile-ambient-select" class="custom-select text-xs py-2 px-2.5 flex-1">
-                <option value="none">🔇 Sound Off</option>
-                <option value="fire" selected>🔥 Cozy Fireplace (柴火暖炉)</option>
-                <option value="rain">🌧️ Rain on Window (窗外雨声)</option>
-                <option value="cafe">☕ Cafe Ambience (咖啡馆)</option>
-                <option value="waves">🌊 Slow Ocean Waves (海浪)</option>
-              </select>
-              <div class="flex items-center gap-1.5 w-24 flex-shrink-0">
-                <input type="range" id="mobile-volume-slider" min="0" max="100" value="50" class="w-full">
-              </div>
-            </div>
+      <!-- Mobile Phone Streamlined Hub (Ambient Sounds & Focus Tasks) -->
+      <!-- ONLY VISIBLE ON MOBILE PHONES (max-width: 640px) -->
+      <div class="mobile-companion-hub" id="mobile-companion-hub">
+        <!-- Mobile Ambient Sound Card -->
+        <div class="mobile-ambient-card">
+          <div class="flex items-center justify-between mb-2">
+            <span class="shelf-label flex items-center gap-1.5 text-white/80 font-bold">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>Ambient Sound</span>
+            </span>
+            <button type="button" id="btn-mobile-ambient-toggle" class="mobile-ambient-toggle-btn text-[11px] text-white/60 hover:text-white transition-colors" title="Toggle sound playback">
+              <span id="mobile-sound-state-text">🔊 Sound On</span>
+            </button>
           </div>
-
-          <!-- Mobile Focus Tasks (Todo List) -->
-          <div class="mobile-tasks-card" id="mobile-tasks-card">
-            <div class="flex items-center justify-between mb-2">
-              <span class="shelf-label flex items-center gap-1.5 text-white/80 font-bold">
-                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                <span>Focus Tasks</span>
-              </span>
-              <span id="mobile-task-count-badge" class="focus-tasks-badge">0</span>
-            </div>
-            <form id="mobile-task-add-form" class="task-form mb-2.5">
-              <input type="text" id="mobile-task-new-input" class="task-input-text text-xs py-2 px-3" placeholder="Add a focus goal..." maxlength="40">
-              <button type="submit" class="nav-btn py-1.5 px-3 text-xs">Add</button>
-            </form>
-            <div class="task-items-scroll max-h-56 overflow-y-auto" id="mobile-task-items-list">
-              <!-- Tasks rendered here -->
+          <div class="flex items-center gap-2">
+            <select id="mobile-ambient-select" class="custom-select text-xs py-2 px-2.5 flex-1">
+              <option value="none">🔇 Sound Off</option>
+              <option value="fire" selected>🔥 Cozy Fireplace (柴火暖炉)</option>
+              <option value="rain">🌧️ Rain on Window (窗外雨声)</option>
+              <option value="cafe">☕ Cafe Ambience (咖啡馆)</option>
+              <option value="waves">🌊 Slow Ocean Waves (海浪)</option>
+            </select>
+            <div class="flex items-center gap-1.5 w-24 flex-shrink-0">
+              <input type="range" id="mobile-volume-slider" min="0" max="100" value="50" class="w-full">
             </div>
           </div>
         </div>
-      </section>
+
+        <!-- Mobile Focus Tasks (Todo List) -->
+        <div class="mobile-tasks-card" id="mobile-tasks-card">
+          <div class="flex items-center justify-between mb-2">
+            <span class="shelf-label flex items-center gap-1.5 text-white/80 font-bold">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>Focus Tasks</span>
+            </span>
+            <span id="mobile-task-count-badge" class="focus-tasks-badge">0</span>
+          </div>
+          <form id="mobile-task-add-form" class="task-form mb-2.5">
+            <input type="text" id="mobile-task-new-input" class="task-input-text text-xs py-2 px-3" placeholder="Add a focus goal..." maxlength="40">
+            <button type="submit" class="nav-btn py-1.5 px-3 text-xs">Add</button>
+          </form>
+          <div class="task-items-scroll max-h-56 overflow-y-auto" id="mobile-task-items-list">
+            <!-- Tasks rendered here -->
+          </div>
+        </div>
+      </div>
 
       <!-- Focus Tasks Dock (Visible when companion panel is collapsed) -->
       <aside id="focus-tasks-widget" class="focus-tasks-widget hidden-widget">

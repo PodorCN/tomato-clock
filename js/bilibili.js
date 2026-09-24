@@ -168,23 +168,22 @@ class BilibiliController {
   }
 
   /**
-   * Detect mobile phone or iPad/tablet device
+   * Detect mobile phone device (strictly max-width <= 640px)
    */
+  isPhoneDevice() {
+    return window.innerWidth <= 640;
+  }
+
   isMobileDevice() {
-    const ua = navigator.userAgent || '';
-    const isTouch = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
-    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && isTouch);
-    const isAndroid = /Android/.test(ua);
-    const isSmallScreen = window.innerWidth <= 1024;
-    return isIOS || isAndroid || (isTouch && isSmallScreen) || isSmallScreen;
+    return this.isPhoneDevice();
   }
 
   /**
    * Called when Focus session starts
    */
   startOnFocus() {
-    // Requirements: "如果是移动端就不要自动放b站"
-    if (this.isMobileDevice()) {
+    // Requirements: "如果是移动端就不要自动放b站" - only suppress on phones
+    if (this.isPhoneDevice()) {
       return;
     }
     if (!this.enabled) return;

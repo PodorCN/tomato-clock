@@ -183,18 +183,18 @@ class PomodoroApp {
     };
   }
 
+  isPhone() {
+    // Strictly mobile phone (<= 640px)
+    return window.innerWidth <= 640;
+  }
+
   isMobile() {
-    const ua = navigator.userAgent || '';
-    const isTouch = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
-    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && isTouch);
-    const isAndroid = /Android/.test(ua);
-    const isSmallScreen = window.innerWidth <= 1024;
-    return isIOS || isAndroid || (isTouch && isSmallScreen) || isSmallScreen;
+    return this.isPhone();
   }
 
   checkDeviceLayout() {
-    const mobile = this.isMobile();
-    document.body.classList.toggle('is-mobile-device', mobile);
+    const isPhone = this.isPhone();
+    document.body.classList.toggle('is-phone-device', isPhone);
   }
 
   loadSavedData() {
@@ -663,7 +663,7 @@ class PomodoroApp {
     // Toggle Tasks Widget (Navbar button)
     if (this.dom.btnToggleTasks) {
       this.dom.btnToggleTasks.addEventListener('click', () => {
-        if (this.isMobile()) {
+        if (this.isPhone()) {
           const mobileCard = document.getElementById('mobile-tasks-card');
           if (mobileCard) {
             mobileCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -976,7 +976,7 @@ class PomodoroApp {
     // Audio / Bilibili handling
     if (this.mode === 'focus') {
       window.audioEngine?.setBreakMute(false);
-      if (!this.isMobile()) {
+      if (!this.isPhone()) {
         window.bilibiliController?.startOnFocus();
       }
       if (this.config.ambientNoise && this.config.ambientNoise !== 'none') {

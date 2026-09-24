@@ -2076,61 +2076,17 @@ body.zen-mode .zen-exit-pill {
 }
 
 /* ==========================================================================
-   Mobile & Tablet Streamlined Companion Hub (Ambient Sound & Tasks)
+   Mobile Companion Hub (Strictly hidden on non-phones)
    ========================================================================== */
 .mobile-companion-hub {
-  display: none;
-  width: 100%;
-  max-width: 560px;
-  margin: 1.25rem auto 0;
-  flex-direction: column;
-  gap: 0.95rem;
-  z-index: 10;
-}
-
-.mobile-ambient-card,
-.mobile-tasks-card {
-  width: 100%;
-  background: rgba(14, 15, 20, 0.78);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 0.95rem 1.15rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-}
-
-.mobile-ambient-card:focus-within,
-.mobile-tasks-card:focus-within {
-  border-color: var(--accent-color);
-}
-
-.mobile-ambient-toggle-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: var(--font-grotesk);
-  font-weight: 700;
-  font-size: 0.75rem;
-  transition: all 0.15s ease;
-}
-
-.mobile-ambient-toggle-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.mobile-tasks-card .task-items-scroll {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
+  display: none !important;
 }
 
 /* ==========================================================================
-   Responsive Adaptations (iPad, Tablet & Mobile Streamlined Experience)
+   ONLY ON MOBILE PHONE (手机端: max-width: 640px)
+   如果不是手机，左边完全不变；只有手机端才有变
    ========================================================================== */
-@media (max-width: 1024px) {
+@media (max-width: 640px) {
   html, body {
     width: 100%;
     max-width: 100vw;
@@ -2185,7 +2141,7 @@ body.zen-mode .zen-exit-pill {
     font-size: 0.8rem;
   }
 
-  /* Hide desktop-only controls & heavy live stream panel on mobile/iPad */
+  /* Hide desktop companion deck and panel toggle on mobile phone */
   #btn-toggle-panel,
   #btn-fullscreen,
   .companion-stage-pane,
@@ -2195,7 +2151,7 @@ body.zen-mode .zen-exit-pill {
     display: none !important;
   }
 
-  /* Single-column responsive main stage */
+  /* Single-column main stage for mobile phone */
   .main-stage {
     display: flex !important;
     flex-direction: column !important;
@@ -2206,22 +2162,21 @@ body.zen-mode .zen-exit-pill {
     min-height: calc(100vh - 52px) !important;
     overflow: visible !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 0 0 2rem 0 !important;
   }
 
   .hero-stage-pane {
-    flex: 1 1 auto !important;
+    flex: 0 0 auto !important;
     width: 100% !important;
     max-width: 100% !important;
     border-right: none !important;
     border-bottom: none !important;
-    padding: 1.25rem 1rem 3rem 1rem !important;
+    padding: 0.9rem 0.75rem 1rem 0.75rem !important;
     height: auto !important;
     max-height: none !important;
     min-height: auto !important;
     overflow: visible !important;
-    justify-content: flex-start !important;
-    gap: 1.25rem;
+    gap: 0.95rem;
   }
 
   .hero-stage-pane::before {
@@ -2234,37 +2189,25 @@ body.zen-mode .zen-exit-pill {
     display: none !important;
   }
 
-  /* Mode Selectors Header */
-  .hero-top-command-bar {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 0.25rem;
-  }
-
   .mode-tabs-wrapper {
     width: 100%;
-    max-width: 440px;
-    display: flex;
-    justify-content: center;
+    max-width: 360px;
+    gap: 0.2rem;
+    padding: 0.25rem;
   }
 
   .mode-tab-btn {
+    padding: 0.4rem 0.45rem;
+    font-size: 0.76rem;
+    gap: 0.25rem;
     flex: 1;
     justify-content: center;
-    padding: 0.45rem 0.65rem;
-    font-size: 0.82rem;
   }
 
-  /* The Console Frame & Split Flap Board */
   .vintage-master-console {
     width: 100%;
-    max-width: 560px;
+    max-width: 100%;
     margin: 0 auto;
-  }
-
-  .console-brand-row {
-    margin-bottom: 0.5rem;
   }
 
   .console-brand-title {
@@ -2275,99 +2218,23 @@ body.zen-mode .zen-exit-pill {
     margin: 0 auto;
   }
 
-  /* Digits: strictly non-wrapping, perfectly scaled */
+  /* Digits: strictly non-wrapping on phone */
   .vintage-split-flap-board {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: clamp(4px, 1.2vw, 10px);
+    gap: clamp(2px, 1.2vw, 5px);
     width: 100% !important;
     max-width: 100% !important;
     margin: 0.25rem auto;
   }
 
   .flap-card {
-    width: clamp(72px, 16vw, 115px) !important;
-    height: clamp(125px, 24vw, 195px) !important;
-    flex-shrink: 1 !important;
-  }
-
-  .flap-num {
-    font-size: clamp(5.8rem, 16vw, 9.5rem) !important;
-  }
-
-  .flap-colon {
-    gap: clamp(1.1rem, 3.2vw, 1.8rem) !important;
-    padding: 0 4px !important;
-    flex-shrink: 0 !important;
-  }
-
-  .colon-peg {
-    width: clamp(10px, 2vw, 14px) !important;
-    height: clamp(10px, 2vw, 14px) !important;
-  }
-
-  .vinyl-microgroove-chassis {
-    width: 100%;
-    max-width: 560px;
-    margin: 0.5rem auto 0;
-  }
-
-  /* Cockpit & Presets */
-  .hero-bottom-command-bar {
-    width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    gap: 0.85rem;
-  }
-
-  .hifi-preset-deck {
-    gap: 0.45rem;
-  }
-
-  .hifi-preset-label {
-    display: none;
-  }
-
-  .hifi-preset-btn {
-    padding: 0.45rem 0.85rem;
-    font-size: 0.8rem;
-  }
-
-  /* Show Mobile Hub */
-  .mobile-companion-hub {
-    display: flex !important;
-  }
-}
-
-/* Specific Phone Optimizations (<= 640px) */
-@media (max-width: 640px) {
-  .hero-stage-pane {
-    padding: 0.9rem 0.65rem 2.5rem 0.65rem !important;
-    gap: 0.95rem;
-  }
-
-  .mode-tabs-wrapper {
-    max-width: 360px;
-    gap: 0.2rem;
-    padding: 0.25rem;
-  }
-
-  .mode-tab-btn {
-    padding: 0.4rem 0.45rem;
-    font-size: 0.76rem;
-    gap: 0.25rem;
-  }
-
-  .vintage-split-flap-board {
-    gap: clamp(2px, 1.2vw, 5px);
-  }
-
-  .flap-card {
     width: clamp(48px, 17vw, 70px) !important;
     height: clamp(84px, 22vw, 118px) !important;
+    flex-shrink: 1 !important;
   }
 
   .flap-num {
@@ -2377,6 +2244,7 @@ body.zen-mode .zen-exit-pill {
   .flap-colon {
     gap: clamp(0.7rem, 2.8vw, 1.2rem) !important;
     padding: 0 2px !important;
+    flex-shrink: 0 !important;
   }
 
   .colon-peg {
@@ -2390,6 +2258,14 @@ body.zen-mode .zen-exit-pill {
 
   .groove-block {
     height: 12px;
+  }
+
+  .hifi-preset-deck {
+    gap: 0.45rem;
+  }
+
+  .hifi-preset-label {
+    display: none;
   }
 
   .hifi-preset-btn {
@@ -2407,18 +2283,54 @@ body.zen-mode .zen-exit-pill {
     width: 3.2rem;
     height: 3.2rem;
   }
-}
 
-/* Mobile device class overrides (guarantees behavior on touch devices of all sizes) */
-body.is-mobile-device .companion-stage-pane,
-body.is-mobile-device #companion-panel,
-body.is-mobile-device #btn-toggle-panel,
-body.is-mobile-device #btn-fullscreen,
-body.is-mobile-device #focus-tasks-widget,
-body.is-mobile-device #focus-tasks-min-pill {
-  display: none !important;
-}
+  /* Show Mobile Companion Hub only on mobile phone */
+  .mobile-companion-hub {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 0 0.75rem;
+    gap: 0.85rem;
+  }
 
-body.is-mobile-device .mobile-companion-hub {
-  display: flex !important;
+  .mobile-ambient-card,
+  .mobile-tasks-card {
+    width: 100%;
+    background: rgba(14, 15, 20, 0.78);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 0.95rem 1.15rem;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  }
+
+  .mobile-ambient-card:focus-within,
+  .mobile-tasks-card:focus-within {
+    border-color: var(--accent-color);
+  }
+
+  .mobile-ambient-toggle-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-grotesk);
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.15s ease;
+  }
+
+  .mobile-ambient-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .mobile-tasks-card .task-items-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
 }
