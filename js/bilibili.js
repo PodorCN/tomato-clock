@@ -1,0 +1,289 @@
+/**
+ * Bilibili Lofi Girl & Study Stream Companion Controller
+ * Supports both In-App Embedded Player and Auto-Closing Companion Popup Window.
+ * Automatically synchronizes with Pomodoro focus/break cycles:
+ * - Plays during Focus sessions
+ * - Automatically stops/closes on Break or when session ends
+ */
+
+class BilibiliController {
+  constructor() {
+    this.enabled = true; // Auto play on focus
+    this.mode = 'embedded'; // 'embedded' | 'popup' | 'audio_only'
+    this.currentPreset = 'bili_live';
+    this.customInput = '';
+    this.popupWindow = null;
+    this.isPlaying = false;
+    this.iframeContainer = null;
+    this.statusEl = null;
+
+    // Default presets
+    this.presets = {
+      bili_live: {
+        name: 'B站 24h 伴学自习室 (直播间)',
+        type: 'live',
+        cid: '21452505', // Popular 24/7 study & lofi music room
+        title: 'Bilibili 24小时自习室',
+        url: 'https://live.bilibili.com/21452505'
+      },
+      bili_lofi_girl: {
+        name: 'B站 Lofi Girl 伴学生物钟 (精选)',
+        type: 'video',
+        bvid: 'BV184411C75d', // Classic Lofi study music compilation
+        title: 'Bilibili Lofi Girl 学习音乐',
+        url: 'https://www.bilibili.com/video/BV184411C75d'
+      },
+      bili_cafe: {
+        name: 'B站 窗边雨声与爵士咖啡馆',
+        type: 'video',
+        bvid: 'BV1vQ4y1Z7mU',
+        title: 'Bilibili 窗边雨声咖啡厅',
+        url: 'https://www.bilibili.com/video/BV1vQ4y1Z7mU'
+      },
+      youtube_lofi: {
+        name: 'YouTube Lofi Girl 官方电台 (需科学环境)',
+        type: 'youtube',
+        ytid: 'jfKfPfyJRdk',
+        title: 'Lofi Girl - beats to relax/study to',
+        url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
+      }
+    };
+
+    this.loadSettings();
+  }
+
+  init(containerId = 'bili-player-wrapper', statusId = 'bili-status-indicator') {
+    this.iframeContainer = document.getElementById(containerId);
+    this.statusEl = document.getElementById(statusId);
+    this.updateStatusUI();
+  }
+
+  loadSettings() {
+    const saved = localStorage.getItem('pomodoro_bili_config');
+    if (saved) {
+      try {
+        const config = JSON.parse(saved);
+        if (config.enabled !== undefined) this.enabled = config.enabled;
+        if (config.mode) this.mode = config.mode;
+        if (config.currentPreset) this.currentPreset = config.currentPreset;
+        if (config.customInput) this.customInput = config.customInput;
+      } catch (e) {
+        console.error('Failed to load bilibili settings', e);
+      }
+    }
+  }
+
+  saveSettings() {
+    localStorage.setItem(
+      'pomodoro_bili_config',
+      JSON.stringify({
+        enabled: this.enabled,
+        mode: this.mode,
+        currentPreset: this.currentPreset,
+        customInput: this.customInput
+      })
+    );
+  }
+
+  /**
+   * Resolve current target embed URL & external URL
+   */
+  getTargetInfo() {
+    if (this.currentPreset === 'custom' && this.customInput.trim()) {
+      const input = this.customInput.trim();
+      // Check if it's a pure number -> Bilibili Live room ID
+      if (/^\d+$/.test(input)) {
+        return {
+          title: `B站直播间 #${input}`,
+          embedUrl: `https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=${input}&quality=0&logo=0&danmaku=0`,
+          externalUrl: `https://live.bilibili.com/${input}`
+        };
+      }
+      // Check if it's a BV number
+      if (/^BV[a-zA-Z0-9]+$/i.test(input)) {
+        return {
+          title: `B站视频 ${input}`,
+          embedUrl: `https://player.bilibili.com/player.html?bvid=${input}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
+          externalUrl: `https://www.bilibili.com/video/${input}`
+        };
+      }
+      // Check if it's a live.bilibili.com URL
+      const liveMatch = input.match(/live\.bilibili\.com\/(\d+)/);
+      if (liveMatch) {
+        return {
+          title: `B站直播间 #${liveMatch[1]}`,
+          embedUrl: `https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=${liveMatch[1]}&quality=0&logo=0&danmaku=0`,
+          externalUrl: input
+        };
+      }
+      // Check if it's a bilibili video URL
+      const bvMatch = input.match(/(BV[a-zA-Z0-9]+)/i);
+      if (bvMatch) {
+        return {
+          title: `B站视频 ${bvMatch[1]}`,
+          embedUrl: `https://player.bilibili.com/player.html?bvid=${bvMatch[1]}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
+          externalUrl: input
+        };
+      }
+      // Direct iframe fallback
+      return {
+        title: '自定义网络流媒体',
+        embedUrl: input,
+        externalUrl: input
+      };
+    }
+
+    const preset = this.presets[this.currentPreset] || this.presets.bili_live;
+    if (preset.type === 'live') {
+      return {
+        title: preset.title,
+        embedUrl: `https://www.bilibili.com/blackboard/live/live-activity-player.html?cid=${preset.cid}&quality=0&logo=0&danmaku=0`,
+        externalUrl: preset.url
+      };
+    } else if (preset.type === 'video') {
+      return {
+        title: preset.title,
+        embedUrl: `https://player.bilibili.com/player.html?bvid=${preset.bvid}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
+        externalUrl: preset.url
+      };
+    } else if (preset.type === 'youtube') {
+      return {
+        title: preset.title,
+        embedUrl: `https://www.youtube-nocookie.com/embed/${preset.ytid}?autoplay=1&mute=0`,
+        externalUrl: preset.url
+      };
+    }
+  }
+
+  /**
+   * Called when Focus session starts
+   */
+  startOnFocus() {
+    if (!this.enabled) return;
+    this.play();
+  }
+
+  /**
+   * Called when session is paused
+   */
+  pause() {
+    this.stop();
+  }
+
+  /**
+   * Called when Focus completes or Break begins
+   */
+  stopOnBreak() {
+    this.stop();
+  }
+
+  /**
+   * Play stream
+   */
+  play() {
+    const target = this.getTargetInfo();
+    this.isPlaying = true;
+
+    if (this.mode === 'popup') {
+      // Companion popup window mode
+      if (!this.popupWindow || this.popupWindow.closed) {
+        const left = Math.max(0, window.screen.width - 660);
+        const top = Math.max(0, window.screen.height - 480);
+        this.popupWindow = window.open(
+          target.externalUrl,
+          'TomatoBiliCompanion',
+          `width=640,height=420,left=${left},top=${top},resizable=yes,scrollbars=no,status=no`
+        );
+      }
+    } else {
+      // In-app embedded iframe mode
+      if (this.iframeContainer) {
+        this.iframeContainer.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.src = target.embedUrl;
+        iframe.setAttribute('frameborder', 'no');
+        iframe.setAttribute('framespacing', '0');
+        iframe.setAttribute('scrolling', 'no');
+        iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
+        iframe.setAttribute('allowfullscreen', 'true');
+        iframe.className = 'w-full h-full rounded-2xl border-0 shadow-inner';
+        this.iframeContainer.appendChild(iframe);
+      }
+    }
+
+    this.updateStatusUI();
+  }
+
+  /**
+   * Stop stream immediately (unmount iframe and close popup window)
+   */
+  stop() {
+    this.isPlaying = false;
+
+    // Unmount iframe to immediately cut off audio
+    if (this.iframeContainer) {
+      this.iframeContainer.innerHTML = `
+        <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
+          <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-3">
+            <svg class="w-7 h-7 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p class="text-sm font-medium text-white/70">白噪音待命中</p>
+          <p class="text-xs text-white/40 mt-1">专注计时启动时将自动播放，休息时自动关闭</p>
+        </div>
+      `;
+    }
+
+    // Auto-close companion popup window
+    if (this.popupWindow && !this.popupWindow.closed) {
+      try {
+        this.popupWindow.close();
+      } catch (e) {
+        console.warn('Could not auto-close companion window', e);
+      }
+      this.popupWindow = null;
+    }
+
+    this.updateStatusUI();
+  }
+
+  toggle() {
+    if (this.isPlaying) {
+      this.stop();
+    } else {
+      this.play();
+    }
+  }
+
+  updateStatusUI() {
+    if (!this.statusEl) return;
+    const target = this.getTargetInfo();
+
+    if (this.isPlaying) {
+      this.statusEl.innerHTML = `
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          伴学播放中: ${target.title}
+        </span>
+      `;
+    } else if (this.enabled) {
+      this.statusEl.innerHTML = `
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/70 border border-white/10">
+          <span class="w-2 h-2 rounded-full bg-white/40"></span>
+          伴学已就绪 (专注时自动播放)
+        </span>
+      `;
+    } else {
+      this.statusEl.innerHTML = `
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-white/40 border border-white/5">
+          <span class="w-2 h-2 rounded-full bg-white/20"></span>
+          伴学白噪音已静音
+        </span>
+      `;
+    }
+  }
+}
+
+window.bilibiliController = new BilibiliController();

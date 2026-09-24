@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍅 Lofi 番茄时钟 | 沉浸式伴学自习室</title>
+  <meta name="description" content="极具美感的高颜值全宽番茄时钟，集成B站Lofi Girl直播白噪音伴学，专注时自动播放，休息时自动关闭。">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  
+  <!-- Tailwind CSS CDN for utility classes -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Custom Modern Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="theme-lofi-room">
+  <!-- Dynamic Atmospheric Background Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Floating Exit Zen Mode Button -->
+  <button class="zen-exit-pill" id="zen-exit-btn" onclick="window.pomodoroApp.toggleZenMode()">
+    退出极简沉浸模式 (按 Z 退出)
+  </button>
+
+  <div class="app-wrapper">
+    <!-- Top Navigation Bar - Full Width -->
+    <header class="top-nav">
+      <div class="brand-badge">
+        <img src="assets/favicon.svg" alt="Tomato Logo" class="brand-icon">
+        <div>
+          <h1 class="brand-title">Lofi Pomodoro</h1>
+          <p class="text-xs text-white/40 hidden sm:block">沉浸式伴学番茄钟</p>
+        </div>
+      </div>
+
+      <!-- Center & Right Navigation Actions -->
+      <div class="nav-actions">
+        <!-- Theme Selector Dropdown -->
+        <div class="relative">
+          <select id="theme-dropdown-select" class="nav-btn bg-black/40 text-white/90 text-xs py-1.5 px-3 rounded-xl border border-white/10" onchange="window.backgroundEngine.applyTheme(this.value)">
+            <option value="lofi-room">☕ 温暖自习室</option>
+            <option value="rainy-cafe">🌧️ 雨夜咖啡馆</option>
+            <option value="tokyo-dusk">🌆 霓虹晚霞</option>
+            <option value="zen-garden">🎋 竹林清风</option>
+            <option value="deep-space">🌌 静谧星河</option>
+            <option value="minimal-slate">🖤 极简暗黑</option>
+          </select>
+        </div>
+
+        <!-- Particles Toggle Button -->
+        <button id="btn-toggle-particles" class="nav-btn" title="切换粒子氛围特效" onclick="const on = window.backgroundEngine.toggleParticles(); this.classList.toggle('opacity-40', !on)">
+          <svg class="w-4 h-4 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+          <span class="hidden md:inline">氛围</span>
+        </button>
+
+        <!-- Quick Mute Button -->
+        <button id="btn-mute" class="nav-btn" title="静音开关 (按 M)">
+          <span id="mute-icon">
+            <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+          </span>
+        </button>
+
+        <!-- Toggle Companion Panel -->
+        <button id="btn-toggle-panel" class="nav-btn" title="展开/收起伴学面板">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+          </svg>
+          <span class="hidden md:inline">伴学面板</span>
+        </button>
+
+        <!-- Zen Mode Button -->
+        <button id="btn-zen-mode" class="nav-btn" title="极简专注模式 (按 Z)">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+          </svg>
+          <span class="hidden md:inline">极简模式</span>
+        </button>
+
+        <!-- Fullscreen Button -->
+        <button id="btn-fullscreen" class="nav-btn" title="全屏沉浸 (按 F)">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+
+        <!-- Settings Modal Trigger -->
+        <button id="btn-settings" class="nav-btn" title="设置">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Full-Width Responsive Stage -->
+    <main class="main-stage" id="main-container">
+      <!-- Left / Center: Primary Pomodoro Card -->
+      <section class="hero-timer-card glass-panel">
+        <!-- Target Intention Banner -->
+        <div class="intention-box">
+          <input 
+            type="text" 
+            id="current-intention-input" 
+            class="intention-input" 
+            placeholder="🎯 输入当前专注目标，让思绪凝聚..." 
+            maxlength="60"
+          >
+        </div>
+
+        <!-- Mode Tabs -->
+        <div class="mode-tabs-wrapper">
+          <button class="mode-tab-btn active" data-mode="focus">
+            <span>🍅</span> 专注 (25m)
+          </button>
+          <button class="mode-tab-btn" data-mode="short-break">
+            <span>☕</span> 短休 (5m)
+          </button>
+          <button class="mode-tab-btn" data-mode="long-break">
+            <span>🌴</span> 长休 (15m)
+          </button>
+        </div>
+
+        <!-- Current State Badge -->
+        <div id="timer-state-badge" class="timer-badge focus-badge">
+          🍅 专注中 (Focus)
+        </div>
+
+        <!-- Circular Clock Display -->
+        <div class="clock-circle-container">
+          <svg class="clock-svg-ring" viewBox="0 0 320 320">
+            <!-- Background Track -->
+            <circle class="ring-track" cx="160" cy="160" r="140" />
+            <!-- Animated Progress Bar -->
+            <circle 
+              id="timer-ring-progress" 
+              class="ring-progress" 
+              cx="160" 
+              cy="160" 
+              r="140" 
+              stroke-dasharray="879.64" 
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <div class="clock-inner">
+            <div id="timer-time" class="timer-time">25:00</div>
+          </div>
+        </div>
+
+        <!-- Quick Duration Presets -->
+        <div class="quick-presets-row">
+          <span class="text-xs text-white/40 mr-1">快捷方案:</span>
+          <button class="preset-badge" data-focus="25" data-break="5">25 / 5 经典</button>
+          <button class="preset-badge" data-focus="50" data-break="10">50 / 10 深度</button>
+          <button class="preset-badge" data-focus="45" data-break="15">45 / 15 心流</button>
+          <button class="preset-badge" data-focus="90" data-break="20">90 / 20 冲刺</button>
+        </div>
+
+        <!-- Primary Controls -->
+        <div class="timer-controls-row">
+          <!-- Reset -->
+          <button id="btn-reset" class="btn-circle-control" title="重置当前时段 (按 R)">
+            <svg class="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+
+          <!-- Start / Pause -->
+          <button id="btn-start-pause" class="btn-primary-action" title="空格键快捷开始/暂停">
+            <span id="start-pause-icon">
+              <svg class="w-6 h-6 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </span>
+            <span id="start-pause-text">开始专注</span>
+          </button>
+
+          <!-- Skip -->
+          <button id="btn-skip" class="btn-circle-control" title="跳过此阶段 (按 S)">
+            <svg class="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Stats & Tomato Tally Banner -->
+        <div class="stats-banner">
+          <div>
+            <div class="text-xs text-white/50 mb-1">今日专注进度</div>
+            <div class="tomato-tally-box" id="tomato-tally-container">
+              <span class="text-white/30 text-xs">今日还未开始，加油迈出第一步！</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-white/40">今日累计: </span>
+            <strong id="stat-pomodoro-count" class="text-white font-bold text-sm">0</strong> <span class="text-xs text-white/60">番茄</span> · 
+            <strong id="stat-focus-minutes" class="text-white font-bold text-sm">0 分钟</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Companion Panel (Bilibili Player, White Noise Mixer, Quick Tasks) -->
+      <aside class="companion-panel" id="companion-panel">
+        <!-- Bilibili Lofi Girl Stream Companion Card -->
+        <div class="bili-companion-card glass-panel">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="text-lg">📺</span>
+              <h3 class="card-title">B站 Lofi 伴学白噪音</h3>
+            </div>
+            <!-- Auto sync toggle -->
+            <label class="toggle-switch" title="专注时自动伴学，休息时自动关闭">
+              <input type="checkbox" id="bili-toggle-enable" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- Realtime Status Indicator -->
+          <div id="bili-status-indicator" class="text-xs">
+            <!-- Populated dynamically via bilibili.js -->
+          </div>
+
+          <!-- Video Viewport / Iframe Container -->
+          <div class="bili-player-viewport" id="bili-player-wrapper">
+            <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
+              <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-3">
+                <svg class="w-7 h-7 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p class="text-sm font-medium text-white/70">白噪音待命中</p>
+              <p class="text-xs text-white/40 mt-1">专注计时启动时将自动播放，休息时自动关闭</p>
+            </div>
+          </div>
+
+          <!-- Quick Bilibili Controls -->
+          <div class="flex items-center justify-between gap-2 pt-1 text-xs">
+            <button id="btn-bili-manual-toggle" class="nav-btn text-xs py-1.5 px-3">
+              <span>⏯️ 手动开关伴学</span>
+            </button>
+            <div class="flex items-center gap-2 text-white/50">
+              <span>模式:</span>
+              <select id="bili-mode-select" class="custom-select py-1 px-2 text-xs w-auto">
+                <option value="embedded">页面内嵌</option>
+                <option value="popup">伴侣小窗(自动关)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ambient Sound Mixer Card -->
+        <div class="audio-mixer-card glass-panel">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="text-lg">🌿</span>
+              <h3 class="card-title">自然纯净白噪音</h3>
+            </div>
+            <span class="text-xs text-white/40">本地程序化合成</span>
+          </div>
+
+          <div class="mixer-grid">
+            <div>
+              <label class="text-xs text-white/50 block mb-1.5">氛围音效</label>
+              <select id="ambient-sound-select" class="custom-select">
+                <option value="none">无 (仅B站音频)</option>
+                <option value="rain">🌧️ 窗外细雨声</option>
+                <option value="fire">🪵 温暖壁炉柴火</option>
+                <option value="cafe">☕ 午后咖啡香</option>
+                <option value="waves">🌊 缓拍潮汐海浪</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs text-white/50 block mb-1.5">主音量</label>
+              <div class="volume-slider-group">
+                <input type="range" id="volume-slider" min="0" max="100" value="50">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Todo Checklist Card -->
+        <div class="tasks-card glass-panel">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span class="text-lg">📝</span>
+              <h3 class="card-title">今日核心待办</h3>
+            </div>
+            <span class="text-xs text-white/40">随手微目标</span>
+          </div>
+
+          <form id="task-add-form" class="task-form">
+            <input type="text" id="task-new-input" class="task-input-text" placeholder="添加待办并敲回车..." maxlength="40">
+            <button type="submit" class="nav-btn py-1.5 px-3">添加</button>
+          </form>
+
+          <div class="task-items-scroll" id="task-items-list">
+            <!-- Tasks rendered here -->
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Settings Modal Dialog -->
+  <div id="modal-settings" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>⚙️</span> 时钟与伴学设置
+        </h2>
+        <button id="btn-close-settings" class="text-white/40 hover:text-white p-1">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Time Settings -->
+      <div class="form-group">
+        <label class="form-label">时长设置 (分钟)</label>
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <span class="text-xs text-white/40 block mb-1">专注时长</span>
+            <input type="number" id="input-focus-time" class="form-control-input text-center" value="25" min="1" max="180">
+          </div>
+          <div>
+            <span class="text-xs text-white/40 block mb-1">短休时长</span>
+            <input type="number" id="input-short-break" class="form-control-input text-center" value="5" min="1" max="60">
+          </div>
+          <div>
+            <span class="text-xs text-white/40 block mb-1">长休时长</span>
+            <input type="number" id="input-long-break" class="form-control-input text-center" value="15" min="1" max="60">
+          </div>
+        </div>
+      </div>
+
+      <!-- Auto-start toggles -->
+      <div class="form-group pt-2 border-t border-white/10">
+        <label class="form-label">自动化选项</label>
+        <div class="space-y-3">
+          <label class="flex items-center justify-between text-sm text-white/80 cursor-pointer">
+            <span>专注结束后自动开始休息</span>
+            <input type="checkbox" id="check-auto-break" class="rounded border-white/20 bg-black/40 text-red-500">
+          </label>
+          <label class="flex items-center justify-between text-sm text-white/80 cursor-pointer">
+            <span>休息结束后自动开启新一轮专注</span>
+            <input type="checkbox" id="check-auto-focus" class="rounded border-white/20 bg-black/40 text-red-500">
+          </label>
+          <label class="flex items-center justify-between text-sm text-white/80 cursor-pointer">
+            <span>系统桌面通知提醒 (到期弹窗)</span>
+            <input type="checkbox" id="check-notifications" checked class="rounded border-white/20 bg-black/40 text-red-500">
+          </label>
+        </div>
+      </div>
+
+      <!-- Bilibili Stream Source Settings -->
+      <div class="form-group pt-2 border-t border-white/10">
+        <label class="form-label">B站伴学音视频源配置</label>
+        <div class="space-y-3">
+          <div>
+            <span class="text-xs text-white/40 block mb-1">精选预设通道</span>
+            <select id="bili-preset-select" class="form-control-input">
+              <option value="bili_live">B站 24h 伴学自习室 (直播间)</option>
+              <option value="bili_lofi_girl">B站 Lofi Girl 伴学生物钟 (经典视频)</option>
+              <option value="bili_cafe">B站 窗边雨声与爵士咖啡馆 (视频)</option>
+              <option value="youtube_lofi">YouTube Lofi Girl 官方电台 (需国际网络)</option>
+              <option value="custom">自定义输入 (B站房间号 / BV号 / 链接)</option>
+            </select>
+          </div>
+
+          <div id="bili-custom-group" style="display: none;">
+            <span class="text-xs text-white/40 block mb-1">自定义 B站房间号 / BV号 / 链接</span>
+            <input type="text" id="bili-custom-input" class="form-control-input" placeholder="例如: 21452505 或 BV184411C75d">
+            <span class="text-[11px] text-white/30 mt-1 block">输入纯数字则作为直播间房间号解析，输入 BV 号则自动加载对应视频。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shortcuts Reference -->
+      <div class="pt-2 border-t border-white/10">
+        <label class="form-label">键盘快捷键说明</label>
+        <div class="grid grid-cols-2 gap-2 text-xs text-white/50">
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">空格 Space</kbd> 开始 / 暂停</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">S</kbd> 跳过此阶段</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">R</kbd> 重置当前时段</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">Z</kbd> 极简全宽模式</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">F</kbd> 全屏沉浸模式</div>
+          <div><kbd class="px-1.5 py-0.5 rounded bg-white/10 text-white/90">M</kbd> 静音 / 取消静音</div>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-3 border-t border-white/10 flex justify-end">
+        <button onclick="window.pomodoroApp.saveSettingsFromModal(); document.getElementById('modal-settings').classList.add('hidden')" class="btn-primary-action text-sm py-2 px-6">
+          保存并应用
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/audio.js"></script>
+  <script src="js/backgrounds.js"></script>
+  <script src="js/bilibili.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

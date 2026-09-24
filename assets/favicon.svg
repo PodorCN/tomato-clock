@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="tomatoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b6b"/>
+      <stop offset="50%" stop-color="#ee5253"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2ecc71"/>
+      <stop offset="100%" stop-color="#27ae60"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#c0392b" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <!-- Tomato Body -->
+  <ellipse cx="32" cy="36" rx="26" ry="22" fill="url(#tomatoGrad)" filter="url(#glow)"/>
+  <!-- Highlight -->
+  <ellipse cx="23" cy="28" rx="8" ry="5" fill="#ffffff" opacity="0.35" transform="rotate(-20, 23, 28)"/>
+  <!-- Stem & Leaves -->
+  <path d="M32 18 C32 10, 36 6, 38 4 C35 7, 34 11, 33 18 Z" fill="#1b5e20"/>
+  <path d="M32 18 C26 12, 16 14, 12 18 C18 19, 26 21, 30 20 Z" fill="url(#leafGrad)"/>
+  <path d="M32 18 C38 12, 48 14, 52 18 C46 19, 38 21, 34 20 Z" fill="url(#leafGrad)"/>
+  <path d="M32 18 C28 24, 24 26, 20 28 C26 26, 30 24, 32 20 Z" fill="url(#leafGrad)"/>
+  <path d="M32 18 C36 24, 40 26, 44 28 C38 26, 34 24, 32 20 Z" fill="url(#leafGrad)"/>
+  <!-- Clock hands subtle accent -->
+  <circle cx="32" cy="36" r="3" fill="#ffffff" opacity="0.8"/>
+  <line x1="32" y1="36" x2="32" y2="28" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  <line x1="32" y1="36" x2="38" y2="36" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+</svg>
