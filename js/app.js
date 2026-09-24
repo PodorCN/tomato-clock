@@ -53,6 +53,7 @@ class PomodoroApp {
     this.switchDeckView(this.deckView);
     this.switchMode(this.mode, false);
     this.updateStatsUI();
+    this.checkDeviceLayout();
     this.renderTasks();
     this.updateTasksWidgetVisibility();
 
@@ -167,8 +168,33 @@ class PomodoroApp {
       // Deck utility & tasks elements
       deckUtilityControls: document.getElementById('deck-utility-controls'),
       deckTasksSection: document.getElementById('deck-tasks-section'),
-      btnToggleDeckControls: document.getElementById('btn-toggle-deck-controls')
+      btnToggleDeckControls: document.getElementById('btn-toggle-deck-controls'),
+
+      // Mobile & Tablet Companion Hub elements
+      mobileCompanionHub: document.getElementById('mobile-companion-hub'),
+      mobileAmbientSelect: document.getElementById('mobile-ambient-select'),
+      mobileVolumeSlider: document.getElementById('mobile-volume-slider'),
+      btnMobileAmbientToggle: document.getElementById('btn-mobile-ambient-toggle'),
+      mobileSoundStateText: document.getElementById('mobile-sound-state-text'),
+      mobileTaskCountBadge: document.getElementById('mobile-task-count-badge'),
+      mobileTaskForm: document.getElementById('mobile-task-add-form'),
+      mobileTaskInput: document.getElementById('mobile-task-new-input'),
+      mobileTaskList: document.getElementById('mobile-task-items-list')
     };
+  }
+
+  isMobile() {
+    const ua = navigator.userAgent || '';
+    const isTouch = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && isTouch);
+    const isAndroid = /Android/.test(ua);
+    const isSmallScreen = window.innerWidth <= 1024;
+    return isIOS || isAndroid || (isTouch && isSmallScreen) || isSmallScreen;
+  }
+
+  checkDeviceLayout() {
+    const mobile = this.isMobile();
+    document.body.classList.toggle('is-mobile-device', mobile);
   }
 
   loadSavedData() {
@@ -264,7 +290,10 @@ class PomodoroApp {
     }
 
     if (this.dom.volumeSlider) this.dom.volumeSlider.value = this.config.soundVolume * 100;
+    if (this.dom.mobileVolumeSlider) this.dom.mobileVolumeSlider.value = this.config.soundVolume * 100;
     if (this.dom.ambientSelect) this.dom.ambientSelect.value = this.config.ambientNoise;
+    if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = this.config.ambientNoise;
+    this.updateMobileSoundButtonText();
 
     if (window.bilibiliController) {
       if (this.dom.biliToggle) this.dom.biliToggle.checked = window.bilibiliController.enabled;
@@ -287,6 +316,16 @@ class PomodoroApp {
       if (this.dom.directOpenText && target) {
         this.dom.directOpenText.textContent = `🚀 Open ${target.title}`;
       }
+    }
+  }
+
+  updateMobileSoundButtonText() {
+    if (!this.dom.mobileSoundStateText) return;
+    const isOff = !this.config.ambientNoise || this.config.ambientNoise === 'none';
+    this.dom.mobileSoundStateText.textContent = isOff ? '🔇 Sound Off' : '🔊 Sound Active';
+    if (this.dom.btnMobileAmbientToggle) {
+      this.dom.btnMobileAmbientToggle.classList.toggle('text-white/40', isOff);
+      this.dom.btnMobileAmbientToggle.classList.toggle('text-amber-400', !isOff);
     }
   }
 
@@ -427,6 +466,17 @@ class PomodoroApp {
       this.dom.volumeSlider.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value) / 100;
         this.config.soundVolume = val;
+        if (this.dom.mobileVolumeSlider) this.dom.mobileVolumeSlider.value = e.target.value;
+        window.audioEngine?.setVolume(val);
+        this.saveData();
+      });
+    }
+
+    if (this.dom.mobileVolumeSlider) {
+      this.dom.mobileVolumeSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) / 100;
+        this.config.soundVolume = val;
+        if (this.dom.volumeSlider) this.dom.volumeSlider.value = e.target.value;
         window.audioEngine?.setVolume(val);
         this.saveData();
       });
@@ -435,14 +485,78 @@ class PomodoroApp {
     if (this.dom.ambientSelect) {
       this.dom.ambientSelect.addEventListener('change', (e) => {
         this.config.ambientNoise = e.target.value;
+        if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = e.target.value;
         this.saveData();
         if (this.status === 'running' && this.mode === 'focus') {
           window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
         } else {
           window.audioEngine?.stopWhiteNoise();
         }
+        this.updateMobileSoundButtonText();
       });
     }
+
+    if (this.dom.mobileAmbientSelect) {
+      this.dom.mobileAmbientSelect.addEventListener('change', (e) => {
+        this.config.ambientNoise = e.target.value;
+        if (this.dom.ambientSelect) this.dom.ambientSelect.value = e.target.value;
+        this.saveData();
+        if (this.status === 'running' && this.mode === 'focus') {
+          window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
+        } else {
+          window.audioEngine?.stopWhiteNoise();
+        }
+        this.updateMobileSoundButtonText();
+      });
+    }
+
+    if (this.dom.btnMobileAmbientToggle) {
+      this.dom.btnMobileAmbientToggle.addEventListener('click', () => {
+        if (!this.config.ambientNoise || this.config.ambientNoise === 'none') {
+          this.config.ambientNoise = 'fire';
+        } else {
+          this.config.ambientNoise = 'none';
+        }
+        if (this.dom.ambientSelect) this.dom.ambientSelect.value = this.config.ambientNoise;
+        if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = this.config.ambientNoise;
+        this.saveData();
+        if (this.status === 'running' && this.mode === 'focus') {
+          window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
+        } else {
+          window.audioEngine?.stopWhiteNoise();
+        }
+        this.updateMobileSoundButtonText();
+      });
+    }
+
+    if (this.dom.mobileTaskForm && this.dom.mobileTaskInput) {
+      this.dom.mobileTaskForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = this.dom.mobileTaskInput.value.trim();
+        if (!text) return;
+        this.addTask(text);
+        this.dom.mobileTaskInput.value = '';
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      this.checkDeviceLayout();
+    });
+
+    window.addEventListener('themeChanged', (e) => {
+      if (e.detail?.theme === 'cozy-fireplace') {
+        if (this.config.ambientNoise === 'none') {
+          this.config.ambientNoise = 'fire';
+          if (this.dom.ambientSelect) this.dom.ambientSelect.value = 'fire';
+          if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = 'fire';
+          this.saveData();
+          if (this.status === 'running' && this.mode === 'focus') {
+            window.audioEngine?.startWhiteNoise('fire');
+          }
+          this.updateMobileSoundButtonText();
+        }
+      }
+    });
 
     if (this.dom.btnMute) {
       this.dom.btnMute.addEventListener('click', () => {
@@ -549,7 +663,15 @@ class PomodoroApp {
     // Toggle Tasks Widget (Navbar button)
     if (this.dom.btnToggleTasks) {
       this.dom.btnToggleTasks.addEventListener('click', () => {
-        this.toggleTasksWidget();
+        if (this.isMobile()) {
+          const mobileCard = document.getElementById('mobile-tasks-card');
+          if (mobileCard) {
+            mobileCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            this.dom.mobileTaskInput?.focus();
+          }
+        } else {
+          this.toggleTasksWidget();
+        }
       });
     }
 
@@ -854,7 +976,9 @@ class PomodoroApp {
     // Audio / Bilibili handling
     if (this.mode === 'focus') {
       window.audioEngine?.setBreakMute(false);
-      window.bilibiliController?.startOnFocus();
+      if (!this.isMobile()) {
+        window.bilibiliController?.startOnFocus();
+      }
       if (this.config.ambientNoise && this.config.ambientNoise !== 'none') {
         window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
       }
@@ -1312,6 +1436,7 @@ class PomodoroApp {
     if (this.dom.navTasksBadge) this.dom.navTasksBadge.textContent = uncompletedCount;
     if (this.dom.focusTaskCountBadge) this.dom.focusTaskCountBadge.textContent = badgeText;
     if (this.dom.focusTasksPillCount) this.dom.focusTasksPillCount.textContent = uncompletedCount;
+    if (this.dom.mobileTaskCountBadge) this.dom.mobileTaskCountBadge.textContent = badgeText;
   }
 
   renderTaskItemsHTML() {
@@ -1386,6 +1511,11 @@ class PomodoroApp {
     if (this.dom.focusTaskList) {
       this.dom.focusTaskList.innerHTML = html;
       this.bindTaskListEvents(this.dom.focusTaskList);
+    }
+
+    if (this.dom.mobileTaskList) {
+      this.dom.mobileTaskList.innerHTML = html;
+      this.bindTaskListEvents(this.dom.mobileTaskList);
     }
   }
 }

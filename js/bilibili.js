@@ -168,9 +168,25 @@ class BilibiliController {
   }
 
   /**
+   * Detect mobile phone or iPad/tablet device
+   */
+  isMobileDevice() {
+    const ua = navigator.userAgent || '';
+    const isTouch = Boolean(navigator.maxTouchPoints && navigator.maxTouchPoints > 1);
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && isTouch);
+    const isAndroid = /Android/.test(ua);
+    const isSmallScreen = window.innerWidth <= 1024;
+    return isIOS || isAndroid || (isTouch && isSmallScreen) || isSmallScreen;
+  }
+
+  /**
    * Called when Focus session starts
    */
   startOnFocus() {
+    // Requirements: "如果是移动端就不要自动放b站"
+    if (this.isMobileDevice()) {
+      return;
+    }
     if (!this.enabled) return;
     this.play();
   }

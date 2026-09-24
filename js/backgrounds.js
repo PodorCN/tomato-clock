@@ -16,6 +16,12 @@ class BackgroundEngine {
     this.height = window.innerHeight;
 
     this.themes = {
+      'cozy-fireplace': {
+        name: 'Cozy Fireplace',
+        type: 'fire-embers',
+        bgClass: 'theme-cozy-fireplace',
+        accent: '#f97316'
+      },
       'lofi-room': {
         name: 'Lofi Room',
         type: 'motes',
@@ -60,6 +66,56 @@ class BackgroundEngine {
   }
 
   initAuroraBlobs() {
+    if (this.currentTheme === 'cozy-fireplace') {
+      this.auroraBlobs = [
+        {
+          x: this.width * 0.5,
+          y: this.height * 0.88,
+          baseRadius: Math.min(this.width, this.height) * 0.55,
+          radius: Math.min(this.width, this.height) * 0.55,
+          color: 'rgba(249, 115, 22, 0.28)', // Glowing Hearth Ember
+          vx: 0.12,
+          vy: -0.08,
+          phase: 0,
+          speed: 0.016
+        },
+        {
+          x: this.width * 0.25,
+          y: this.height * 0.72,
+          baseRadius: Math.min(this.width, this.height) * 0.46,
+          radius: Math.min(this.width, this.height) * 0.46,
+          color: 'rgba(220, 38, 38, 0.22)', // Deep Crimson Charcoal
+          vx: 0.14,
+          vy: 0.10,
+          phase: 2.1,
+          speed: 0.012
+        },
+        {
+          x: this.width * 0.75,
+          y: this.height * 0.70,
+          baseRadius: Math.min(this.width, this.height) * 0.45,
+          radius: Math.min(this.width, this.height) * 0.45,
+          color: 'rgba(245, 158, 11, 0.22)', // Golden Flame Radiance
+          vx: -0.15,
+          vy: -0.10,
+          phase: 4.2,
+          speed: 0.014
+        },
+        {
+          x: this.width * 0.45,
+          y: this.height * 0.35,
+          baseRadius: Math.min(this.width, this.height) * 0.42,
+          radius: Math.min(this.width, this.height) * 0.42,
+          color: 'rgba(185, 28, 28, 0.12)', // Ambient Heat Reflection
+          vx: -0.10,
+          vy: 0.12,
+          phase: 1.4,
+          speed: 0.010
+        }
+      ];
+      return;
+    }
+
     this.auroraBlobs = [
       {
         x: this.width * 0.22,
@@ -150,7 +206,7 @@ class BackgroundEngine {
   }
 
   applyTheme(themeKey) {
-    if (!this.themes[themeKey]) themeKey = 'lofi-room';
+    if (!this.themes[themeKey]) themeKey = 'cozy-fireplace';
     this.currentTheme = themeKey;
     localStorage.setItem('pomodoro_theme', themeKey);
 
@@ -164,6 +220,7 @@ class BackgroundEngine {
       dropdown.value = themeKey;
     }
 
+    this.initAuroraBlobs();
     this.initParticles();
     window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeKey, info: this.themes[themeKey] } }));
   }
@@ -223,6 +280,23 @@ class BackgroundEngine {
           rotation: Math.random() * Math.PI * 2,
           rotationSpeed: Math.random() * 0.02 - 0.01,
           opacity: Math.random() * 0.4 + 0.2
+        });
+      }
+    } else if (themeType === 'fire-embers') {
+      const count = Math.min(48, Math.max(18, Math.floor(this.width * 0.024)));
+      for (let i = 0; i < count; i++) {
+        this.particles.push({
+          x: Math.random() * this.width,
+          y: this.height * 0.35 + Math.random() * this.height * 0.7,
+          radius: Math.random() * 2.2 + 0.9,
+          speedY: Math.random() * 1.5 + 0.7,
+          swayFreq: Math.random() * 0.025 + 0.012,
+          swayAmp: Math.random() * 1.4 + 0.5,
+          swayPhase: Math.random() * Math.PI * 2,
+          baseOpacity: Math.random() * 0.75 + 0.25,
+          flickerSpeed: Math.random() * 0.07 + 0.03,
+          flickerPhase: Math.random() * Math.PI * 2,
+          hue: Math.random() < 0.35 ? (Math.random() * 15 + 12) : (Math.random() * 24 + 28) // deep ember red to golden flame
         });
       }
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
@@ -345,6 +419,36 @@ class BackgroundEngine {
           p.x = Math.random() * this.width;
         }
       }
+    } else if (themeType === 'fire-embers') {
+      for (let p of this.particles) {
+        p.flickerPhase += p.flickerSpeed;
+        p.swayPhase += p.swayFreq;
+
+        const flicker = 0.72 + 0.28 * Math.sin(p.flickerPhase);
+        // Fade smoothly as ember rises near top
+        const heightFade = Math.max(0.1, Math.min(1, p.y / (this.height * 0.4)));
+        const currentOpacity = Math.max(0.04, Math.min(1, p.baseOpacity * flicker * heightFade));
+
+        p.y -= p.speedY;
+        p.x += Math.sin(p.swayPhase) * p.swayAmp;
+
+        this.ctx.fillStyle = `hsla(${p.hue}, 96%, 66%, ${currentOpacity})`;
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, ${currentOpacity * 0.9})`;
+        this.ctx.beginPath();
+        this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        // Respawn near bottom when rising off top or faded
+        if (p.y < -15 || currentOpacity <= 0.05) {
+          p.y = this.height + Math.random() * 25;
+          p.x = Math.random() * this.width;
+          p.flickerPhase = Math.random() * Math.PI * 2;
+        }
+        if (p.x < -15) p.x = this.width + 15;
+        if (p.x > this.width + 15) p.x = -15;
+      }
+      this.ctx.shadowBlur = 0;
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
       for (let p of this.particles) {
         this.ctx.fillStyle = `hsla(${p.hue}, 80%, 75%, ${p.opacity})`;

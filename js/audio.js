@@ -153,14 +153,70 @@ class AudioEngine {
         rightChannel[i] = pink * 0.9 + (Math.random() * 2 - 1) * 0.02 + droplet;
       }
     } else if (type === 'fire') {
-      // Crackle & warm low rumble
-      let lastOut = 0.0;
+      // Hyper-realistic procedural hearth fire:
+      // 1. Warm low timber rumble (soothing baseline warmth)
+      // 2. Soft continuous thermal air & vapor hiss
+      // 3. Crisp wood crackles & snapping pops with natural exponential decay
+      let brownL = 0.0, brownR = 0.0;
+      let pinkB0 = 0.0, pinkB1 = 0.0;
+      let popRemainL = 0, popRemainR = 0;
+      let popAmpL = 0, popAmpR = 0;
+      let popFreqL = 600, popFreqR = 600;
+      let popPhaseL = 0, popPhaseR = 0;
+
       for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        lastOut = (lastOut + (0.02 * white)) / 1.02; // Brown rumble
-        const crackle = (Math.random() < 0.001) ? (Math.random() * 0.8 - 0.4) : 0;
-        leftChannel[i] = lastOut * 3.5 + crackle;
-        rightChannel[i] = lastOut * 3.5 + (Math.random() < 0.001 ? (Math.random() * 0.8 - 0.4) : 0);
+        const whiteL = Math.random() * 2 - 1;
+        const whiteR = Math.random() * 2 - 1;
+
+        // Warm brownian log resonance
+        brownL = (brownL + (0.018 * whiteL)) / 1.018;
+        brownR = (brownR + (0.018 * whiteR)) / 1.018;
+
+        // Soft continuous ember sizzle / vapor
+        pinkB0 = 0.995 * pinkB0 + whiteL * 0.035;
+        pinkB1 = 0.985 * pinkB1 + whiteR * 0.045;
+        const hissL = (whiteL - pinkB0) * 0.032;
+        const hissR = (whiteR - pinkB1) * 0.032;
+
+        // Trigger realistic wood crackle pops
+        if (popRemainL <= 0 && Math.random() < 0.00065) {
+          const durationMs = Math.random() * 15 + 4;
+          popRemainL = Math.floor((durationMs / 1000) * this.ctx.sampleRate);
+          popAmpL = Math.random() * 0.6 + 0.25;
+          popFreqL = Math.random() * 850 + 400; // 400Hz - 1250Hz natural wood resonance
+          popPhaseL = 0;
+        }
+
+        if (popRemainR <= 0 && Math.random() < 0.00065) {
+          const durationMs = Math.random() * 15 + 4;
+          popRemainR = Math.floor((durationMs / 1000) * this.ctx.sampleRate);
+          popAmpR = Math.random() * 0.6 + 0.25;
+          popFreqR = Math.random() * 850 + 400;
+          popPhaseR = 0;
+        }
+
+        // Occasional tiny spark micro-clicks
+        const sparkL = (Math.random() < 0.0018) ? (Math.random() * 0.22 - 0.11) : 0;
+        const sparkR = (Math.random() < 0.0018) ? (Math.random() * 0.22 - 0.11) : 0;
+
+        let popL = 0;
+        if (popRemainL > 0) {
+          popPhaseL += (popFreqL * 2 * Math.PI) / this.ctx.sampleRate;
+          popL = Math.sin(popPhaseL) * popAmpL;
+          popAmpL *= 0.985;
+          popRemainL--;
+        }
+
+        let popR = 0;
+        if (popRemainR > 0) {
+          popPhaseR += (popFreqR * 2 * Math.PI) / this.ctx.sampleRate;
+          popR = Math.sin(popPhaseR) * popAmpR;
+          popAmpR *= 0.985;
+          popRemainR--;
+        }
+
+        leftChannel[i] = (brownL * 3.4) + hissL + popL + sparkL;
+        rightChannel[i] = (brownR * 3.4) + hissR + popR + sparkR;
       }
     } else if (type === 'waves') {
       // Ocean wave surge (modulated pink noise)
@@ -189,8 +245,8 @@ class AudioEngine {
 
     // Filter node for smooth warmth
     const filter = this.ctx.createBiquadFilter();
-    filter.type = type === 'rain' ? 'lowpass' : (type === 'fire' ? 'bandpass' : 'lowpass');
-    filter.frequency.value = type === 'rain' ? 1200 : (type === 'fire' ? 800 : 900);
+    filter.type = type === 'rain' ? 'lowpass' : (type === 'fire' ? 'lowpass' : 'lowpass');
+    filter.frequency.value = type === 'rain' ? 1200 : (type === 'fire' ? 1600 : 900);
 
     const gainNode = this.ctx.createGain();
     const targetGain = this.isMuted ? 0 : this.volume * 0.35;
