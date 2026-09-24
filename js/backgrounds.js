@@ -140,31 +140,31 @@ class BackgroundEngine {
     const themeType = this.themes[this.currentTheme]?.type || 'motes';
 
     if (themeType === 'rain') {
-      const count = Math.floor(this.width * 0.08); // Responsive count
+      const count = Math.min(55, Math.max(20, Math.floor(this.width * 0.035)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           length: Math.random() * 25 + 15,
-          speed: Math.random() * 12 + 18,
-          opacity: Math.random() * 0.4 + 0.15,
+          speed: Math.random() * 10 + 15,
+          opacity: Math.random() * 0.35 + 0.15,
           thickness: Math.random() * 1.5 + 0.8
         });
       }
     } else if (themeType === 'stars') {
-      const count = Math.floor(this.width * 0.12);
+      const count = Math.min(70, Math.max(25, Math.floor(this.width * 0.045)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          size: Math.random() * 2.2 + 0.5,
-          opacity: Math.random() * 0.8 + 0.2,
-          twinkleSpeed: Math.random() * 0.03 + 0.01,
+          size: Math.random() * 2.0 + 0.5,
+          opacity: Math.random() * 0.75 + 0.2,
+          twinkleSpeed: Math.random() * 0.025 + 0.01,
           angle: Math.random() * Math.PI * 2
         });
       }
     } else if (themeType === 'leaves') {
-      const count = Math.floor(this.width * 0.035);
+      const count = Math.min(22, Math.max(10, Math.floor(this.width * 0.015)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
@@ -178,16 +178,16 @@ class BackgroundEngine {
         });
       }
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
-      const count = Math.floor(this.width * 0.04);
+      const count = Math.min(32, Math.max(12, Math.floor(this.width * 0.018)));
       const isNeon = themeType === 'neon-motes';
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          radius: Math.random() * 2.8 + 1.2,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: -Math.random() * 0.5 - 0.2,
-          opacity: Math.random() * 0.5 + 0.2,
+          radius: Math.random() * 2.6 + 1.2,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: -Math.random() * 0.45 - 0.15,
+          opacity: Math.random() * 0.45 + 0.2,
           hue: isNeon ? (Math.random() > 0.5 ? 280 : 190) : 40
         });
       }
