@@ -9,8 +9,8 @@
 class BilibiliController {
   constructor() {
     this.enabled = true; // Auto play on focus
-    this.mode = 'embedded'; // 'embedded' | 'popup' | 'audio_only'
-    this.currentPreset = 'bili_live';
+    this.mode = 'popup'; // 'popup' | 'embedded' | 'tab'
+    this.currentPreset = 'bili_lofigirl_live';
     this.customInput = '';
     this.popupWindow = null;
     this.isPlaying = false;
@@ -19,38 +19,39 @@ class BilibiliController {
 
     // Default presets
     this.presets = {
+      bili_lofigirl_live: {
+        name: 'B站 Lofi Girl 伴学直播间 (27519423)',
+        type: 'live',
+        cid: '27519423',
+        title: 'B站 Lofi Girl 直播间 (27519423)',
+        url: 'https://live.bilibili.com/27519423'
+      },
       youtube_lofi: {
         name: 'Lofi Girl 官方 24/7 直播间 (YouTube 原版)',
         type: 'youtube',
         ytid: 'jfKfPfyJRdk',
-        title: 'Lofi Girl - beats to relax/study to',
+        title: 'Lofi Girl 官方电台 (YouTube)',
         url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
       },
       bili_live: {
-        name: 'B站 24h 伴学自习室 (直播间)',
+        name: 'B站 24h 伴学自习室 (21452505)',
         type: 'live',
-        cid: '21452505', // Popular 24/7 study & lofi music room
-        title: 'Bilibili 24小时自习室',
+        cid: '21452505',
+        title: 'B站 24小时自习室',
         url: 'https://live.bilibili.com/21452505'
-      },
-      bili_search_lofi: {
-        name: 'B站 全部在线 Lofi 直播间 (实时搜索)',
-        type: 'custom',
-        title: 'B站在线 Lofi 直播间列表',
-        url: 'https://live.bilibili.com/search?keyword=lofi'
       },
       bili_lofi_girl: {
         name: 'B站 Lofi Girl 伴学生物钟 (经典视频)',
         type: 'video',
-        bvid: 'BV184411C75d', // Classic Lofi study music compilation
-        title: 'Bilibili Lofi Girl 学习音乐',
+        bvid: 'BV184411C75d',
+        title: 'B站 Lofi Girl 学习音乐',
         url: 'https://www.bilibili.com/video/BV184411C75d'
       },
       bili_cafe: {
         name: 'B站 窗边雨声与爵士咖啡馆 (视频)',
         type: 'video',
         bvid: 'BV1vQ4y1Z7mU',
-        title: 'Bilibili 窗边雨声咖啡厅',
+        title: 'B站 窗边雨声咖啡厅',
         url: 'https://www.bilibili.com/video/BV1vQ4y1Z7mU'
       }
     };
@@ -71,7 +72,11 @@ class BilibiliController {
         const config = JSON.parse(saved);
         if (config.enabled !== undefined) this.enabled = config.enabled;
         if (config.mode) this.mode = config.mode;
-        if (config.currentPreset) this.currentPreset = config.currentPreset;
+        if (config.currentPreset && this.presets[config.currentPreset] && config.currentPreset !== 'bili_live') {
+          this.currentPreset = config.currentPreset;
+        } else {
+          this.currentPreset = 'bili_lofigirl_live';
+        }
         if (config.customInput) this.customInput = config.customInput;
       } catch (e) {
         console.error('Failed to load bilibili settings', e);

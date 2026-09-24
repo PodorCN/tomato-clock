@@ -240,8 +240,8 @@
 
           <!-- Direct Open Button & Channels -->
           <div class="flex flex-col gap-2.5">
-            <button id="btn-open-lofigirl-direct" class="btn-direct-open" title="直接打开 Lofi Girl 直播间">
-              <span id="direct-open-btn-text">🚀 直接打开 Lofi Girl 24/7 直播间</span>
+            <button id="btn-open-lofigirl-direct" class="btn-direct-open" title="直接打开 B站 Lofi Girl 直播间">
+              <span id="direct-open-btn-text">🚀 直接打开 B站 Lofi Girl 直播间 (27519423)</span>
               <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
@@ -250,8 +250,8 @@
             <div class="flex items-center justify-between text-xs text-white/50 px-0.5">
               <span>频道切换:</span>
               <div class="bili-channel-pills" id="bili-channel-pills-container">
-                <button type="button" class="bili-channel-pill active" data-preset="youtube_lofi">🔴 Lofi Girl (YT)</button>
-                <button type="button" class="bili-channel-pill" data-preset="bili_live">📺 B站自习室</button>
+                <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">📺 B站 Lofi (27519423)</button>
+                <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">🔴 YouTube 原版</button>
                 <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">📻 B站精选</button>
               </div>
             </div>
@@ -385,10 +385,11 @@
           <div>
             <span class="text-xs text-white/40 block mb-1">精选预设通道</span>
             <select id="bili-preset-select" class="form-control-input">
-              <option value="bili_live">B站 24h 伴学自习室 (直播间)</option>
+              <option value="bili_lofigirl_live">B站 Lofi Girl 伴学直播间 (27519423)</option>
+              <option value="youtube_lofi">YouTube Lofi Girl 官方 24/7 直播间</option>
+              <option value="bili_live">B站 24h 伴学自习室 (21452505)</option>
               <option value="bili_lofi_girl">B站 Lofi Girl 伴学生物钟 (经典视频)</option>
               <option value="bili_cafe">B站 窗边雨声与爵士咖啡馆 (视频)</option>
-              <option value="youtube_lofi">YouTube Lofi Girl 官方电台 (需国际网络)</option>
               <option value="custom">自定义输入 (B站房间号 / BV号 / 链接)</option>
             </select>
           </div>
