@@ -19,6 +19,13 @@ class BilibiliController {
 
     // Default presets
     this.presets = {
+      youtube_lofi: {
+        name: 'Lofi Girl 官方 24/7 直播间 (YouTube 原版)',
+        type: 'youtube',
+        ytid: 'jfKfPfyJRdk',
+        title: 'Lofi Girl - beats to relax/study to',
+        url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
+      },
       bili_live: {
         name: 'B站 24h 伴学自习室 (直播间)',
         type: 'live',
@@ -26,26 +33,25 @@ class BilibiliController {
         title: 'Bilibili 24小时自习室',
         url: 'https://live.bilibili.com/21452505'
       },
+      bili_search_lofi: {
+        name: 'B站 全部在线 Lofi 直播间 (实时搜索)',
+        type: 'custom',
+        title: 'B站在线 Lofi 直播间列表',
+        url: 'https://live.bilibili.com/search?keyword=lofi'
+      },
       bili_lofi_girl: {
-        name: 'B站 Lofi Girl 伴学生物钟 (精选)',
+        name: 'B站 Lofi Girl 伴学生物钟 (经典视频)',
         type: 'video',
         bvid: 'BV184411C75d', // Classic Lofi study music compilation
         title: 'Bilibili Lofi Girl 学习音乐',
         url: 'https://www.bilibili.com/video/BV184411C75d'
       },
       bili_cafe: {
-        name: 'B站 窗边雨声与爵士咖啡馆',
+        name: 'B站 窗边雨声与爵士咖啡馆 (视频)',
         type: 'video',
         bvid: 'BV1vQ4y1Z7mU',
         title: 'Bilibili 窗边雨声咖啡厅',
         url: 'https://www.bilibili.com/video/BV1vQ4y1Z7mU'
-      },
-      youtube_lofi: {
-        name: 'YouTube Lofi Girl 官方电台 (需科学环境)',
-        type: 'youtube',
-        ytid: 'jfKfPfyJRdk',
-        title: 'Lofi Girl - beats to relax/study to',
-        url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
       }
     };
 
@@ -178,6 +184,39 @@ class BilibiliController {
   }
 
   /**
+   * Directly open the live room in companion window or new tab
+   * @param {string|null} presetKey 
+   * @param {boolean} asTab 
+   */
+  openDirectly(presetKey = null, asTab = false) {
+    if (presetKey && this.presets[presetKey]) {
+      this.currentPreset = presetKey;
+      this.saveSettings();
+    }
+    const target = this.getTargetInfo();
+    const url = target.externalUrl;
+
+    if (asTab) {
+      window.open(url, '_blank');
+    } else {
+      const left = Math.max(0, window.screen.width - 700);
+      const top = Math.max(0, window.screen.height - 520);
+      if (this.popupWindow && !this.popupWindow.closed) {
+        this.popupWindow.location.href = url;
+        this.popupWindow.focus();
+      } else {
+        this.popupWindow = window.open(
+          url,
+          'TomatoLofiCompanion',
+          `width=680,height=480,left=${left},top=${top},resizable=yes,scrollbars=yes,status=no`
+        );
+      }
+    }
+    this.isPlaying = true;
+    this.updateStatusUI();
+  }
+
+  /**
    * Play stream
    */
   play() {
@@ -185,16 +224,11 @@ class BilibiliController {
     this.isPlaying = true;
 
     if (this.mode === 'popup') {
-      // Companion popup window mode
-      if (!this.popupWindow || this.popupWindow.closed) {
-        const left = Math.max(0, window.screen.width - 660);
-        const top = Math.max(0, window.screen.height - 480);
-        this.popupWindow = window.open(
-          target.externalUrl,
-          'TomatoBiliCompanion',
-          `width=640,height=420,left=${left},top=${top},resizable=yes,scrollbars=no,status=no`
-        );
-      }
+      // Companion popup window mode (auto closes on break)
+      this.openDirectly(null, false);
+    } else if (this.mode === 'tab') {
+      // New tab mode
+      this.openDirectly(null, true);
     } else {
       // In-app embedded iframe mode
       if (this.iframeContainer) {

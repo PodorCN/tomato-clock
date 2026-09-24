@@ -238,6 +238,25 @@
             </div>
           </div>
 
+          <!-- Direct Open Button & Channels -->
+          <div class="flex flex-col gap-2.5">
+            <button id="btn-open-lofigirl-direct" class="btn-direct-open" title="直接打开 Lofi Girl 直播间">
+              <span id="direct-open-btn-text">🚀 直接打开 Lofi Girl 24/7 直播间</span>
+              <svg class="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </button>
+            
+            <div class="flex items-center justify-between text-xs text-white/50 px-0.5">
+              <span>频道切换:</span>
+              <div class="bili-channel-pills" id="bili-channel-pills-container">
+                <button type="button" class="bili-channel-pill active" data-preset="youtube_lofi">🔴 Lofi Girl (YT)</button>
+                <button type="button" class="bili-channel-pill" data-preset="bili_live">📺 B站自习室</button>
+                <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">📻 B站精选</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Quick Bilibili Controls -->
           <div class="flex items-center justify-between gap-2 pt-1 text-xs">
             <button id="btn-bili-manual-toggle" class="nav-btn text-xs py-1.5 px-3">
@@ -246,8 +265,9 @@
             <div class="flex items-center gap-2 text-white/50">
               <span>模式:</span>
               <select id="bili-mode-select" class="custom-select py-1 px-2 text-xs w-auto">
-                <option value="embedded">页面内嵌</option>
-                <option value="popup">伴侣小窗(自动关)</option>
+                <option value="popup">伴侣小窗 (自动开/关)</option>
+                <option value="embedded">页面内嵌播放</option>
+                <option value="tab">新标签页打开</option>
               </select>
             </div>
           </div>

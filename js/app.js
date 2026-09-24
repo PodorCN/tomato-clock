@@ -93,6 +93,9 @@ class PomodoroApp {
       biliCustomGroup: document.getElementById('bili-custom-group'),
       biliCustomInput: document.getElementById('bili-custom-input'),
       biliManualToggle: document.getElementById('btn-bili-manual-toggle'),
+      btnOpenDirect: document.getElementById('btn-open-lofigirl-direct'),
+      directOpenText: document.getElementById('direct-open-btn-text'),
+      channelPills: document.querySelectorAll('.bili-channel-pill'),
 
       // Stats
       statPomoCount: document.getElementById('stat-pomodoro-count'),
@@ -192,6 +195,17 @@ class PomodoroApp {
       if (this.dom.biliCustomGroup) {
         this.dom.biliCustomGroup.style.display =
           window.bilibiliController.currentPreset === 'custom' ? 'block' : 'none';
+      }
+
+      if (this.dom.channelPills) {
+        this.dom.channelPills.forEach((p) => {
+          p.classList.toggle('active', p.dataset.preset === window.bilibiliController.currentPreset);
+        });
+      }
+
+      const target = window.bilibiliController.getTargetInfo();
+      if (this.dom.directOpenText && target) {
+        this.dom.directOpenText.textContent = `🚀 直接打开 ${target.title}`;
       }
     }
   }
@@ -294,6 +308,41 @@ class PomodoroApp {
     if (this.dom.biliManualToggle) {
       this.dom.biliManualToggle.addEventListener('click', () => {
         window.bilibiliController.toggle();
+      });
+    }
+
+    if (this.dom.btnOpenDirect) {
+      this.dom.btnOpenDirect.addEventListener('click', () => {
+        window.bilibiliController?.openDirectly(null, window.bilibiliController?.mode === 'tab');
+      });
+    }
+
+    if (this.dom.channelPills) {
+      this.dom.channelPills.forEach((pill) => {
+        pill.addEventListener('click', (e) => {
+          const preset = e.currentTarget.dataset.preset;
+          this.dom.channelPills.forEach((p) => p.classList.remove('active'));
+          e.currentTarget.classList.add('active');
+
+          if (window.bilibiliController) {
+            window.bilibiliController.currentPreset = preset;
+            window.bilibiliController.saveSettings();
+            window.bilibiliController.updateStatusUI();
+
+            const target = window.bilibiliController.getTargetInfo();
+            if (this.dom.directOpenText) {
+              this.dom.directOpenText.textContent = `🚀 直接打开 ${target.title}`;
+            }
+
+            if (this.dom.biliPresetSelect) {
+              this.dom.biliPresetSelect.value = preset;
+            }
+
+            if (this.status === 'running' && this.mode === 'focus') {
+              window.bilibiliController.play();
+            }
+          }
+        });
       });
     }
 
