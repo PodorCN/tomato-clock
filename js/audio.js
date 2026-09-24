@@ -121,6 +121,10 @@ class AudioEngine {
       return;
     }
 
+    if (this.isBreakMuted) {
+      return; // Strictly muted during break
+    }
+
     this.init();
     this.currentNoiseType = type;
 
@@ -203,19 +207,26 @@ class AudioEngine {
     this.noiseGain = gainNode;
   }
 
+  setBreakMute(isBreak) {
+    this.isBreakMuted = isBreak;
+    if (isBreak) {
+      this.stopWhiteNoise();
+    }
+  }
+
   stopWhiteNoise() {
     if (this.noiseGain && this.noiseNode) {
       try {
         const now = this.ctx.currentTime;
         this.noiseGain.gain.setValueAtTime(this.noiseGain.gain.value, now);
-        this.noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+        this.noiseGain.gain.linearRampToValueAtTime(0.00001, now + 0.05);
         const oldNode = this.noiseNode;
         setTimeout(() => {
           try {
             oldNode.stop();
             oldNode.disconnect();
           } catch (e) {}
-        }, 850);
+        }, 60);
       } catch (e) {}
       this.noiseNode = null;
       this.noiseGain = null;

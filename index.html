@@ -186,21 +186,6 @@
             </svg>
           </button>
         </div>
-
-        <!-- Stats & Tomato Tally Banner -->
-        <div class="stats-banner">
-          <div>
-            <div class="text-xs text-white/50 mb-1">今日专注进度</div>
-            <div class="tomato-tally-box" id="tomato-tally-container">
-              <span class="text-white/30 text-xs">今日还未开始，加油迈出第一步！</span>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-white/40">今日累计: </span>
-            <strong id="stat-pomodoro-count" class="text-white font-bold text-sm">0</strong> <span class="text-xs text-white/60">番茄</span> · 
-            <strong id="stat-focus-minutes" class="text-white font-bold text-sm">0 分钟</strong>
-          </div>
-        </div>
       </section>
 
       <!-- Right: Companion Panel (Bilibili Player, White Noise Mixer, Quick Tasks) -->
@@ -265,9 +250,8 @@
             <div class="flex items-center gap-2 text-white/50">
               <span>模式:</span>
               <select id="bili-mode-select" class="custom-select py-1 px-2 text-xs w-auto">
-                <option value="popup">伴侣小窗 (自动开/关)</option>
-                <option value="embedded">页面内嵌播放</option>
-                <option value="tab">新标签页打开</option>
+                <option value="embedded">页面内嵌 (休息时100%完全静音)</option>
+                <option value="popup">伴侣小窗 (休息时自动关闭小窗)</option>
               </select>
             </div>
           </div>

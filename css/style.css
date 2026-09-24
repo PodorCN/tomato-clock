@@ -498,27 +498,6 @@ html, body {
   transform: scale(0.95);
 }
 
-/* Daily Stats & Tomato Tally */
-.stats-banner {
-  width: 100%;
-  margin-top: 2.25rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  z-index: 5;
-}
-
-.tomato-tally-box {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 1.15rem;
-}
-
 /* ==========================================================================
    Right Companion Panel (Bilibili Player, White Noise Mixer, Quick Tasks)
    ========================================================================== */

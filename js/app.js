@@ -499,6 +499,14 @@ class PomodoroApp {
       this.dom.timerStateBadge.className = 'timer-badge long-break-badge';
     }
 
+    if (this.mode !== 'focus') {
+      window.audioEngine?.setBreakMute(true);
+      window.bilibiliController?.stop(true);
+    } else {
+      window.audioEngine?.setBreakMute(false);
+      window.bilibiliController?.updateStatusUI(false);
+    }
+
     this.updateDisplay();
   }
 
@@ -535,14 +543,15 @@ class PomodoroApp {
 
     // Audio / Bilibili handling
     if (this.mode === 'focus') {
+      window.audioEngine?.setBreakMute(false);
       window.bilibiliController?.startOnFocus();
       if (this.config.ambientNoise && this.config.ambientNoise !== 'none') {
         window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
       }
     } else {
-      // In break mode: ensure Bilibili & white noise stay stopped
+      // In break mode: ensure Bilibili & white noise stay 100% stopped and muted
+      window.audioEngine?.setBreakMute(true);
       window.bilibiliController?.stopOnBreak();
-      window.audioEngine?.stopWhiteNoise();
     }
   }
 
@@ -600,9 +609,9 @@ class PomodoroApp {
         `恭喜完成 ${this.config.focusTime} 分钟专注！休息时间到了，B站伴学音乐已自动关闭，站起来喝杯水吧～`
       );
 
-      // Stop Bilibili immediately
+      // Stop Bilibili & white noise immediately
+      window.audioEngine?.setBreakMute(true);
       window.bilibiliController?.stopOnBreak();
-      window.audioEngine?.stopWhiteNoise();
 
       // Determine next mode: Long Break or Short Break
       if (this.completedPomodoros % this.longBreakInterval === 0) {

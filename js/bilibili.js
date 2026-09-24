@@ -27,11 +27,12 @@ class BilibiliController {
         url: 'https://live.bilibili.com/27519423'
       },
       youtube_lofi: {
-        name: 'Lofi Girl 官方 24/7 直播间 (YouTube 原版)',
+        name: 'Lofi Girl 官方 24/7 直播 (YouTube)',
         type: 'youtube',
-        ytid: 'jfKfPfyJRdk',
-        title: 'Lofi Girl 官方电台 (YouTube)',
-        url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk'
+        channelId: 'UC5qLj-aXg6F9yM9B8p5Wv6A',
+        title: 'Lofi Girl 官方 24/7 直播 (YouTube)',
+        url: 'https://www.youtube.com/@LofiGirl/live',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC5qLj-aXg6F9yM9B8p5Wv6A&autoplay=1'
       },
       bili_live: {
         name: 'B站 24h 伴学自习室 (21452505)',
@@ -160,8 +161,8 @@ class BilibiliController {
     } else if (preset.type === 'youtube') {
       return {
         title: preset.title,
-        embedUrl: `https://www.youtube-nocookie.com/embed/${preset.ytid}?autoplay=1&mute=0`,
-        externalUrl: preset.url
+        embedUrl: preset.embedUrl || 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC5qLj-aXg6F9yM9B8p5Wv6A&autoplay=1',
+        externalUrl: preset.url || 'https://www.youtube.com/@LofiGirl/live'
       };
     }
   }
@@ -253,24 +254,41 @@ class BilibiliController {
     this.updateStatusUI();
   }
 
+  stopOnBreak() {
+    this.stop(true);
+  }
+
   /**
    * Stop stream immediately (unmount iframe and close popup window)
+   * @param {boolean} isBreak
    */
-  stop() {
+  stop(isBreak = false) {
     this.isPlaying = false;
 
     // Unmount iframe to immediately cut off audio
     if (this.iframeContainer) {
+      const iframes = this.iframeContainer.querySelectorAll('iframe');
+      iframes.forEach((f) => {
+        try {
+          f.src = 'about:blank';
+        } catch (e) {}
+      });
+
+      const badgeText = isBreak ? '☕ 休息时间：已自动完全静音' : '白噪音待命中';
+      const badgeDesc = isBreak
+        ? '伴学音乐与白噪音已停止，专注计时启动时将自动恢复播放'
+        : '专注计时启动时将自动播放，休息时自动关闭';
+
       this.iframeContainer.innerHTML = `
         <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
-          <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center mb-3">
-            <svg class="w-7 h-7 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div class="w-14 h-14 rounded-full ${isBreak ? 'bg-emerald-500/15' : 'bg-white/5'} flex items-center justify-center mb-3">
+            <svg class="w-7 h-7 ${isBreak ? 'text-emerald-400' : 'text-white/40'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           </div>
-          <p class="text-sm font-medium text-white/70">白噪音待命中</p>
-          <p class="text-xs text-white/40 mt-1">专注计时启动时将自动播放，休息时自动关闭</p>
+          <p class="text-sm font-semibold ${isBreak ? 'text-emerald-300' : 'text-white/70'}">${badgeText}</p>
+          <p class="text-xs text-white/40 mt-1">${badgeDesc}</p>
         </div>
       `;
     }
@@ -285,7 +303,7 @@ class BilibiliController {
       this.popupWindow = null;
     }
 
-    this.updateStatusUI();
+    this.updateStatusUI(isBreak);
   }
 
   toggle() {
@@ -296,9 +314,19 @@ class BilibiliController {
     }
   }
 
-  updateStatusUI() {
+  updateStatusUI(isBreak = false) {
     if (!this.statusEl) return;
     const target = this.getTargetInfo();
+
+    if (isBreak) {
+      this.statusEl.innerHTML = `
+        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          ☕ 休息中：已自动静音
+        </span>
+      `;
+      return;
+    }
 
     if (this.isPlaying) {
       this.statusEl.innerHTML = `
