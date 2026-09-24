@@ -46,6 +46,9 @@ class PomodoroApp {
     this.phoneMediaQuery = window.matchMedia(
       '(max-width: 640px), (hover: none) and (pointer: coarse) and (max-width: 900px)'
     );
+    this.companionMinWidth = 1100;
+    this.companionMediaQuery = window.matchMedia(`(max-width: ${this.companionMinWidth}px)`);
+    this.companionAvailable = null;
 
     // DOM Elements Cache
     this.dom = {};
@@ -193,20 +196,36 @@ class PomodoroApp {
     return this.isPhone();
   }
 
+  isCompanionAvailable() {
+    return !this.isPhone() && !this.companionMediaQuery?.matches;
+  }
+
   checkDeviceLayout() {
     const isPhone = this.isPhone();
+    const companionAvailable = this.isCompanionAvailable();
     const wasPhone = document.body.classList.contains('is-phone-device');
+    const wasCompanionAvailable = this.companionAvailable;
+    this.companionAvailable = companionAvailable;
     document.body.classList.toggle('is-phone-device', isPhone);
-    return { changed: isPhone !== wasPhone, isPhone };
+    return {
+      changed: isPhone !== wasPhone,
+      isPhone,
+      companionChanged:
+        wasCompanionAvailable !== null && wasCompanionAvailable !== companionAvailable,
+      companionAvailable
+    };
   }
 
   handleDeviceLayoutChange() {
-    const { changed, isPhone } = this.checkDeviceLayout();
-    if (!changed) return;
+    const { changed, isPhone, companionChanged, companionAvailable } = this.checkDeviceLayout();
+    if (!changed && !companionChanged) return;
+
+    // Companion media must never continue when its deck is unavailable.
+    if (!companionAvailable) {
+      window.bilibiliController?.stop();
+    }
 
     if (isPhone) {
-      // Companion media must never continue after crossing into phone layout.
-      window.bilibiliController?.stop();
       this.dom.modalSettings?.classList.add('hidden');
 
       if (this.config.zenMode) {
@@ -222,7 +241,9 @@ class PomodoroApp {
         });
         this.updateDisplay();
       }
-    } else {
+    }
+
+    if (companionAvailable) {
       window.bilibiliController?.updateStatusUI();
     }
   }
@@ -560,11 +581,14 @@ class PomodoroApp {
     }
 
     const onDeviceLayoutChange = () => this.handleDeviceLayoutChange();
-    if (this.phoneMediaQuery?.addEventListener) {
-      this.phoneMediaQuery.addEventListener('change', onDeviceLayoutChange);
-    } else {
-      this.phoneMediaQuery?.addListener(onDeviceLayoutChange);
-    }
+    [this.phoneMediaQuery, this.companionMediaQuery].forEach((mediaQuery) => {
+      if (!mediaQuery) return;
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', onDeviceLayoutChange);
+      } else {
+        mediaQuery.addListener(onDeviceLayoutChange);
+      }
+    });
 
     window.addEventListener('themeChanged', (e) => {
       if (e.detail?.theme === 'cozy-fireplace') {
@@ -991,7 +1015,7 @@ class PomodoroApp {
     // Audio / Bilibili handling
     if (this.mode === 'focus') {
       window.audioEngine?.setBreakMute(false);
-      if (!this.isPhone()) {
+      if (this.isCompanionAvailable()) {
         window.bilibiliController?.startOnFocus();
       }
       if (this.config.ambientNoise && this.config.ambientNoise !== 'none') {
@@ -1315,7 +1339,7 @@ class PomodoroApp {
   }
 
   toggleCompanionPanel() {
-    if (!this.dom.sidePanel) return;
+    if (!this.dom.sidePanel || !this.isCompanionAvailable()) return;
     const isHidden = this.dom.sidePanel.classList.toggle('hidden-panel');
     if (this.dom.containerMain) {
       this.dom.containerMain.classList.toggle('panel-collapsed', isHidden);
@@ -1327,7 +1351,7 @@ class PomodoroApp {
   }
 
   setPanelCollapsed(collapsed) {
-    if (!this.dom.sidePanel) return;
+    if (!this.dom.sidePanel || !this.isCompanionAvailable()) return;
     this.dom.sidePanel.classList.toggle('hidden-panel', collapsed);
     if (this.dom.containerMain) {
       this.dom.containerMain.classList.toggle('panel-collapsed', collapsed);
@@ -1379,6 +1403,11 @@ class PomodoroApp {
   }
 
   setVideoFocusMode(active) {
+    if (!this.isCompanionAvailable()) {
+      this.isVideoFocusActive = false;
+      return;
+    }
+
     this.isVideoFocusActive = active;
     if (this.dom.sidePanel) {
       this.dom.sidePanel.classList.toggle('video-focus-active', active);

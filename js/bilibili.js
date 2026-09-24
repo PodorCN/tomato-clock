@@ -19,6 +19,8 @@ class BilibiliController {
     this.phoneMediaQuery = window.matchMedia(
       '(max-width: 640px), (hover: none) and (pointer: coarse) and (max-width: 900px)'
     );
+    this.companionMinWidth = 1100;
+    this.companionMediaQuery = window.matchMedia(`(max-width: ${this.companionMinWidth}px)`);
 
     // Default presets
     this.presets = {
@@ -66,6 +68,18 @@ class BilibiliController {
   init(containerId = 'bili-player-wrapper', statusId = 'bili-status-indicator') {
     this.iframeContainer = document.getElementById(containerId);
     this.statusEl = document.getElementById(statusId);
+
+    const stopWhenUnavailable = () => {
+      if (!this.isCompanionAvailable() && this.isPlaying) {
+        this.stop();
+      }
+    };
+    if (this.companionMediaQuery?.addEventListener) {
+      this.companionMediaQuery.addEventListener('change', stopWhenUnavailable);
+    } else {
+      this.companionMediaQuery?.addListener(stopWhenUnavailable);
+    }
+
     this.updateStatusUI();
   }
 
@@ -181,12 +195,16 @@ class BilibiliController {
     return this.isPhoneDevice();
   }
 
+  isCompanionAvailable() {
+    return !this.isPhoneDevice() && !this.companionMediaQuery?.matches;
+  }
+
   /**
    * Called when Focus session starts
    */
   startOnFocus() {
-    // Requirements: "如果是移动端就不要自动放b站" - only suppress on phones
-    if (this.isPhoneDevice()) {
+    // The stream is desktop-only and requires enough room for the companion deck.
+    if (!this.isCompanionAvailable()) {
       return;
     }
     if (!this.enabled) return;
@@ -213,7 +231,7 @@ class BilibiliController {
    * @param {boolean} asTab 
    */
   openDirectly(presetKey = null, asTab = false) {
-    if (this.isPhoneDevice()) {
+    if (!this.isCompanionAvailable()) {
       this.stop();
       return false;
     }
@@ -250,7 +268,7 @@ class BilibiliController {
    * Play stream
    */
   play() {
-    if (this.isPhoneDevice()) {
+    if (!this.isCompanionAvailable()) {
       this.stop();
       return false;
     }
