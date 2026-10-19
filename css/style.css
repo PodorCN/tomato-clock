@@ -549,13 +549,13 @@ input[type="range"]::-moz-range-thumb {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: -1;
-  font-size: clamp(6.5rem, 31cqw, 30rem);
+  font-size: clamp(7.5rem, 37cqw, 40rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
   white-space: nowrap;
   /* mixed here, not in :root, so it follows the theme and break accent */
-  color: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: color-mix(in srgb, var(--accent) 10%, transparent);
   pointer-events: none;
   user-select: none;
 }
@@ -1543,7 +1543,8 @@ body.zen-mode .zen-exit-pill {
     flex: 0 0 auto !important;
     width: 100% !important;
     height: auto !important;
-    overflow: visible !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
     padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 1.5rem !important;
     gap: 1.25rem;
   }
@@ -1645,7 +1646,8 @@ body.zen-mode .zen-exit-pill {
     flex: 0 0 auto !important;
     width: 100% !important;
     height: auto !important;
-    overflow: visible !important;
+    overflow-x: clip !important;
+    overflow-y: visible !important;
     padding: 1.25rem 1rem 1.5rem !important;
     gap: 1.5rem;
   }
