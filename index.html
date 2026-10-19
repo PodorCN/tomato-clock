@@ -15,7 +15,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Bump ?v= on every release so browsers fetch the new CSS/JS instead of a cached copy -->
-  <link rel="stylesheet" href="css/style.css?v=20261019c">
+  <link rel="stylesheet" href="css/style.css?v=20261019d">
 </head>
 <body class="theme-cozy-fireplace">
   <!-- Ambience particles (toggled with the Vibe button) -->
@@ -190,28 +190,6 @@
         </div>
       </section>
 
-      <!-- Compact screens and phones: white noise only, no stream -->
-      <div class="mobile-companion-hub" id="mobile-companion-hub">
-        <div class="mobile-ambient-card">
-          <div class="mobile-ambient-head">
-            <span class="field-label">White noise · 白噪音</span>
-            <button type="button" id="btn-mobile-ambient-toggle" class="text-btn" title="Turn white noise on or off">
-              <span id="mobile-sound-state-text">Sound off</span>
-            </button>
-          </div>
-          <div class="mobile-ambient-row">
-            <select id="mobile-ambient-select" class="custom-select" aria-label="White noise">
-              <option value="none">Off</option>
-              <option value="fire">Fireplace · 柴火暖炉</option>
-              <option value="rain">Rain on window · 窗外雨声</option>
-              <option value="cafe">Cafe · 咖啡馆</option>
-              <option value="waves">Ocean waves · 海浪</option>
-            </select>
-            <input type="range" id="mobile-volume-slider" min="0" max="100" value="50" aria-label="White noise volume">
-          </div>
-        </div>
-      </div>
-
       <!-- Tasks dock (shown while the study room panel is hidden) -->
       <aside id="focus-tasks-widget" class="focus-tasks-widget hidden-widget">
         <div class="focus-tasks-header">
@@ -288,11 +266,6 @@
         <div class="studio-utility-shelf" id="companion-utility-shelf">
           <div class="deck-utility-controls" id="deck-utility-controls">
             <div class="shelf-group">
-              <span class="field-label">Channel</span>
-              <div class="bili-channel-pills" id="bili-channel-pills-container">
-                <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">Bilibili live</button>
-                <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">YouTube</button>
-              </div>
               <button id="btn-open-lofigirl-direct" class="btn-link" title="Open the Bilibili Lofi Girl live room (27519423)">
                 <span id="direct-open-btn-text">Open Bilibili live room</span>
                 <svg class="icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -301,32 +274,15 @@
               </button>
             </div>
 
-            <div class="shelf-grid">
-              <div>
-                <label class="field-label" for="ambient-sound-select">Ambient sound</label>
-                <select id="ambient-sound-select" class="custom-select">
-                  <option value="none">None</option>
-                  <option value="rain">Rain on window</option>
-                  <option value="fire">Fireplace</option>
-                  <option value="cafe">Cafe</option>
-                  <option value="waves">Ocean waves</option>
-                </select>
-              </div>
-              <div>
-                <label class="field-label" for="bili-mode-select">Play stream</label>
+            <div class="shelf-row">
+              <label class="stream-mode-field">
+                <span class="field-label">Play stream</span>
                 <select id="bili-mode-select" class="custom-select">
                   <option value="embedded">In this page</option>
                   <option value="popup">In a popup window</option>
                 </select>
-              </div>
-            </div>
-
-            <div class="shelf-row">
-              <button id="btn-bili-manual-toggle" class="btn-ghost" title="Play or stop the stream now, without starting the timer">Play now</button>
-              <label class="volume-field">
-                <span class="field-label">Volume</span>
-                <input type="range" id="volume-slider" min="0" max="100" value="50">
               </label>
+              <button id="btn-bili-manual-toggle" class="btn-ghost" title="Play or stop the stream now, without starting the timer">Play now</button>
             </div>
           </div>
 
@@ -395,6 +351,10 @@
           <span>Desktop notifications</span>
           <input type="checkbox" id="check-notifications" checked>
         </label>
+        <label class="check-row">
+          <span>Chime volume</span>
+          <input type="range" id="volume-slider" class="chime-volume" min="0" max="100" value="50">
+        </label>
       </div>
 
       <div class="form-group">
@@ -403,7 +363,6 @@
           <span class="field-label">Channel</span>
           <select id="bili-preset-select" class="form-control-input">
             <option value="bili_lofigirl_live">Bilibili Lofi Girl live room (27519423)</option>
-            <option value="youtube_lofi">YouTube Lofi Girl 24/7</option>
             <option value="bili_live">Bilibili 24/7 study room (21452505)</option>
             <option value="bili_cafe">Bilibili rainy window jazz cafe (video)</option>
             <option value="custom">Custom (room ID, BV ID or URL)</option>
@@ -440,9 +399,9 @@
     </div>
   </div>
 
-  <script src="js/audio.js?v=20261019c"></script>
-  <script src="js/backgrounds.js?v=20261019c"></script>
-  <script src="js/bilibili.js?v=20261019c"></script>
-  <script src="js/app.js?v=20261019c"></script>
+  <script src="js/audio.js?v=20261019d"></script>
+  <script src="js/backgrounds.js?v=20261019d"></script>
+  <script src="js/bilibili.js?v=20261019d"></script>
+  <script src="js/app.js?v=20261019d"></script>
 </body>
 </html>

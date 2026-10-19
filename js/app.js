@@ -28,7 +28,6 @@ class PomodoroApp {
       autoStartBreak: false,
       autoStartFocus: false,
       soundVolume: 0.5,
-      ambientNoise: 'none', // 'none' | 'rain' | 'fire' | 'cafe' | 'waves'
       desktopNotification: true,
       zenMode: false
     };
@@ -134,7 +133,6 @@ class PomodoroApp {
       quickPresets: document.querySelectorAll('.preset-badge'),
 
       // Audio controls
-      ambientSelect: document.getElementById('ambient-sound-select'),
       volumeSlider: document.getElementById('volume-slider'),
       btnMute: document.getElementById('btn-mute'),
       muteIcon: document.getElementById('mute-icon'),
@@ -180,11 +178,6 @@ class PomodoroApp {
       btnToggleDeckControls: document.getElementById('btn-toggle-deck-controls'),
 
       // Mobile phone hub (timer audio only)
-      mobileCompanionHub: document.getElementById('mobile-companion-hub'),
-      mobileAmbientSelect: document.getElementById('mobile-ambient-select'),
-      mobileVolumeSlider: document.getElementById('mobile-volume-slider'),
-      btnMobileAmbientToggle: document.getElementById('btn-mobile-ambient-toggle'),
-      mobileSoundStateText: document.getElementById('mobile-sound-state-text')
     };
   }
 
@@ -341,10 +334,6 @@ class PomodoroApp {
     }
 
     if (this.dom.volumeSlider) this.dom.volumeSlider.value = this.config.soundVolume * 100;
-    if (this.dom.mobileVolumeSlider) this.dom.mobileVolumeSlider.value = this.config.soundVolume * 100;
-    if (this.dom.ambientSelect) this.dom.ambientSelect.value = this.config.ambientNoise;
-    if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = this.config.ambientNoise;
-    this.updateMobileSoundButtonText();
 
     if (window.bilibiliController) {
       if (this.dom.biliToggle) this.dom.biliToggle.checked = window.bilibiliController.enabled;
@@ -368,13 +357,6 @@ class PomodoroApp {
         this.dom.directOpenText.textContent = `Open ${target.title}`;
       }
     }
-  }
-
-  updateMobileSoundButtonText() {
-    if (!this.dom.mobileSoundStateText) return;
-    const isOff = !this.config.ambientNoise || this.config.ambientNoise === 'none';
-    this.dom.mobileSoundStateText.textContent = isOff ? 'Sound off' : 'Sound on';
-    this.dom.btnMobileAmbientToggle?.classList.toggle('is-on', !isOff);
   }
 
   setCustomFocusDuration(rawMin) {
@@ -506,71 +488,13 @@ class PomodoroApp {
       });
     }
 
-    // Volume & Ambient
+    // Chime volume
     if (this.dom.volumeSlider) {
       this.dom.volumeSlider.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value) / 100;
         this.config.soundVolume = val;
-        if (this.dom.mobileVolumeSlider) this.dom.mobileVolumeSlider.value = e.target.value;
         window.audioEngine?.setVolume(val);
         this.saveData();
-      });
-    }
-
-    if (this.dom.mobileVolumeSlider) {
-      this.dom.mobileVolumeSlider.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value) / 100;
-        this.config.soundVolume = val;
-        if (this.dom.volumeSlider) this.dom.volumeSlider.value = e.target.value;
-        window.audioEngine?.setVolume(val);
-        this.saveData();
-      });
-    }
-
-    if (this.dom.ambientSelect) {
-      this.dom.ambientSelect.addEventListener('change', (e) => {
-        this.config.ambientNoise = e.target.value;
-        if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = e.target.value;
-        this.saveData();
-        if (this.status === 'running' && this.mode === 'focus') {
-          window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
-        } else {
-          window.audioEngine?.stopWhiteNoise();
-        }
-        this.updateMobileSoundButtonText();
-      });
-    }
-
-    if (this.dom.mobileAmbientSelect) {
-      this.dom.mobileAmbientSelect.addEventListener('change', (e) => {
-        this.config.ambientNoise = e.target.value;
-        if (this.dom.ambientSelect) this.dom.ambientSelect.value = e.target.value;
-        this.saveData();
-        if (this.status === 'running' && this.mode === 'focus') {
-          window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
-        } else {
-          window.audioEngine?.stopWhiteNoise();
-        }
-        this.updateMobileSoundButtonText();
-      });
-    }
-
-    if (this.dom.btnMobileAmbientToggle) {
-      this.dom.btnMobileAmbientToggle.addEventListener('click', () => {
-        if (!this.config.ambientNoise || this.config.ambientNoise === 'none') {
-          this.config.ambientNoise = 'fire';
-        } else {
-          this.config.ambientNoise = 'none';
-        }
-        if (this.dom.ambientSelect) this.dom.ambientSelect.value = this.config.ambientNoise;
-        if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = this.config.ambientNoise;
-        this.saveData();
-        if (this.status === 'running' && this.mode === 'focus') {
-          window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
-        } else {
-          window.audioEngine?.stopWhiteNoise();
-        }
-        this.updateMobileSoundButtonText();
       });
     }
 
@@ -921,14 +845,12 @@ class PomodoroApp {
       // Auto-expand companion panel during break and reveal controls
       this.setPanelCollapsed(false);
       this.setVideoFocusMode(false);
-      window.audioEngine?.setBreakMute(true);
       window.bilibiliController?.stop(true);
       this.dom.vinylDisc?.classList.remove('is-spinning');
       this.dom.tonearmAssembly?.classList.remove('arm-on-record');
       this.dom.spectrumBars?.classList.remove('is-active');
       if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Stopped for the break';
     } else {
-      window.audioEngine?.setBreakMute(false);
       window.bilibiliController?.updateStatusUI(false);
     }
 
@@ -993,16 +915,11 @@ class PomodoroApp {
 
     // Audio / Bilibili handling
     if (this.mode === 'focus') {
-      window.audioEngine?.setBreakMute(false);
       if (this.isCompanionAvailable()) {
         window.bilibiliController?.startOnFocus();
       }
-      if (this.config.ambientNoise && this.config.ambientNoise !== 'none') {
-        window.audioEngine?.startWhiteNoise(this.config.ambientNoise);
-      }
     } else {
-      // In break mode: ensure Bilibili & white noise stay 100% stopped and muted
-      window.audioEngine?.setBreakMute(true);
+      // In break mode: keep the stream stopped
       window.bilibiliController?.stopOnBreak();
     }
   }
@@ -1029,7 +946,6 @@ class PomodoroApp {
 
     // Stop audio while paused
     window.bilibiliController?.pause();
-    window.audioEngine?.stopWhiteNoise();
   }
 
   stopTimer() {
@@ -1046,7 +962,6 @@ class PomodoroApp {
     if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Standby';
     if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'Ready';
     window.bilibiliController?.stop();
-    window.audioEngine?.stopWhiteNoise();
   }
 
   resetSession() {
@@ -1078,8 +993,7 @@ class PomodoroApp {
         `Great job — ${this.config.focusTime} minutes of focus done! Break time: the Bilibili stream is auto-closed. Stand up and grab a glass of water!`
       );
 
-      // Stop Bilibili & white noise immediately
-      window.audioEngine?.setBreakMute(true);
+      // Stop the stream immediately
       window.bilibiliController?.stopOnBreak();
 
       // Determine next mode: Long Break or Short Break

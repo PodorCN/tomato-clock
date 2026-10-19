@@ -325,7 +325,6 @@ body.vibe-off #ambient-canvas {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 0.6rem;
   font-size: 0.85rem;
   font-weight: 500;
   color: var(--muted);
@@ -1104,55 +1103,16 @@ body.mode-break-active .main-stage::after {
   align-items: flex-start;
 }
 
-.shelf-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
 .shelf-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
 }
 
-.volume-field {
+.stream-mode-field {
   flex: 1;
-  max-width: 190px;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.volume-field .field-label {
-  margin-bottom: 0;
-}
-
-.bili-channel-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.bili-channel-pill {
-  padding: 0.35rem 0.7rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--muted);
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.bili-channel-pill:hover {
-  color: var(--text);
-}
-
-.bili-channel-pill.active {
-  background: var(--text);
-  border-color: var(--text);
-  color: var(--bg);
+  max-width: 220px;
 }
 
 /* Tasks */
@@ -1439,6 +1399,11 @@ body.zen-mode .zen-exit-pill {
   font-variant-numeric: tabular-nums;
 }
 
+input[type="range"].chime-volume {
+  width: 150px;
+  flex-shrink: 0;
+}
+
 .check-row {
   display: flex;
   align-items: center;
@@ -1481,50 +1446,8 @@ body.zen-mode .zen-exit-pill {
 }
 
 /* ==========================================================================
-   Compact layout (641–1100px): clock + local white noise, no stream deck
+   Compact layout (641–1100px): the clock only, no stream deck
    ========================================================================== */
-.mobile-companion-hub {
-  display: none;
-}
-
-.mobile-ambient-card {
-  width: 100%;
-  padding: 1rem 1.1rem;
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-
-.mobile-ambient-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.mobile-ambient-head .field-label {
-  margin-bottom: 0;
-}
-
-.mobile-ambient-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.mobile-ambient-row .custom-select {
-  flex: 1;
-  min-width: 0;
-}
-
-.mobile-ambient-row input[type="range"] {
-  width: 6.5rem;
-  flex-shrink: 0;
-}
-
-#btn-mobile-ambient-toggle.is-on {
-  color: var(--accent);
-}
-
 @media (min-width: 641px) and (max-width: 1100px) {
   html,
   body {
@@ -1598,14 +1521,6 @@ body.zen-mode .zen-exit-pill {
   .clock-console,
   .hero-bottom-command-bar {
     margin-top: 0;
-  }
-
-  .mobile-companion-hub {
-    display: flex !important;
-    width: 100%;
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 1rem 1.5rem;
   }
 
   .flap-card {
@@ -1753,14 +1668,6 @@ body.zen-mode .zen-exit-pill {
   .clock-console,
   .hero-bottom-command-bar {
     margin-top: 0;
-  }
-
-  .mobile-companion-hub {
-    display: flex !important;
-    width: 100%;
-    max-width: 440px;
-    margin: 0 auto;
-    padding: 0 1rem;
   }
 }
 

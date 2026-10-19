@@ -31,14 +31,6 @@ class BilibiliController {
         title: 'Bilibili Lofi Girl Live (27519423)',
         url: 'https://live.bilibili.com/27519423'
       },
-      youtube_lofi: {
-        name: 'Lofi Girl Official 24/7 (YouTube)',
-        type: 'youtube',
-        channelId: 'UCSJ4gkVC6NrvII8umztf0Ow',
-        title: 'Lofi Girl Official 24/7 (YouTube)',
-        url: 'https://www.youtube.com/@LofiGirl/live',
-        embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCSJ4gkVC6NrvII8umztf0Ow&autoplay=1'
-      },
       bili_live: {
         name: 'Bilibili 24/7 Study Room (21452505)',
         type: 'live',
@@ -167,12 +159,6 @@ class BilibiliController {
         title: preset.title,
         embedUrl: `https://player.bilibili.com/player.html?bvid=${preset.bvid}&page=1&as_wide=1&high_quality=1&danmaku=0&autoplay=1`,
         externalUrl: preset.url
-      };
-    } else if (preset.type === 'youtube') {
-      return {
-        title: preset.title,
-        embedUrl: preset.embedUrl || 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC5qLj-aXg6F9yM9B8p5Wv6A&autoplay=1',
-        externalUrl: preset.url || 'https://www.youtube.com/@LofiGirl/live'
       };
     }
   }
