@@ -149,31 +149,31 @@ class BackgroundEngine {
     const themeType = this.themes[this.currentTheme]?.type || 'motes';
 
     if (themeType === 'rain') {
-      const count = Math.min(55, Math.max(20, Math.floor(this.width * 0.035)));
+      const count = Math.min(110, Math.max(40, Math.floor(this.width * 0.07)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
           length: Math.random() * 25 + 15,
           speed: Math.random() * 10 + 15,
-          opacity: Math.random() * 0.35 + 0.15,
-          thickness: Math.random() * 1.5 + 0.8
+          opacity: Math.random() * 0.35 + 0.25,
+          thickness: Math.random() * 1.6 + 0.9
         });
       }
     } else if (themeType === 'stars') {
-      const count = Math.min(70, Math.max(25, Math.floor(this.width * 0.045)));
+      const count = Math.min(150, Math.max(50, Math.floor(this.width * 0.09)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          size: Math.random() * 2.0 + 0.5,
+          size: Math.random() * 2.2 + 0.6,
           opacity: Math.random() * 0.75 + 0.2,
           twinkleSpeed: Math.random() * 0.025 + 0.01,
           angle: Math.random() * Math.PI * 2
         });
       }
     } else if (themeType === 'leaves') {
-      const count = Math.min(22, Math.max(10, Math.floor(this.width * 0.015)));
+      const count = Math.min(38, Math.max(16, Math.floor(this.width * 0.026)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
@@ -187,33 +187,33 @@ class BackgroundEngine {
         });
       }
     } else if (themeType === 'fire-embers') {
-      const count = Math.min(48, Math.max(18, Math.floor(this.width * 0.024)));
+      const count = Math.min(95, Math.max(35, Math.floor(this.width * 0.05)));
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: this.height * 0.35 + Math.random() * this.height * 0.7,
-          radius: Math.random() * 2.2 + 0.9,
-          speedY: Math.random() * 1.5 + 0.7,
+          radius: Math.random() * 2.8 + 1.1,
+          speedY: Math.random() * 1.6 + 0.8,
           swayFreq: Math.random() * 0.025 + 0.012,
           swayAmp: Math.random() * 1.4 + 0.5,
           swayPhase: Math.random() * Math.PI * 2,
-          baseOpacity: Math.random() * 0.75 + 0.25,
+          baseOpacity: Math.random() * 0.6 + 0.4,
           flickerSpeed: Math.random() * 0.07 + 0.03,
           flickerPhase: Math.random() * Math.PI * 2,
           hue: Math.random() < 0.35 ? (Math.random() * 15 + 12) : (Math.random() * 24 + 28) // deep ember red to golden flame
         });
       }
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
-      const count = Math.min(32, Math.max(12, Math.floor(this.width * 0.018)));
+      const count = Math.min(60, Math.max(22, Math.floor(this.width * 0.035)));
       const isNeon = themeType === 'neon-motes';
       for (let i = 0; i < count; i++) {
         this.particles.push({
           x: Math.random() * this.width,
           y: Math.random() * this.height,
-          radius: Math.random() * 2.6 + 1.2,
+          radius: Math.random() * 2.8 + 1.4,
           vx: (Math.random() - 0.5) * 0.35,
           vy: -Math.random() * 0.45 - 0.15,
-          opacity: Math.random() * 0.45 + 0.2,
+          opacity: Math.random() * 0.45 + 0.35,
           hue: isNeon ? (Math.random() > 0.5 ? 280 : 190) : 40
         });
       }
@@ -245,7 +245,7 @@ class BackgroundEngine {
     const themeType = this.themes[this.currentTheme]?.type || 'motes';
 
     if (themeType === 'rain') {
-      this.ctx.strokeStyle = 'rgba(210, 235, 255, 0.45)';
+      this.ctx.strokeStyle = 'rgba(210, 235, 255, 0.6)';
       this.ctx.lineCap = 'round';
 
       for (let p of this.particles) {
@@ -272,7 +272,7 @@ class BackgroundEngine {
         this.ctx.fill();
       }
     } else if (themeType === 'leaves') {
-      this.ctx.fillStyle = 'rgba(168, 230, 207, 0.35)';
+      this.ctx.fillStyle = 'rgba(168, 230, 207, 0.55)';
       for (let p of this.particles) {
         this.ctx.save();
         this.ctx.translate(p.x, p.y);
@@ -305,8 +305,8 @@ class BackgroundEngine {
         p.x += Math.sin(p.swayPhase) * p.swayAmp;
 
         this.ctx.fillStyle = `hsla(${p.hue}, 96%, 66%, ${currentOpacity})`;
-        this.ctx.shadowBlur = 8;
-        this.ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, ${currentOpacity * 0.8})`;
+        this.ctx.shadowBlur = 14;
+        this.ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, ${currentOpacity})`;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -324,6 +324,8 @@ class BackgroundEngine {
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
       for (let p of this.particles) {
         this.ctx.fillStyle = `hsla(${p.hue}, 80%, 75%, ${p.opacity})`;
+        this.ctx.shadowBlur = 10;
+        this.ctx.shadowColor = `hsla(${p.hue}, 90%, 65%, ${p.opacity})`;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -338,6 +340,7 @@ class BackgroundEngine {
         if (p.x < -10) p.x = this.width + 10;
         if (p.x > this.width + 10) p.x = -10;
       }
+      this.ctx.shadowBlur = 0;
     }
   }
 }

@@ -21,9 +21,7 @@
   --rest: #7fc39a;
 
   --glow: none;
-  --glow-motion: drift 16s ease-in-out infinite alternate;
-  --watermark: color-mix(in srgb, var(--text) 5.5%, transparent);
-  --panel: color-mix(in srgb, var(--surface) 86%, transparent);
+  --glow-motion: drift 9s ease-in-out infinite alternate;
 
   --radius-sm: 6px;
   --radius: 10px;
@@ -37,10 +35,11 @@ body.theme-cozy-fireplace {
   --accent: #e8763a; --on-accent: #1f1a17;
   /* hearth glow rising from the bottom of the screen */
   --glow:
-    radial-gradient(ellipse 75% 55% at 50% 108%, rgba(240, 120, 50, 0.34), transparent 70%),
-    radial-gradient(ellipse 45% 40% at 22% 104%, rgba(214, 64, 38, 0.20), transparent 70%),
-    radial-gradient(ellipse 45% 40% at 80% 104%, rgba(245, 166, 60, 0.18), transparent 70%);
-  --glow-motion: flicker 5s ease-in-out infinite;
+    radial-gradient(ellipse 38% 22% at 50% 102%, rgba(255, 196, 92, 0.55), transparent 75%),
+    radial-gradient(ellipse 95% 75% at 50% 110%, rgba(240, 112, 40, 0.55), transparent 72%),
+    radial-gradient(ellipse 55% 55% at 15% 108%, rgba(214, 58, 34, 0.38), transparent 70%),
+    radial-gradient(ellipse 55% 55% at 85% 108%, rgba(245, 150, 50, 0.34), transparent 70%);
+  --glow-motion: flicker 3.2s ease-in-out infinite;
 }
 body.theme-lofi-room {
   --bg: #1d1b24; --surface: #25222e; --raised: #312d3c; --line: #383445;
@@ -48,8 +47,8 @@ body.theme-lofi-room {
   --accent: #ef6a4c; --on-accent: #1d1b24;
   /* desk lamp in the corner, purple night from the window */
   --glow:
-    radial-gradient(ellipse 55% 55% at 8% -5%, rgba(245, 170, 90, 0.20), transparent 70%),
-    radial-gradient(ellipse 55% 50% at 95% 105%, rgba(150, 110, 220, 0.14), transparent 70%);
+    radial-gradient(ellipse 65% 65% at 6% -8%, rgba(250, 175, 90, 0.42), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 98% 108%, rgba(150, 105, 230, 0.32), transparent 70%);
 }
 body.theme-rainy-cafe {
   --bg: #172028; --surface: #1e2932; --raised: #283541; --line: #2f3d49;
@@ -57,8 +56,8 @@ body.theme-rainy-cafe {
   --accent: #7cb7e0; --on-accent: #172028;
   /* cold daylight through a wet window */
   --glow:
-    radial-gradient(ellipse 60% 55% at 88% -5%, rgba(124, 183, 224, 0.20), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 5% 105%, rgba(60, 110, 180, 0.14), transparent 70%);
+    radial-gradient(ellipse 70% 65% at 90% -8%, rgba(130, 190, 235, 0.40), transparent 70%),
+    radial-gradient(ellipse 65% 55% at 4% 108%, rgba(50, 105, 190, 0.32), transparent 70%);
 }
 body.theme-tokyo-dusk {
   --bg: #1e1828; --surface: #272033; --raised: #332a42; --line: #3a3049;
@@ -66,8 +65,8 @@ body.theme-tokyo-dusk {
   --accent: #c8a0f5; --on-accent: #1e1828;
   /* neon city below the horizon */
   --glow:
-    radial-gradient(ellipse 70% 50% at 70% 108%, rgba(236, 100, 160, 0.22), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 10% -5%, rgba(200, 160, 245, 0.14), transparent 70%);
+    radial-gradient(ellipse 90% 60% at 65% 110%, rgba(240, 95, 165, 0.45), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 8% -8%, rgba(190, 150, 250, 0.30), transparent 70%);
 }
 body.theme-zen-garden {
   --bg: #18201b; --surface: #1f2923; --raised: #29362e; --line: #304036;
@@ -75,8 +74,8 @@ body.theme-zen-garden {
   --accent: #8ccb9f; --on-accent: #18201b;
   /* moss and morning mist */
   --glow:
-    radial-gradient(ellipse 65% 50% at 20% 108%, rgba(140, 203, 159, 0.18), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 92% -5%, rgba(110, 190, 180, 0.10), transparent 70%);
+    radial-gradient(ellipse 85% 60% at 20% 110%, rgba(130, 205, 150, 0.36), transparent 70%),
+    radial-gradient(ellipse 60% 55% at 94% -8%, rgba(110, 195, 185, 0.24), transparent 70%);
 }
 body.theme-deep-space {
   --bg: #12161e; --surface: #191e28; --raised: #232a37; --line: #2a3140;
@@ -84,8 +83,8 @@ body.theme-deep-space {
   --accent: #78d0dc; --on-accent: #12161e;
   /* faint nebula light */
   --glow:
-    radial-gradient(ellipse 55% 50% at 85% 0%, rgba(120, 208, 220, 0.13), transparent 70%),
-    radial-gradient(ellipse 55% 50% at 8% 100%, rgba(130, 140, 240, 0.13), transparent 70%);
+    radial-gradient(ellipse 65% 60% at 86% -4%, rgba(110, 210, 225, 0.30), transparent 70%),
+    radial-gradient(ellipse 70% 60% at 6% 104%, rgba(125, 130, 245, 0.32), transparent 70%);
 }
 body.theme-minimal-slate {
   --bg: #1a1c1f; --surface: #222428; --raised: #2d3035; --line: #34373c;
@@ -184,7 +183,8 @@ body::before {
   pointer-events: none;
   background: var(--glow);
   animation: var(--glow-motion);
-  will-change: opacity;
+  transform-origin: 50% 100%;
+  will-change: opacity, transform;
   transition: opacity 0.6s ease;
 }
 
@@ -195,17 +195,18 @@ body.vibe-off #ambient-canvas {
 
 /* Uneven campfire flicker */
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  18% { opacity: 0.82; }
-  31% { opacity: 0.96; }
-  47% { opacity: 0.78; }
-  63% { opacity: 0.93; }
-  80% { opacity: 0.85; }
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  12% { opacity: 0.74; transform: scaleY(0.97); }
+  24% { opacity: 0.95; transform: scaleY(1.04); }
+  41% { opacity: 0.68; transform: scaleY(0.96); }
+  57% { opacity: 1; transform: scaleY(1.06); }
+  72% { opacity: 0.8; transform: scaleY(0.99); }
+  86% { opacity: 0.93; transform: scaleY(1.03); }
 }
 
 @keyframes drift {
-  from { opacity: 0.75; }
-  to { opacity: 1; }
+  from { opacity: 0.6; transform: scale(1); }
+  to { opacity: 1; transform: scale(1.08); }
 }
 
 #ambient-canvas {
@@ -548,12 +549,13 @@ input[type="range"]::-moz-range-thumb {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: -1;
-  font-size: clamp(6rem, 27cqw, 26rem);
-  font-weight: 700;
+  font-size: clamp(6.5rem, 31cqw, 30rem);
+  font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
   white-space: nowrap;
-  color: var(--watermark);
+  /* mixed here, not in :root, so it follows the theme and break accent */
+  color: color-mix(in srgb, var(--accent) 22%, transparent);
   pointer-events: none;
   user-select: none;
 }
@@ -841,7 +843,7 @@ body.mode-break-active .clock-digits::before {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background: var(--panel);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -1240,7 +1242,7 @@ body.mode-break-active .clock-digits::before {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--panel);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
   overflow: hidden;
 }
 
