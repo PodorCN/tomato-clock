@@ -1,6 +1,6 @@
 /**
- * Theme switching and optional ambience particles
- * (rain, star dust, floating motes, embers). Particles are off by default.
+ * Theme switching and the "vibe" layer: a per-theme ambient light (CSS,
+ * see body::before) plus particles (rain, star dust, motes, embers).
  */
 
 class BackgroundEngine {
@@ -10,7 +10,7 @@ class BackgroundEngine {
     this.ctx = null;
     this.particles = [];
     this.animationFrameId = null;
-    this.particlesEnabled = false;
+    this.particlesEnabled = true;
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
@@ -90,7 +90,7 @@ class BackgroundEngine {
     });
 
     this.applyTheme(this.currentTheme);
-    document.getElementById('btn-toggle-particles')?.classList.toggle('is-off', !this.particlesEnabled);
+    this.syncVibeUI();
     if (this.particlesEnabled) this.startAnimation();
   }
 
@@ -125,6 +125,7 @@ class BackgroundEngine {
   toggleParticles() {
     this.particlesEnabled = !this.particlesEnabled;
     localStorage.setItem('pomodoro_particles', this.particlesEnabled.toString());
+    this.syncVibeUI();
     if (this.particlesEnabled) {
       this.initParticles();
       this.startAnimation();
@@ -133,6 +134,12 @@ class BackgroundEngine {
       if (this.ctx) this.ctx.clearRect(0, 0, this.width, this.height);
     }
     return this.particlesEnabled;
+  }
+
+  // One switch for both the ambient light and the particles
+  syncVibeUI() {
+    document.body.classList.toggle('vibe-off', !this.particlesEnabled);
+    document.getElementById('btn-toggle-particles')?.classList.toggle('is-off', !this.particlesEnabled);
   }
 
   initParticles() {
@@ -298,6 +305,8 @@ class BackgroundEngine {
         p.x += Math.sin(p.swayPhase) * p.swayAmp;
 
         this.ctx.fillStyle = `hsla(${p.hue}, 96%, 66%, ${currentOpacity})`;
+        this.ctx.shadowBlur = 8;
+        this.ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, ${currentOpacity * 0.8})`;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -311,6 +320,7 @@ class BackgroundEngine {
         if (p.x < -15) p.x = this.width + 15;
         if (p.x > this.width + 15) p.x = -15;
       }
+      this.ctx.shadowBlur = 0;
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
       for (let p of this.particles) {
         this.ctx.fillStyle = `hsla(${p.hue}, 80%, 75%, ${p.opacity})`;

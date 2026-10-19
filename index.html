@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="theme-cozy-fireplace">
-  <!-- Optional ambience particles (off by default) -->
+  <!-- Ambience particles (toggled with the Vibe button) -->
   <canvas id="ambient-canvas"></canvas>
 
   <button class="zen-exit-pill" id="zen-exit-btn" onclick="window.pomodoroApp.toggleZenMode()">
@@ -46,11 +46,11 @@
           </select>
         </div>
 
-        <button id="btn-toggle-particles" class="nav-btn" title="Toggle ambience particles" onclick="const on = window.backgroundEngine.toggleParticles(); this.classList.toggle('is-off', !on)">
+        <button id="btn-toggle-particles" class="nav-btn" title="Turn the ambience (light and particles) on or off" onclick="window.backgroundEngine.toggleParticles()">
           <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
           </svg>
-          <span class="nav-label">Particles</span>
+          <span class="nav-label">Vibe</span>
         </button>
 
         <button id="btn-mute" class="nav-btn" title="Mute (M)">
