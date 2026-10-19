@@ -532,36 +532,46 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
+  position: relative;
   container-type: inline-size;
   transition: padding 0.3s ease;
 }
 
-/* Tone-on-tone mode word, centered behind the digits */
-.clock-digits {
+/* Mode word as a faint outline, sitting on the bottom edge of the pane and
+   running off it, so it reads as scenery and never crosses the digits */
+.hero-stage-pane > * {
   position: relative;
-  isolation: isolate;
+  z-index: 1;
 }
 
-.clock-digits::before {
+.hero-stage-pane::after,
+.main-stage::after {
   content: "FOCUS";
   position: absolute;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  font-size: clamp(7.5rem, 37cqw, 40rem);
+  bottom: 0;
+  transform: translate(-50%, 32%);
+  z-index: 0;
+  font-size: clamp(7rem, 34cqw, 36rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.04em;
   white-space: nowrap;
+  color: transparent;
   /* mixed here, not in :root, so it follows the theme and break accent */
-  color: color-mix(in srgb, var(--accent) 10%, transparent);
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--accent) 34%, transparent);
   pointer-events: none;
   user-select: none;
 }
 
-body.mode-break-active .clock-digits::before {
+body.mode-break-active .hero-stage-pane::after,
+body.mode-break-active .main-stage::after {
   content: "BREAK";
+}
+
+/* Used on compact and phone layouts, where the clock pane is not full height */
+.main-stage::after {
+  display: none;
 }
 
 .main-stage.panel-collapsed:not(.tasks-open) .hero-stage-pane {
@@ -1543,8 +1553,7 @@ body.zen-mode .zen-exit-pill {
     flex: 0 0 auto !important;
     width: 100% !important;
     height: auto !important;
-    overflow-x: clip !important;
-    overflow-y: visible !important;
+    overflow: clip !important;
     padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 1.5rem !important;
     gap: 1.25rem;
   }
@@ -1555,6 +1564,26 @@ body.zen-mode .zen-exit-pill {
   #btn-toggle-panel,
   #btn-toggle-tasks {
     display: none !important;
+  }
+
+  .main-stage {
+    position: relative;
+    min-height: calc(100vh - var(--nav-h));
+    overflow: clip !important;
+  }
+
+  .main-stage > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-stage-pane::after {
+    display: none;
+  }
+
+  .main-stage::after {
+    display: block;
+    font-size: 34vw;
   }
 
   .mobile-companion-hub {
@@ -1646,8 +1675,7 @@ body.zen-mode .zen-exit-pill {
     flex: 0 0 auto !important;
     width: 100% !important;
     height: auto !important;
-    overflow-x: clip !important;
-    overflow-y: visible !important;
+    overflow: clip !important;
     padding: 1.25rem 1rem 1.5rem !important;
     gap: 1.5rem;
   }
@@ -1685,6 +1713,26 @@ body.zen-mode .zen-exit-pill {
     min-width: 160px;
     height: 54px;
     padding: 0 2rem;
+  }
+
+  .main-stage {
+    position: relative;
+    overflow: clip !important;
+  }
+
+  .main-stage > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-stage-pane::after {
+    display: none;
+  }
+
+  .main-stage::after {
+    display: block;
+    font-size: 36vw;
+    transform: translate(-50%, 28%);
   }
 
   .mobile-companion-hub {
