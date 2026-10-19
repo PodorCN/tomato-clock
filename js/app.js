@@ -587,20 +587,6 @@ class PomodoroApp {
       }
     });
 
-    window.addEventListener('themeChanged', (e) => {
-      if (e.detail?.theme === 'cozy-fireplace') {
-        if (this.config.ambientNoise === 'none') {
-          this.config.ambientNoise = 'fire';
-          if (this.dom.ambientSelect) this.dom.ambientSelect.value = 'fire';
-          if (this.dom.mobileAmbientSelect) this.dom.mobileAmbientSelect.value = 'fire';
-          this.saveData();
-          if (this.status === 'running' && this.mode === 'focus') {
-            window.audioEngine?.startWhiteNoise('fire');
-          }
-          this.updateMobileSoundButtonText();
-        }
-      }
-    });
 
     if (this.dom.btnMute) {
       this.dom.btnMute.addEventListener('click', () => {

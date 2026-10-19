@@ -201,7 +201,7 @@
           <div class="mobile-ambient-row">
             <select id="mobile-ambient-select" class="custom-select" aria-label="White noise">
               <option value="none">Off</option>
-              <option value="fire" selected>Fireplace · 柴火暖炉</option>
+              <option value="fire">Fireplace · 柴火暖炉</option>
               <option value="rain">Rain on window · 窗外雨声</option>
               <option value="cafe">Cafe · 咖啡馆</option>
               <option value="waves">Ocean waves · 海浪</option>
@@ -291,7 +291,6 @@
               <div class="bili-channel-pills" id="bili-channel-pills-container">
                 <button type="button" class="bili-channel-pill active" data-preset="bili_lofigirl_live">Bilibili live</button>
                 <button type="button" class="bili-channel-pill" data-preset="youtube_lofi">YouTube</button>
-                <button type="button" class="bili-channel-pill" data-preset="bili_lofi_girl">Bilibili mix</button>
               </div>
               <button id="btn-open-lofigirl-direct" class="btn-link" title="Open the Bilibili Lofi Girl live room (27519423)">
                 <span id="direct-open-btn-text">Open Bilibili live room</span>
@@ -322,7 +321,7 @@
             </div>
 
             <div class="shelf-row">
-              <button id="btn-bili-manual-toggle" class="btn-ghost">Play / stop stream</button>
+              <button id="btn-bili-manual-toggle" class="btn-ghost" title="Play or stop the stream now, without starting the timer">Play now</button>
               <label class="volume-field">
                 <span class="field-label">Volume</span>
                 <input type="range" id="volume-slider" min="0" max="100" value="50">
@@ -405,7 +404,6 @@
             <option value="bili_lofigirl_live">Bilibili Lofi Girl live room (27519423)</option>
             <option value="youtube_lofi">YouTube Lofi Girl 24/7</option>
             <option value="bili_live">Bilibili 24/7 study room (21452505)</option>
-            <option value="bili_lofi_girl">Bilibili Lofi Girl classic mix (video)</option>
             <option value="bili_cafe">Bilibili rainy window jazz cafe (video)</option>
             <option value="custom">Custom (room ID, BV ID or URL)</option>
           </select>

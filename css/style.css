@@ -529,7 +529,7 @@ input[type="range"]::-moz-range-thumb {
   padding: 1.5rem 2.5rem 1.75rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   overflow: hidden;
   position: relative;
@@ -595,7 +595,9 @@ body.mode-break-active .main-stage::after {
   color: var(--muted);
 }
 
+/* Clock and controls form one group, centered in the space under the tabs */
 .clock-console {
+  margin-top: auto;
   width: 100%;
   max-width: 980px;
   display: flex;
@@ -755,6 +757,8 @@ body.mode-break-active .main-stage::after {
 
 /* Controls */
 .hero-bottom-command-bar {
+  margin-top: 2.25rem;
+  margin-bottom: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1586,6 +1590,12 @@ body.zen-mode .zen-exit-pill {
     font-size: 34vw;
   }
 
+  /* The pane is content-height here, so the flex gap already spaces the group */
+  .clock-console,
+  .hero-bottom-command-bar {
+    margin-top: 0;
+  }
+
   .mobile-companion-hub {
     display: flex !important;
     width: 100%;
@@ -1733,6 +1743,12 @@ body.zen-mode .zen-exit-pill {
     display: block;
     font-size: 36vw;
     transform: translate(-50%, 28%);
+  }
+
+  /* The pane is content-height here, so the flex gap already spaces the group */
+  .clock-console,
+  .hero-bottom-command-bar {
+    margin-top: 0;
   }
 
   .mobile-companion-hub {

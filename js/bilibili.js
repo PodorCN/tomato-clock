@@ -34,10 +34,10 @@ class BilibiliController {
       youtube_lofi: {
         name: 'Lofi Girl Official 24/7 (YouTube)',
         type: 'youtube',
-        channelId: 'UC5qLj-aXg6F9yM9B8p5Wv6A',
+        channelId: 'UCSJ4gkVC6NrvII8umztf0Ow',
         title: 'Lofi Girl Official 24/7 (YouTube)',
         url: 'https://www.youtube.com/@LofiGirl/live',
-        embedUrl: 'https://www.youtube-nocookie.com/embed/live_stream?channel=UC5qLj-aXg6F9yM9B8p5Wv6A&autoplay=1'
+        embedUrl: 'https://www.youtube.com/embed/live_stream?channel=UCSJ4gkVC6NrvII8umztf0Ow&autoplay=1'
       },
       bili_live: {
         name: 'Bilibili 24/7 Study Room (21452505)',
@@ -45,13 +45,6 @@ class BilibiliController {
         cid: '21452505',
         title: 'Bilibili 24/7 Study Room',
         url: 'https://live.bilibili.com/21452505'
-      },
-      bili_lofi_girl: {
-        name: 'Bilibili Lofi Girl Classic Mix (video)',
-        type: 'video',
-        bvid: 'BV184411C75d',
-        title: 'Bilibili Lofi Girl Study Music',
-        url: 'https://www.bilibili.com/video/BV184411C75d'
       },
       bili_cafe: {
         name: 'Bilibili Rainy Window Jazz Cafe (video)',
@@ -371,6 +364,9 @@ class BilibiliController {
       text = 'Plays when focus starts';
     }
     this.statusEl.innerHTML = `<span class="stream-status ${state}">${text}</span>`;
+
+    const manualBtn = document.getElementById('btn-bili-manual-toggle');
+    if (manualBtn) manualBtn.textContent = this.isPlaying ? 'Stop stream' : 'Play now';
   }
 }
 
