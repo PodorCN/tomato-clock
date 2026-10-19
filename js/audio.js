@@ -40,7 +40,7 @@ class AudioEngine {
 
   /**
    * Play completion bell / chime using harmonic synthesis
-   * @param {'focus-done' | 'break-done' | 'tick' | 'click'} type 
+   * @param {'focus-done' | 'break-done'} type 
    */
   playNotification(type = 'focus-done') {
     if (this.isMuted) return;
@@ -91,22 +91,6 @@ class AudioEngine {
         osc.start(noteTime);
         osc.stop(noteTime + 1.3);
       });
-    } else if (type === 'click') {
-      // Minimal soft click
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(800, now);
-      osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
-
-      gain.gain.setValueAtTime(this.volume * 0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.06);
     }
   }
 

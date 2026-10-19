@@ -383,7 +383,6 @@ class PomodoroApp {
     this.saveData();
     this.syncSettingsUI();
     this.switchMode('focus', true);
-    window.audioEngine?.playNotification('click');
   }
 
   bindEvents() {
@@ -412,7 +411,6 @@ class PomodoroApp {
         this.saveData();
         this.syncSettingsUI();
         this.switchMode('focus', true);
-        window.audioEngine?.playNotification('click');
       });
     });
 
@@ -490,7 +488,6 @@ class PomodoroApp {
             this.displayMode = mode;
             this.dom.progModeBtns.forEach((b) => b.classList.toggle('active', b === e.currentTarget));
             this.updateDisplay();
-            window.audioEngine?.playNotification('click');
           }
         });
       });
@@ -1053,7 +1050,6 @@ class PomodoroApp {
   }
 
   resetSession() {
-    window.audioEngine?.playNotification('click');
     this.stopTimer();
     this.timeLeft = this.totalDuration;
     this.setPanelCollapsed(false);
@@ -1062,7 +1058,6 @@ class PomodoroApp {
   }
 
   skipSession() {
-    window.audioEngine?.playNotification('click');
     this.stopTimer();
     this.advanceToNextMode();
   }
