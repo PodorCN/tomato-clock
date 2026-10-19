@@ -331,11 +331,11 @@ class PomodoroApp {
       this.dom.modeTabs.forEach((tab) => {
         const mode = tab.dataset.mode;
         if (mode === 'focus') {
-          tab.innerHTML = `<span>🍅</span> Focus (${this.config.focusTime}m)`;
+          tab.innerHTML = `Focus <span class="tab-meta">${this.config.focusTime}m</span>`;
         } else if (mode === 'short-break') {
-          tab.innerHTML = `<span>☕</span> Break (${this.config.shortBreakTime}m)`;
+          tab.innerHTML = `Break <span class="tab-meta">${this.config.shortBreakTime}m</span>`;
         } else if (mode === 'long-break') {
-          tab.innerHTML = `<span>🌴</span> Long Break (${this.config.longBreakTime}m)`;
+          tab.innerHTML = `Long break <span class="tab-meta">${this.config.longBreakTime}m</span>`;
         }
       });
     }
@@ -365,7 +365,7 @@ class PomodoroApp {
 
       const target = window.bilibiliController.getTargetInfo();
       if (this.dom.directOpenText && target) {
-        this.dom.directOpenText.textContent = `🚀 Open ${target.title}`;
+        this.dom.directOpenText.textContent = `Open ${target.title}`;
       }
     }
   }
@@ -373,11 +373,8 @@ class PomodoroApp {
   updateMobileSoundButtonText() {
     if (!this.dom.mobileSoundStateText) return;
     const isOff = !this.config.ambientNoise || this.config.ambientNoise === 'none';
-    this.dom.mobileSoundStateText.textContent = isOff ? '🔇 Sound Off' : '🔊 Sound Active';
-    if (this.dom.btnMobileAmbientToggle) {
-      this.dom.btnMobileAmbientToggle.classList.toggle('text-white/40', isOff);
-      this.dom.btnMobileAmbientToggle.classList.toggle('text-amber-400', !isOff);
-    }
+    this.dom.mobileSoundStateText.textContent = isOff ? 'Sound off' : 'Sound on';
+    this.dom.btnMobileAmbientToggle?.classList.toggle('is-on', !isOff);
   }
 
   setCustomFocusDuration(rawMin) {
@@ -674,7 +671,7 @@ class PomodoroApp {
 
             const target = window.bilibiliController.getTargetInfo();
             if (this.dom.directOpenText) {
-              this.dom.directOpenText.textContent = `🚀 Open ${target.title}`;
+              this.dom.directOpenText.textContent = `Open ${target.title}`;
             }
 
             if (this.dom.biliPresetSelect) {
@@ -877,13 +874,12 @@ class PomodoroApp {
       } else {
         tab.classList.remove('active');
       }
-      const led = '<span class="tab-indicator-led"></span>';
       if (tab.dataset.mode === 'focus') {
-        tab.innerHTML = `${led}<span>🍅 Focus (${this.config.focusTime}m)</span>`;
+        tab.innerHTML = `Focus <span class="tab-meta">${this.config.focusTime}m</span>`;
       } else if (tab.dataset.mode === 'short-break') {
-        tab.innerHTML = `${led}<span>☕ Break (${this.config.shortBreakTime}m)</span>`;
+        tab.innerHTML = `Break <span class="tab-meta">${this.config.shortBreakTime}m</span>`;
       } else if (tab.dataset.mode === 'long-break') {
-        tab.innerHTML = `${led}<span>🌴 Long Break (${this.config.longBreakTime}m)</span>`;
+        tab.innerHTML = `Long break <span class="tab-meta">${this.config.longBreakTime}m</span>`;
       }
     });
 
@@ -895,7 +891,7 @@ class PomodoroApp {
       }
       if (this.dom.zenBreakSanctuary) this.dom.zenBreakSanctuary.style.display = 'none';
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
-      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.status === 'running' ? 'FLOW RUNNING' : 'STANDBY';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.status === 'running' ? 'Focusing' : 'Ready';
       if (this.dom.chronoTelemetryBadge) {
         this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot"></span><span class="telemetry-text">MASTER CADENCE 100%</span>';
       }
@@ -908,12 +904,12 @@ class PomodoroApp {
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
-        if (txt) txt.textContent = 'Short break · 4-7-8 deep breathing';
+        if (txt) txt.textContent = 'Short break. Try 4-7-8 breathing.';
         const sub = document.getElementById('zen-break-subtext');
-        if (sub) sub.textContent = 'Companion stream muted · close your eyes · grab some water';
+        if (sub) sub.textContent = 'The stream is muted. Close your eyes or get some water.';
       }
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
-      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'SHORT BREAK';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'Short break';
       if (this.dom.chronoTelemetryBadge) {
         this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot break"></span><span class="telemetry-text">RESTORATIVE FLOW · 4-7-8 ZEN</span>';
       }
@@ -926,12 +922,12 @@ class PomodoroApp {
       if (this.dom.zenBreakSanctuary) {
         this.dom.zenBreakSanctuary.style.display = 'flex';
         const txt = document.getElementById('zen-breathing-text');
-        if (txt) txt.textContent = 'Long break · fully unwind your mind';
+        if (txt) txt.textContent = 'Long break. Step away from the screen.';
         const sub = document.getElementById('zen-break-subtext');
-        if (sub) sub.textContent = 'Stand up, stretch your body and refresh your energy';
+        if (sub) sub.textContent = 'Stand up, stretch and let your eyes rest.';
       }
       if (this.dom.vintageSplitFlapBoard) this.dom.vintageSplitFlapBoard.style.display = 'flex';
-      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'LONG BREAK';
+      if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'Long break';
       if (this.dom.chronoTelemetryBadge) {
         this.dom.chronoTelemetryBadge.innerHTML = '<span class="telemetry-live-dot break"></span><span class="telemetry-text">DEEP REST · 4-7-8 ZEN</span>';
       }
@@ -947,7 +943,7 @@ class PomodoroApp {
       this.dom.vinylDisc?.classList.remove('is-spinning');
       this.dom.tonearmAssembly?.classList.remove('arm-on-record');
       this.dom.spectrumBars?.classList.remove('is-active');
-      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'STANDBY 0 RPM';
+      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Stopped for the break';
     } else {
       window.audioEngine?.setBreakMute(false);
       window.bilibiliController?.updateStatusUI(false);
@@ -989,12 +985,12 @@ class PomodoroApp {
 
     // Turntable & Console sync
     this.dom.giantClockStage?.classList.add('is-running');
-    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.mode === 'focus' ? 'FLOW RUNNING' : 'RESTING';
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = this.mode === 'focus' ? 'Focusing' : 'On a break';
     if (this.mode === 'focus') {
       this.dom.vinylDisc?.classList.add('is-spinning');
       this.dom.tonearmAssembly?.classList.add('arm-on-record');
       this.dom.spectrumBars?.classList.add('is-active');
-      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'PLAYING 33⅓ RPM';
+      if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Playing';
     }
 
     // Start background or tick interval
@@ -1045,8 +1041,8 @@ class PomodoroApp {
     this.dom.vinylDisc?.classList.remove('is-spinning');
     this.dom.tonearmAssembly?.classList.remove('arm-on-record');
     this.dom.spectrumBars?.classList.remove('is-active');
-    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'PAUSED 0 RPM';
-    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'PAUSED';
+    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Paused';
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'Paused';
 
     // Stop audio while paused
     window.bilibiliController?.pause();
@@ -1064,8 +1060,8 @@ class PomodoroApp {
     this.dom.vinylDisc?.classList.remove('is-spinning');
     this.dom.tonearmAssembly?.classList.remove('arm-on-record');
     this.dom.spectrumBars?.classList.remove('is-active');
-    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'STANDBY 33⅓ RPM';
-    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'STANDBY';
+    if (this.dom.turntableRpmText) this.dom.turntableRpmText.textContent = 'Standby';
+    if (this.dom.hudStatusText) this.dom.hudStatusText.textContent = 'Ready';
     window.bilibiliController?.stop();
     window.audioEngine?.stopWhiteNoise();
   }
@@ -1225,10 +1221,8 @@ class PomodoroApp {
       this.dom.groovePercentVal.textContent = `${pct}%`;
     }
     if (this.dom.grooveTimeStats) {
-      const totalMin = Math.floor(this.totalDuration / 60);
       const remainMin = Math.ceil(this.timeLeft / 60);
-      const doneMin = Math.floor(elapsedSec / 60);
-      this.dom.grooveTimeStats.textContent = `${doneMin}m / ${totalMin}m · ${remainMin}m left`;
+      this.dom.grooveTimeStats.textContent = `${remainMin} min left`;
     }
     if (this.dom.grooveBlocks && this.dom.grooveBlocks.length > 0) {
       const etchedCount = Math.floor(progressRatio * this.dom.grooveBlocks.length);
@@ -1305,14 +1299,14 @@ class PomodoroApp {
     if (!this.dom.muteIcon) return;
     if (isMuted) {
       this.dom.muteIcon.innerHTML = `
-        <svg class="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="icon icon-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
         </svg>
       `;
     } else {
       this.dom.muteIcon.innerHTML = `
-        <svg class="w-5 h-5 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
         </svg>
       `;
@@ -1487,25 +1481,23 @@ class PomodoroApp {
   renderTaskItemsHTML() {
     if (this.tasks.length === 0) {
       return `
-        <div class="text-center py-6 text-white/30 text-xs">
-          No tasks yet — jot down a small goal ✍️
-        </div>
+        <div class="task-empty">No tasks yet. Add one small goal for this session.</div>
       `;
     }
 
     return this.tasks
       .map(
         (task) => `
-        <div class="task-item flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 ${
+        <div class="task-item ${
           task.done ? 'opacity-40 line-through' : ''
         }" data-id="${task.id}">
           <label class="flex items-center gap-3 cursor-pointer flex-1 select-none min-w-0">
-            <input type="checkbox" class="task-checkbox rounded border-white/20 bg-black/30 text-red-500 focus:ring-0" ${
+            <input type="checkbox" class="task-checkbox" ${
               task.done ? 'checked' : ''
             }>
-            <span class="text-sm font-medium text-white/90 truncate">${escapeHtml(task.text)}</span>
+            <span class="truncate">${escapeHtml(task.text)}</span>
           </label>
-          <button class="task-delete-btn text-white/30 hover:text-red-400 p-1 rounded transition-colors ml-2" title="Delete task">
+          <button class="task-delete-btn icon-btn" title="Delete task" aria-label="Delete task">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>

@@ -293,8 +293,7 @@ class BilibiliController {
         iframe.setAttribute('scrolling', 'no');
         iframe.setAttribute('allow', 'autoplay; encrypted-media; fullscreen; picture-in-picture');
         iframe.setAttribute('allowfullscreen', 'true');
-        iframe.className = 'w-full h-full rounded-2xl border-0 shadow-inner';
-        this.iframeContainer.appendChild(iframe);
+                this.iframeContainer.appendChild(iframe);
       }
     }
 
@@ -322,21 +321,15 @@ class BilibiliController {
         } catch (e) {}
       });
 
-      const badgeText = isBreak ? '☕ Break: stream fully muted' : 'Ambience standby';
-      const badgeDesc = isBreak
-        ? 'Stream & ambience stopped — auto-resumes when focus starts'
-        : 'Auto-plays when focus starts, auto-closes on breaks';
+      const placeholderTitle = isBreak ? 'Stream stopped for the break' : 'Stream on standby';
+      const placeholderText = isBreak
+        ? 'It starts again with the next focus session.'
+        : 'It plays when a focus session starts and stops on breaks.';
 
       this.iframeContainer.innerHTML = `
-        <div class="player-placeholder flex flex-col items-center justify-center h-full text-center p-6 text-white/50">
-          <div class="w-14 h-14 rounded-full ${isBreak ? 'bg-emerald-500/15' : 'bg-white/5'} flex items-center justify-center mb-3">
-            <svg class="w-7 h-7 ${isBreak ? 'text-emerald-400' : 'text-white/40'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-            </svg>
-          </div>
-          <p class="text-sm font-semibold ${isBreak ? 'text-emerald-300' : 'text-white/70'}">${badgeText}</p>
-          <p class="text-xs text-white/40 mt-1">${badgeDesc}</p>
+        <div class="player-placeholder">
+          <p class="placeholder-title${isBreak ? ' is-break' : ''}">${placeholderTitle}</p>
+          <p class="placeholder-text">${placeholderText}</p>
         </div>
       `;
     }
@@ -366,38 +359,18 @@ class BilibiliController {
     if (!this.statusEl) return;
     const target = this.getTargetInfo();
 
+    let state = '';
+    let text = 'Stream off';
     if (isBreak) {
-      this.statusEl.innerHTML = `
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          ☕ On break: auto-muted
-        </span>
-      `;
-      return;
-    }
-
-    if (this.isPlaying) {
-      this.statusEl.innerHTML = `
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 animate-pulse">
-          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-          Now playing: ${target.title}
-        </span>
-      `;
+      state = 'is-break';
+      text = 'On a break, stream muted';
+    } else if (this.isPlaying) {
+      state = 'is-playing';
+      text = `Playing ${target.title}`;
     } else if (this.enabled) {
-      this.statusEl.innerHTML = `
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/10 text-white/70 border border-white/10">
-          <span class="w-2 h-2 rounded-full bg-white/40"></span>
-          Ready (auto-plays on focus)
-        </span>
-      `;
-    } else {
-      this.statusEl.innerHTML = `
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-white/40 border border-white/5">
-          <span class="w-2 h-2 rounded-full bg-white/20"></span>
-          Ambience muted
-        </span>
-      `;
+      text = 'Plays when focus starts';
     }
+    this.statusEl.innerHTML = `<span class="stream-status ${state}">${text}</span>`;
   }
 }
 

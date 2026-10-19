@@ -1,7 +1,6 @@
 /**
- * Visual Themes & Atmospheric Canvas Engine
- * Provides dynamic high-aesthetic full-width backgrounds, ambient lighting,
- * and particle systems (Rain, Star dust, Floating motes, Ember glow).
+ * Theme switching and optional ambience particles
+ * (rain, star dust, floating motes, embers). Particles are off by default.
  */
 
 class BackgroundEngine {
@@ -11,7 +10,7 @@ class BackgroundEngine {
     this.ctx = null;
     this.particles = [];
     this.animationFrameId = null;
-    this.particlesEnabled = true;
+    this.particlesEnabled = false;
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
@@ -60,108 +59,7 @@ class BackgroundEngine {
       }
     };
 
-    this.auroraBlobs = [];
-    this.initAuroraBlobs();
     this.loadSavedTheme();
-  }
-
-  initAuroraBlobs() {
-    if (this.currentTheme === 'cozy-fireplace') {
-      this.auroraBlobs = [
-        {
-          x: this.width * 0.5,
-          y: this.height * 0.88,
-          baseRadius: Math.min(this.width, this.height) * 0.55,
-          radius: Math.min(this.width, this.height) * 0.55,
-          color: 'rgba(249, 115, 22, 0.28)', // Glowing Hearth Ember
-          vx: 0.12,
-          vy: -0.08,
-          phase: 0,
-          speed: 0.016
-        },
-        {
-          x: this.width * 0.25,
-          y: this.height * 0.72,
-          baseRadius: Math.min(this.width, this.height) * 0.46,
-          radius: Math.min(this.width, this.height) * 0.46,
-          color: 'rgba(220, 38, 38, 0.22)', // Deep Crimson Charcoal
-          vx: 0.14,
-          vy: 0.10,
-          phase: 2.1,
-          speed: 0.012
-        },
-        {
-          x: this.width * 0.75,
-          y: this.height * 0.70,
-          baseRadius: Math.min(this.width, this.height) * 0.45,
-          radius: Math.min(this.width, this.height) * 0.45,
-          color: 'rgba(245, 158, 11, 0.22)', // Golden Flame Radiance
-          vx: -0.15,
-          vy: -0.10,
-          phase: 4.2,
-          speed: 0.014
-        },
-        {
-          x: this.width * 0.45,
-          y: this.height * 0.35,
-          baseRadius: Math.min(this.width, this.height) * 0.42,
-          radius: Math.min(this.width, this.height) * 0.42,
-          color: 'rgba(185, 28, 28, 0.12)', // Ambient Heat Reflection
-          vx: -0.10,
-          vy: 0.12,
-          phase: 1.4,
-          speed: 0.010
-        }
-      ];
-      return;
-    }
-
-    this.auroraBlobs = [
-      {
-        x: this.width * 0.22,
-        y: this.height * 0.28,
-        baseRadius: Math.min(this.width, this.height) * 0.48,
-        radius: Math.min(this.width, this.height) * 0.48,
-        color: 'rgba(99, 102, 241, 0.20)', // Electric Indigo
-        vx: 0.22,
-        vy: 0.15,
-        phase: 0,
-        speed: 0.012
-      },
-      {
-        x: this.width * 0.78,
-        y: this.height * 0.65,
-        baseRadius: Math.min(this.width, this.height) * 0.42,
-        radius: Math.min(this.width, this.height) * 0.42,
-        color: 'rgba(6, 182, 212, 0.18)', // Cyan Aurora
-        vx: -0.18,
-        vy: -0.12,
-        phase: 2.1,
-        speed: 0.009
-      },
-      {
-        x: this.width * 0.5,
-        y: this.height * 0.82,
-        baseRadius: Math.min(this.width, this.height) * 0.44,
-        radius: Math.min(this.width, this.height) * 0.44,
-        color: 'rgba(236, 72, 153, 0.14)', // Sunset Magenta
-        vx: 0.14,
-        vy: -0.18,
-        phase: 4.2,
-        speed: 0.008
-      },
-      {
-        x: this.width * 0.38,
-        y: this.height * 0.18,
-        baseRadius: Math.min(this.width, this.height) * 0.38,
-        radius: Math.min(this.width, this.height) * 0.38,
-        color: 'rgba(16, 185, 129, 0.12)', // Emerald Glow
-        vx: -0.14,
-        vy: 0.16,
-        phase: 1.4,
-        speed: 0.011
-      }
-    ];
   }
 
   loadSavedTheme() {
@@ -184,7 +82,7 @@ class BackgroundEngine {
 
     window.addEventListener('resize', () => this.resize());
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
+      if (document.hidden || !this.particlesEnabled) {
         this.stopAnimation();
       } else {
         this.startAnimation();
@@ -192,7 +90,8 @@ class BackgroundEngine {
     });
 
     this.applyTheme(this.currentTheme);
-    this.startAnimation();
+    document.getElementById('btn-toggle-particles')?.classList.toggle('is-off', !this.particlesEnabled);
+    if (this.particlesEnabled) this.startAnimation();
   }
 
   resize() {
@@ -201,7 +100,6 @@ class BackgroundEngine {
     this.height = window.innerHeight;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.initAuroraBlobs();
     this.initParticles();
   }
 
@@ -220,7 +118,6 @@ class BackgroundEngine {
       dropdown.value = themeKey;
     }
 
-    this.initAuroraBlobs();
     this.initParticles();
     window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: themeKey, info: this.themes[themeKey] } }));
   }
@@ -332,41 +229,9 @@ class BackgroundEngine {
     }
   }
 
-  drawAuroraBlobs() {
-    if (!this.ctx || !this.auroraBlobs || this.auroraBlobs.length === 0) return;
-    this.ctx.save();
-    this.ctx.globalCompositeOperation = 'screen';
-    
-    for (let blob of this.auroraBlobs) {
-      blob.phase += blob.speed;
-      blob.radius = blob.baseRadius * (1 + 0.14 * Math.sin(blob.phase));
-      blob.x += blob.vx;
-      blob.y += blob.vy;
-
-      if (blob.x < -blob.baseRadius * 0.2) blob.vx = Math.abs(blob.vx);
-      if (blob.x > this.width + blob.baseRadius * 0.2) blob.vx = -Math.abs(blob.vx);
-      if (blob.y < -blob.baseRadius * 0.2) blob.vy = Math.abs(blob.vy);
-      if (blob.y > this.height + blob.baseRadius * 0.2) blob.vy = -Math.abs(blob.vy);
-
-      const grad = this.ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.radius);
-      grad.addColorStop(0, blob.color);
-      grad.addColorStop(0.55, blob.color.replace(/[\d\.]+\)$/, '0.06)'));
-      grad.addColorStop(1, 'transparent');
-
-      this.ctx.fillStyle = grad;
-      this.ctx.beginPath();
-      this.ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
-      this.ctx.fill();
-    }
-    this.ctx.restore();
-  }
-
   draw() {
     if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.width, this.height);
-
-    // Draw hypnotic dynamic Aurora fluid mesh
-    this.drawAuroraBlobs();
 
     if (!this.particlesEnabled) return;
 
@@ -433,8 +298,6 @@ class BackgroundEngine {
         p.x += Math.sin(p.swayPhase) * p.swayAmp;
 
         this.ctx.fillStyle = `hsla(${p.hue}, 96%, 66%, ${currentOpacity})`;
-        this.ctx.shadowBlur = 10;
-        this.ctx.shadowColor = `hsla(${p.hue}, 100%, 55%, ${currentOpacity * 0.9})`;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -448,12 +311,9 @@ class BackgroundEngine {
         if (p.x < -15) p.x = this.width + 15;
         if (p.x > this.width + 15) p.x = -15;
       }
-      this.ctx.shadowBlur = 0;
     } else if (themeType === 'motes' || themeType === 'neon-motes') {
       for (let p of this.particles) {
         this.ctx.fillStyle = `hsla(${p.hue}, 80%, 75%, ${p.opacity})`;
-        this.ctx.shadowBlur = 8;
-        this.ctx.shadowColor = `hsla(${p.hue}, 80%, 65%, 0.5)`;
         this.ctx.beginPath();
         this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         this.ctx.fill();
@@ -468,7 +328,6 @@ class BackgroundEngine {
         if (p.x < -10) p.x = this.width + 10;
         if (p.x > this.width + 10) p.x = -10;
       }
-      this.ctx.shadowBlur = 0;
     }
   }
 }
